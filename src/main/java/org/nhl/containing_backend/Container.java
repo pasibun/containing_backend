@@ -1,5 +1,7 @@
 package org.nhl.containing_backend;
 
+import java.lang.reflect.Array;
+
 /**
  * Data model for  a container.
  */
@@ -66,6 +68,26 @@ public class Container {
         this.length = length;
         this.width = width;
         this.height = height;
+    }
+
+    /**
+     * Calculate the metric equivalent of the feet-and-inches input.
+     *
+     * @param value String value in feet and inches
+     * @return Corresponding metric value in metres
+     */
+    public static float calculateLength(String value) {
+        String[] parts = value.split("'");
+        String feetStr = parts[0];
+        String inchesStr = "0";
+        try {
+            inchesStr = parts[1].replace("\"", "");
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        float metres = 0;
+        metres += Integer.parseInt(feetStr) * 0.3048;
+        metres += Integer.parseInt(inchesStr) * 0.0254;
+        return metres;
     }
 
     public int getNumber() {

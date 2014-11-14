@@ -107,11 +107,11 @@ class SaxHandler extends DefaultHandler {
         } else if (currentElement().equals("bedrijf") && currentElementParent().equals("vertrek")) {
             container.setDepartureCompany(value);
         } else if (currentElement().equals("l")) {
-            // Set length
+            container.setLength(Container.calculateLength(value));
         } else if (currentElement().equals("b")) {
-            // Set width
+            container.setWidth(Container.calculateLength(value));
         } else if (currentElement().equals("h")) {
-            // Set height
+            container.setHeight(Container.calculateLength(value));
         } else if (currentElement().equals("leeg")) {
             container.setEmptyWeight((float)Integer.parseInt(value));
         } else if (currentElement().equals("inhoud") && currentElementParent().equals("gewicht")) {
