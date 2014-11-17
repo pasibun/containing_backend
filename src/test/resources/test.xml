@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<recordset>
+    <record id="id0">
+        <aankomst>
+            <datum>
+                <d>13</d>
+                <m>12</m>
+                <j>04</j>
+            </datum>
+            <tijd>
+                <van>0.00</van>
+                <tot>0.10</tot>
+            </tijd>
+            <soort_vervoer>vrachtauto</soort_vervoer>
+            <bedrijf>DijckLogisticsBV</bedrijf>
+            <positie>
+                <x>1</x>
+                <y>0</y>
+                <z>0</z>
+            </positie>
+        </aankomst>
+        <eigenaar>
+            <naam>FlowersNL</naam>
+            <containernr>19965</containernr>
+        </eigenaar>
+        <vertrek>
+            <datum>
+                <d>22</d>
+                <m>12</m>
+                <j>04</j>
+            </datum>
+            <tijd>
+                <van>0.00</van>
+                <tot>12.00</tot>
+            </tijd>
+            <soort_vervoer>zeeschip</soort_vervoer>
+            <bedrijf>ChinaShippingAgency</bedrijf>
+        </vertrek>
+        <afmetingen>
+            <l>40'</l>
+            <b>8'</b>
+            <h>8'6''</h>
+        </afmetingen>
+        <gewicht>
+            <leeg>3</leeg>
+            <inhoud>78</inhoud>
+        </gewicht>
+        <inhoud>
+            <naam>nitrotolueen</naam>
+            <soort>gas</soort>
+            <gevaar>brandbaar</gevaar>
+        </inhoud>
+        <ISO>1496-1</ISO>
+    </record>
+</recordset>

@@ -26,7 +26,7 @@ public class TestContainer {
 
     @Test
     public void testCalculateLength() {
-        float delta = 0.01f;
+        float delta = 0.0001f;
         assertEquals(0.0254f, Container.calculateLength("0'1\""), delta);
         assertEquals(0.3048f, Container.calculateLength("1'"), delta);
         assertEquals(1.7526f, Container.calculateLength("5'9\""), delta);

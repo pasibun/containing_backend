@@ -101,7 +101,7 @@ class SaxHandler extends DefaultHandler {
         } else if (currentElement().equals("van") && currentElementGrandParent().equals("vertrek")) {
             container.setDepartureSpanStart(value);
         } else if (currentElement().equals("tot") && currentElementGrandParent().equals("vertrek")) {
-            container.setDepartureSpanStart(value);
+            container.setDepartureSpanEnd(value);
         } else if (currentElement().equals("soort_vervoer") && currentElementParent().equals("vertrek")) {
             container.setDepartureTransportType(value);
         } else if (currentElement().equals("bedrijf") && currentElementParent().equals("vertrek")) {
