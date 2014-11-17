@@ -13,8 +13,9 @@ public class Controller {
 
     public Controller() throws IOException {
         startServer();
-        //BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        //server.sendMessage(inFromUser.readLine());
+        System.out.println("Please input a string to send to the simulator :");
+        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        server.sendMessage(inFromUser.readLine());
     }
 
     private void startServer() {

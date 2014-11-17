@@ -2,10 +2,8 @@ package org.nhl.containing_backend;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 /**
  *
@@ -46,6 +44,8 @@ public class Communication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        sleep(100);
     }
 
     /**
@@ -69,8 +69,10 @@ public class Communication {
         status = status.SENDING;
         try {
             //server = serverSocket.accept();
+            System.out.println("Trying to send message " + message + " to the Simulation system!");
             output = new DataOutputStream(server.getOutputStream());
             output.writeUTF(message);
+            System.out.println("Sent message " + message + " to the Simulation system!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,13 +92,14 @@ public class Communication {
             } else {
                 System.out.println("Recieved string " + outputString + " from the simulation system! ");
             }
-
-            //input.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * This method will be called once and loops until the thread stops.
+     */
     private void update() {
         operation = new Thread(new Runnable() {
             @Override
@@ -130,5 +133,18 @@ public class Communication {
         operation.setName("Backend Communicator");
         operation.start();
 
+    }
+
+    /**
+     * Sleep this thread we are working with for x milliseconds
+     *
+     * @param milliseconds How long are we waiting in milliseconds?
+     */
+    public void sleep(int milliseconds) {
+        try {
+            operation.currentThread().sleep(milliseconds); //1000 milliseconds is one second.
+        } catch (InterruptedException ex) {
+            operation.currentThread().interrupt();
+        }
     }
 }
