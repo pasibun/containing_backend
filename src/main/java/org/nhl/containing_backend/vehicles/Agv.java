@@ -18,7 +18,6 @@ public class Agv extends Vehicle {
      * Attach a container to the Agv.
      *
      * @param newContainer Container to be attached.
-     * @throws AgvFullException
      */
     public void attachContainer(Container newContainer) {
         if (container != null) {
@@ -31,7 +30,6 @@ public class Agv extends Vehicle {
      * Detach and return the container held by the Agv.
      *
      * @return Container previously held by Agv.
-     * @throws AgvEmptyException
      */
     public Container detachContainer() {
         if (container == null) {
