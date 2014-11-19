@@ -70,7 +70,7 @@ public class Transporter extends Vehicle {
         if (deque.size() == 0) {
             throw new EmptyStackException();
         }
-        return deque.pop();
+        return deque.removeLast();
     }
 
     /**
