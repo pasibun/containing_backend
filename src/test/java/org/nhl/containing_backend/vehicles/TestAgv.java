@@ -35,11 +35,7 @@ public class TestAgv {
     @Test
     public void testAttachContainer() {
         Container container = new Container();
-        try {
-            agv.attachContainer(container);
-        } catch (AgvFullException e) {
-            e.printStackTrace();
-        }
+        agv.attachContainer(container);
         assertEquals(container, agv.getContainer());
     }
 
