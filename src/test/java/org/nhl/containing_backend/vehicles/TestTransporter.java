@@ -69,6 +69,13 @@ public class TestTransporter {
         transporter.takeContainer(new Point(0, 0));
     }
 
+    @Test
+    public void testHeightAt() {
+        assertEquals(0, transporter.heightAt(new Point(0, 0)));
+        transporter.putContainer(new Point(0, 0), new Container());
+        assertEquals(1, transporter.heightAt(new Point(0, 0)));
+    }
+
     @After
     public void tearDown() throws Exception {
         // Code executed after each test
