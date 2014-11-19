@@ -64,4 +64,15 @@ public class Transporter extends Vehicle {
         }
         return deque.pop();
     }
+
+    /**
+     * Small utility function that returns the size of a stack at a given coordinate
+     *
+     * @param point 2D integer coordinate of a container stack on the transporter.
+     * @return The amount of containers on the stack.
+     */
+    public int heightAt(Point point) {
+        Deque<Container> deque = containers[point.x][point.y];
+        return deque.size();
+    }
 }
