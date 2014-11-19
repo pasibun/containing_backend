@@ -34,6 +34,14 @@ public class Transporter extends Vehicle {
     public Transporter(int rowsCount, int columnsCount, int containerAmountLimit) {
         // Ignore the assignment error; it's stupid.
         this.containers = new ArrayDeque[rowsCount][columnsCount];
+
+        // Instantiate all stacks in the 2D array.
+        for (int row = 0; row < rowsCount; row++) {
+            for (int column = 0; column < columnsCount; column++) {
+                this.containers[row][column] = new ArrayDeque<Container>();
+            }
+        }
+
         this.containerAmountLimit = containerAmountLimit;
     }
 
