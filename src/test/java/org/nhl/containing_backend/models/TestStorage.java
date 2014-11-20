@@ -3,10 +3,10 @@ package org.nhl.containing_backend.models;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.nhl.containing_backend.Container;
-import org.nhl.containing_backend.exceptions.PlaceEmptyException;
-import org.nhl.containing_backend.exceptions.PlaceOccupiedException;
+import org.nhl.containing_backend.exceptions.FullStackException;
 
 import java.awt.*;
+import java.util.EmptyStackException;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +45,7 @@ public class TestStorage {
     public void testPutContainerOverflow() {
         Container container = new Container();
         storage.putContainer(new Point(0, 0), container);
-        thrown.expect(PlaceOccupiedException.class);
+        thrown.expect(FullStackException.class);
         storage.putContainer(new Point(0, 0), container);
     }
 
@@ -59,7 +59,7 @@ public class TestStorage {
 
     @Test
     public void testTakeContainerUnderflow() {
-        thrown.expect(PlaceEmptyException.class);
+        thrown.expect(EmptyStackException.class);
         storage.takeContainer(new Point(0, 0));
     }
 
