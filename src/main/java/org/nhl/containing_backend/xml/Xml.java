@@ -1,7 +1,6 @@
 package org.nhl.containing_backend.xml;
 
-import org.nhl.containing_backend.Container;
-import org.xml.sax.helpers.DefaultHandler;
+import org.nhl.containing_backend.models.Container;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;

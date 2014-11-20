@@ -1,4 +1,4 @@
-package org.nhl.containing_backend;
+package org.nhl.containing_backend.models;
 
 import java.lang.reflect.Array;
 

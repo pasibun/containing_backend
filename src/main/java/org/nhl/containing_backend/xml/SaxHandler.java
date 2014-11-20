@@ -1,6 +1,6 @@
 package org.nhl.containing_backend.xml;
 
-import org.nhl.containing_backend.Container;
+import org.nhl.containing_backend.models.Container;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
