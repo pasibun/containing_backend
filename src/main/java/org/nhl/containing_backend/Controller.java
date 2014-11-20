@@ -11,14 +11,17 @@ public class Controller {
 
     private Communication server;
 
-    public Controller() throws IOException {
-        startServer();
+    public Controller() {
+        server = new Communication();
+    }
+
+    public void startServer() {
+        server.Start();
+    }
+
+    public void prepareMessage() throws IOException {
         System.out.println("Please input a string to send to the simulator :");
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         server.sendMessage(inFromUser.readLine());
-    }
-
-    private void startServer() {
-        server = new Communication();
     }
 }
