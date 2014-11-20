@@ -1,10 +1,11 @@
-package org.nhl.containing_backend.vehicles;
+package org.nhl.containing_backend.models;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.nhl.containing_backend.models.Container;
+import org.nhl.containing_backend.Container;
 import org.nhl.containing_backend.exceptions.FullStackException;
 
+import java.awt.*;
 import java.util.EmptyStackException;
 
 import static org.junit.Assert.*;
@@ -12,8 +13,8 @@ import static org.junit.Assert.*;
 /**
  * Basic empty test template for unit tests.
  */
-public class TestAgv {
-    Agv agv;
+public class TestStorage {
+    Storage storage;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -30,36 +31,36 @@ public class TestAgv {
 
     @Before
     public void setUp() throws Exception {
-        agv = new Agv();
+       storage = new Storage(2, 3);
     }
 
     @Test
-    public void testAttachContainer() {
+    public void testPutContainer() {
         Container container = new Container();
-        agv.attachContainer(container);
-        assertEquals(container, agv.getContainer());
+        storage.putContainer(new Point(0, 0), container);
+        // Find a way to ascertain that there is indeed a container at (0, 0).
     }
 
     @Test
-    public void testAttachContainerOverflow() {
+    public void testPutContainerOverflow() {
         Container container = new Container();
-        agv.attachContainer(container);
+        storage.putContainer(new Point(0, 0), container);
         thrown.expect(FullStackException.class);
-        agv.attachContainer(container);
+        storage.putContainer(new Point(0, 0), container);
     }
 
     @Test
-    public void testDetachContainer() {
+    public void testTakeContainer() {
         Container container = new Container();
-        agv.attachContainer(container);
-        Container result = agv.detachContainer();
+        storage.putContainer(new Point(0, 0), container);
+        Container result = storage.takeContainer(new Point(0, 0));
         assertEquals(container, result);
     }
 
     @Test
-    public void testDetachContainerUnderFlow() {
+    public void testTakeContainerUnderflow() {
         thrown.expect(EmptyStackException.class);
-        agv.detachContainer();
+        storage.takeContainer(new Point(0, 0));
     }
 
     @After
