@@ -1,11 +1,13 @@
 package org.nhl.containing_backend;
 
 import java.lang.reflect.Array;
+import java.util.Date;
 
 /**
- * Data model for  a container.
+ * Data model for a container.
  */
 public class Container {
+
     private int number;
     private int arrivalDay;
     private int arrivalMonth;
@@ -34,15 +36,14 @@ public class Container {
     private float height;
 
     public Container() {
-
     }
 
     public Container(int number, int arrivalDay, int arrivalMonth, int arrivalYear, String arrivalSpanStart,
-                     String arrivalSpanEnd, String arrivalTransportType, String arrivalCompany, String owner,
-                     int departureDay, int departureMonth, int departureYear, String departureSpanStart,
-                     String departureSpanEnd, String departureTransportType, String departureCompany, String contentsName,
-                     String contentsType, String contentsDanger, String iso, float emptyWeight, float contentsWeight,
-                     float length, float width, float height) {
+            String arrivalSpanEnd, String arrivalTransportType, String arrivalCompany, String owner,
+            int departureDay, int departureMonth, int departureYear, String departureSpanStart,
+            String departureSpanEnd, String departureTransportType, String departureCompany, String contentsName,
+            String contentsType, String contentsDanger, String iso, float emptyWeight, float contentsWeight,
+            float length, float width, float height) {
         this.number = number;
         this.arrivalDay = arrivalDay;
         this.arrivalMonth = arrivalMonth;
@@ -88,6 +89,14 @@ public class Container {
         metres += Integer.parseInt(feetStr) * 0.3048;
         metres += Integer.parseInt(inchesStr) * 0.0254;
         return metres;
+    }
+
+    public Date getArrivalDate() {
+        return new Date(2000 + arrivalYear, arrivalMonth, arrivalDay);
+    }
+
+    public Date getDepartureDate() {
+        return new Date(2000 + departureYear, departureMonth, departureDay);
     }
 
     public int getNumber() {
