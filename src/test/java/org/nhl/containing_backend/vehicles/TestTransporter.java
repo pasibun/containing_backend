@@ -4,7 +4,6 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.nhl.containing_backend.Container;
 import org.nhl.containing_backend.exceptions.FullStackException;
-import sun.invoke.empty.Empty;
 
 import java.awt.*;
 import java.util.EmptyStackException;
