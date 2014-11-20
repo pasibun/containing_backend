@@ -12,10 +12,14 @@ public class Controller {
     private Communication server;
 
     public Controller() {
+        server = new Communication();
     }
 
-    public void startServer() throws IOException {
-        server = new Communication();
+    public void startServer() {
+        server.Start();
+    }
+
+    public void prepareMessage() throws IOException {
         System.out.println("Please input a string to send to the simulator :");
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         server.sendMessage(inFromUser.readLine());

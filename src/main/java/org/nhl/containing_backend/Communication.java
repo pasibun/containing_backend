@@ -4,28 +4,42 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+/*
+ * Commands:
+ * 
+ * CREATE + [OJECT] + {DATA} + /CEATE
+ * MOVE + [OBJECT] + [DESTINATION X,DESTINATION Y} + [SPEED] + /MOVE
+ * DISPOSE + [OBJECT] + [DESTINATION X, DESTINATION Y] + SPEED + /DISPOSE
+ * 
+ */
 
 /**
  *
  * Used to communicate with the Simulation
+ *
  */
 public class Communication {
 
     private ServerSocket serverSocket;
 
-    private enum statusEnum {
+
+    private enum Status {
         LISTEN, INITIALIZE, DISPOSE, SENDING
     };
-    private statusEnum status;
+    private Status status;
     private Socket server;
     private DataInputStream input;
     private DataOutputStream output;
     private Thread operation;
     private final int PORT = 6666;
+    private String commando;
 
     public Communication() {
-        update();
-        status = statusEnum.INITIALIZE;
+        status = Status.INITIALIZE;
+    }
+
+    public String getCommando() {
+        return commando;
     }
 
     /**
@@ -41,7 +55,6 @@ public class Communication {
             System.out.println("Just connected to "
                     + server.getRemoteSocketAddress());
         } catch (Exception e) {
-            e.printStackTrace();
         }
 
         sleep(100);
@@ -53,9 +66,8 @@ public class Communication {
     public void closeServer() {
         try {
             server.close();
-            status = statusEnum.DISPOSE;
+            status = Status.DISPOSE;
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -65,7 +77,7 @@ public class Communication {
      * @param message The message
      */
     public void sendMessage(String message) {
-        status = statusEnum.SENDING;
+        status = Status.SENDING;
         try {
             //server = serverSocket.accept();
             System.out.println("Trying to send message " + message + " to the Simulation system!");
@@ -73,9 +85,8 @@ public class Communication {
             output.writeUTF(message);
             System.out.println("Sent message " + message + " to the Simulation system!");
         } catch (Exception e) {
-            e.printStackTrace();
         }
-        status = statusEnum.LISTEN;
+        status = Status.LISTEN;
     }
 
     /**
@@ -85,21 +96,20 @@ public class Communication {
         try {
             //server = serverSocket.accept();
             input = new DataInputStream(server.getInputStream());
-            String outputString = input.readUTF();
-            if (outputString.equals("")) {
+            commando = input.readUTF();
+            if (commando.equals("")) {
                 input.reset();
             } else {
-                System.out.println("Received string '" + outputString + "' from the simulation system! ");
+                System.out.println("Recieved string " + commando + " from the simulation system! ");
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     /**
      * This method will be called once and loops until the thread stops.
      */
-    private void update() {
+    public void Start() {
         operation = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -108,21 +118,20 @@ public class Communication {
                         switch (status) {
                             case INITIALIZE:
                                 startServer();
-                                status = statusEnum.LISTEN;
+                                status = Status.LISTEN;
                                 break;
                             case LISTEN:
                                 listen();
-                                status = statusEnum.LISTEN;
+                                status = Status.LISTEN;
                                 break;
                             case SENDING:
-                                status = statusEnum.SENDING;
+                                status = Status.SENDING;
                                 break;
                             case DISPOSE:
                                 operation.stop();
                                 break;
                         }
                     } catch (Throwable e) {
-                        e.printStackTrace();
                     }
 
 
