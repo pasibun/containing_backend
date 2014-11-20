@@ -20,7 +20,7 @@ public class Storage {
         if (getContainerAt(point) != null) {
             throw new PlaceOccupiedException();
         }
-        containers[point.x][point.y] = container;
+        setContainerAt(point, container);
     }
 
     public Container takeContainer(Point point) {
