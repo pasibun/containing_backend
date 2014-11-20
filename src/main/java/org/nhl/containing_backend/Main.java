@@ -1,25 +1,15 @@
 package org.nhl.containing_backend;
 
-import org.nhl.containing_backend.xml.Xml;
-
-import java.io.FileInputStream;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Hello world!
  *
  */
-public class Main
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-        try {
-            List<Container> containers = Xml.parse(Main.class.getResourceAsStream("/xml1.xml"));
-            System.out.println(containers);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Controller controller = new Controller();
+        controller.startServer();
+        controller.prepareMessage();
     }
 }
