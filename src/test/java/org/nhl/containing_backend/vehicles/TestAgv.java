@@ -3,8 +3,9 @@ package org.nhl.containing_backend.vehicles;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.nhl.containing_backend.Container;
-import org.nhl.containing_backend.exceptions.AgvEmptyException;
-import org.nhl.containing_backend.exceptions.AgvFullException;
+import org.nhl.containing_backend.exceptions.FullStackException;
+
+import java.util.EmptyStackException;
 
 import static org.junit.Assert.*;
 
@@ -43,7 +44,7 @@ public class TestAgv {
     public void testAttachContainerOverflow() {
         Container container = new Container();
         agv.attachContainer(container);
-        thrown.expect(AgvFullException.class);
+        thrown.expect(FullStackException.class);
         agv.attachContainer(container);
     }
 
@@ -57,7 +58,7 @@ public class TestAgv {
 
     @Test
     public void testDetachContainerUnderFlow() {
-        thrown.expect(AgvEmptyException.class);
+        thrown.expect(EmptyStackException.class);
         agv.detachContainer();
     }
 

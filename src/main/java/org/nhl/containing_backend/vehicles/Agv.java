@@ -1,29 +1,28 @@
 package org.nhl.containing_backend.vehicles;
 
 import org.nhl.containing_backend.Container;
-import org.nhl.containing_backend.exceptions.AgvEmptyException;
-import org.nhl.containing_backend.exceptions.AgvFullException;
+
+import java.awt.*;
+import java.util.ArrayDeque;
 
 /**
  * Little robot vehicle.
  */
 public class Agv extends Vehicle {
-    private Container container = null;
+    private Point point = new Point(0, 0);
 
     public Agv() {
-
+        containers = new ArrayDeque[1][1];
+        containers[0][0] = new ArrayDeque<Container>();
     }
 
     /**
      * Attach a container to the Agv.
      *
-     * @param newContainer Container to be attached.
+     * @param container Container to be attached.
      */
-    public void attachContainer(Container newContainer) {
-        if (container != null) {
-            throw new AgvFullException();
-        }
-        container = newContainer;
+    public void attachContainer(Container container) {
+        super.putContainer(point, container);
     }
 
     /**
@@ -32,12 +31,7 @@ public class Agv extends Vehicle {
      * @return Container previously held by Agv.
      */
     public Container detachContainer() {
-        if (container == null) {
-            throw new AgvEmptyException();
-        }
-        Container result = container;
-        container = null;
-        return result;
+        return super.takeContainer(point);
     }
 
     /**
@@ -46,6 +40,6 @@ public class Agv extends Vehicle {
      * @return Container held by Agv.
      */
     public Container getContainer() {
-        return container;
+        return containers[0][0].peek();
     }
 }
