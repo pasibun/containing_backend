@@ -1,6 +1,6 @@
 package org.nhl.containing_backend.models;
 
-import org.nhl.containing_backend.Container;
+import org.nhl.containing_backend.models.Container;
 
 import java.awt.*;
 import java.util.ArrayDeque;
