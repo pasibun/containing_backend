@@ -1,11 +1,14 @@
 package org.nhl.containing_backend;
 
+import java.util.Calendar;
+import java.util.Date;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TestContainer {
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -30,6 +33,42 @@ public class TestContainer {
         assertEquals(0.0254f, Container.calculateLength("0'1\""), delta);
         assertEquals(0.3048f, Container.calculateLength("1'"), delta);
         assertEquals(1.7526f, Container.calculateLength("5'9\""), delta);
+    }
+
+    @Test
+    public void testGetArrivalDate() {
+        Container con = new Container();
+        con.setArrivalDay(1);
+        con.setArrivalMonth(9);
+        con.setArrivalYear(4);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2004);
+        cal.set(Calendar.MONTH, 9);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date expected = cal.getTime();
+
+        assertEquals(expected, con.getArrivalDate());
+    }
+
+    @Test
+    public void testGetDepartureDate() {
+        Container con = new Container();
+        con.setDepartureDay(1);
+        con.setDepartureMonth(9);
+        con.setDepartureYear(4);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2004);
+        cal.set(Calendar.MONTH, 9);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date expected = cal.getTime();
+
+        assertEquals(expected, con.getDepartureDate());
     }
 
     @After
