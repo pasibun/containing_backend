@@ -1,7 +1,8 @@
-package org.nhl.containing_backend;
+package org.nhl.containing_backend.models;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.nhl.containing_backend.models.Container;
 
 import static org.junit.Assert.*;
 

@@ -1,6 +1,6 @@
 package org.nhl.containing_backend.vehicles;
 
-import org.nhl.containing_backend.Container;
+import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.exceptions.AgvEmptyException;
 import org.nhl.containing_backend.exceptions.AgvFullException;
 

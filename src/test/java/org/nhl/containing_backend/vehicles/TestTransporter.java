@@ -2,7 +2,7 @@ package org.nhl.containing_backend.vehicles;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.nhl.containing_backend.Container;
+import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.exceptions.FullStackException;
 
 import java.awt.*;
