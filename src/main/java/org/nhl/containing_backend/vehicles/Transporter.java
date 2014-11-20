@@ -27,11 +27,23 @@ public class Transporter extends Vehicle {
         this.containerAmountLimit = containerAmountLimit;
     }
 
+    /**
+     * Put a container in the stack positioned at the provided coordinate location.
+     *
+     * @param point 2D integer coordinate where a container must be put on the stack.
+     * @param container Provided container.
+     */
     @Override
     public void putContainer(Point point, Container container) {
         super.putContainer(point, container);
     }
 
+    /**
+     * Take a container from the stack at the provided coordinate location.
+     *
+     * @param point 2D integer coordinate from whence a container must be taken.
+     * @return The taken container.
+     */
     @Override
     public Container takeContainer(Point point) {
         return super.takeContainer(point);
