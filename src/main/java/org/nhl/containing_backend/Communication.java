@@ -14,9 +14,7 @@ import java.net.Socket;
  */
 
 /**
- *
  * Used to communicate with the Simulation
- *
  */
 public class Communication {
 
@@ -25,21 +23,23 @@ public class Communication {
 
     private enum Status {
         LISTEN, INITIALIZE, DISPOSE, SENDING
-    };
+    }
+
+    ;
     private Status status;
     private Socket server;
     private DataInputStream input;
     private DataOutputStream output;
     private Thread operation;
     private final int PORT = 6666;
-    private String commando;
+    private String command;
 
     public Communication() {
         status = Status.INITIALIZE;
     }
 
-    public String getCommando() {
-        return commando;
+    public String getCommand() {
+        return command;
     }
 
     /**
@@ -55,6 +55,7 @@ public class Communication {
             System.out.println("Just connected to "
                     + server.getRemoteSocketAddress());
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         sleep(100);
@@ -68,6 +69,7 @@ public class Communication {
             server.close();
             status = Status.DISPOSE;
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -85,6 +87,7 @@ public class Communication {
             output.writeUTF(message);
             System.out.println("Sent message " + message + " to the Simulation system!");
         } catch (Exception e) {
+            e.printStackTrace();
         }
         status = Status.LISTEN;
     }
@@ -96,13 +99,14 @@ public class Communication {
         try {
             //server = serverSocket.accept();
             input = new DataInputStream(server.getInputStream());
-            commando = input.readUTF();
-            if (commando.equals("")) {
+            command = input.readUTF();
+            if (command.equals("")) {
                 input.reset();
             } else {
-                System.out.println("Recieved string " + commando + " from the simulation system! ");
+                System.out.println("Received string " + command + " from the simulation system! ");
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -132,6 +136,7 @@ public class Communication {
                                 break;
                         }
                     } catch (Throwable e) {
+                        e.printStackTrace();
                     }
 
 
@@ -150,9 +155,9 @@ public class Communication {
      */
     public void sleep(int milliseconds) {
         try {
-            operation.currentThread().sleep(milliseconds); //1000 milliseconds is one second.
+            Thread.currentThread().sleep(milliseconds); //1000 milliseconds is one second.
         } catch (InterruptedException ex) {
-            operation.currentThread().interrupt();
+            Thread.currentThread().interrupt();
         }
     }
 }
