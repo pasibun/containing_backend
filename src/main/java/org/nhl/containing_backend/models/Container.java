@@ -1,6 +1,6 @@
 package org.nhl.containing_backend.models;
 
-import java.lang.reflect.Array;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -92,11 +92,25 @@ public class Container {
     }
 
     public Date getArrivalDate() {
-        return new Date(2000 + arrivalYear, arrivalMonth, arrivalDay);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2000 + arrivalYear);
+        cal.set(Calendar.MONTH, arrivalMonth);
+        cal.set(Calendar.DAY_OF_MONTH, arrivalDay);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date dateRepresentation = cal.getTime();
+        return dateRepresentation;
     }
 
     public Date getDepartureDate() {
-        return new Date(2000 + departureYear, departureMonth, departureDay);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2000 + departureYear);
+        cal.set(Calendar.MONTH, departureMonth);
+        cal.set(Calendar.DAY_OF_MONTH, departureDay);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date dateRepresentation = cal.getTime();
+        return dateRepresentation;
     }
 
     public int getNumber() {
