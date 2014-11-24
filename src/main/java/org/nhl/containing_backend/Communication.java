@@ -2,8 +2,17 @@ package org.nhl.containing_backend;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 /*
  * Commands:
  * 
@@ -20,12 +29,10 @@ public class Communication {
 
     private ServerSocket serverSocket;
 
+    public enum Status {
 
-    private enum Status {
         LISTEN, INITIALIZE, DISPOSE, SENDING
-    }
-
-    ;
+    };
     private Status status;
     private Socket server;
     private DataInputStream input;
@@ -33,6 +40,8 @@ public class Communication {
     private Thread operation;
     private final int PORT = 6666;
     private String command;
+    private String okObject;
+    private int okId;
 
     public Communication() {
         status = Status.INITIALIZE;
@@ -40,6 +49,10 @@ public class Communication {
 
     public String getCommand() {
         return command;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 
     /**
@@ -57,7 +70,6 @@ public class Communication {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         sleep(100);
     }
 
@@ -103,11 +115,62 @@ public class Communication {
             if (command.equals("")) {
                 input.reset();
             } else {
-                System.out.println("Received string " + command + " from the simulation system! ");
+                System.out.println("Received string " + command + " from the simulation system. Now trying to decode... ");
+                decodeXMLMessage(command);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Tries to decode the incoming XML message and splits it within attributes
+     * of this class.
+     *
+     * @param xmlMessage The xml message you're willing to decode
+     */
+    private void decodeXMLMessage(String xmlMessage) {
+        try {
+            DocumentBuilderFactory dbf =
+                    DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            InputSource is = new InputSource();
+            is.setCharacterStream(new StringReader(xmlMessage));
+
+            Document doc = db.parse(is);
+
+            NodeList nodes = doc.getElementsByTagName("OK");
+            if (nodes.getLength() > 0) {
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Element element = (Element) nodes.item(i);
+
+                    NodeList numberOfContainers = element.getElementsByTagName("OBJECT");
+                    Element line = (Element) numberOfContainers.item(0);
+                    okObject = getCharacterDataFromElement(line);
+                    System.out.println("OBJECT: " + okObject);
+
+                    numberOfContainers = element.getElementsByTagName("OBJECTID");
+                    line = (Element) numberOfContainers.item(0);
+                    okId = Integer.parseInt(getCharacterDataFromElement(line));
+                    System.out.println("OBJECTID: " + okId);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Gets the characterdata from the specified element
+     */
+    private static String getCharacterDataFromElement(Element e) {
+        Node child = e.getFirstChild();
+        if (child instanceof CharacterData) {
+            CharacterData cd = (CharacterData) child;
+            return cd.getData();
+        }
+        return "?";
     }
 
     /**
