@@ -23,7 +23,7 @@ public class Communication {
 
     public enum Status {
 
-        LISTEN, INITIALIZE, DISPOSE, SENDING
+        LISTEN, INITIALIZE, SENDING
     };
     private Status status;
     private Socket server;
@@ -60,7 +60,8 @@ public class Communication {
             System.out.println("Just connected to "
                     + server.getRemoteSocketAddress());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("CLIENT NOT FOUND! MAKE SURE THE CLIENT IS ONLINE! RECONNECTING...");
+            status = Status.INITIALIZE;
         }
         sleep(100);
     }
@@ -69,12 +70,7 @@ public class Communication {
      * Closes the server and stops this thread
      */
     public void closeServer() {
-        try {
-            server.close();
-            status = Status.DISPOSE;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        operation = null;
     }
 
     /**
@@ -101,7 +97,6 @@ public class Communication {
      */
     public void listen() {
         try {
-            //server = serverSocket.accept();
             input = new DataInputStream(server.getInputStream());
             command = input.readUTF();
             if (command.equals("")) {
@@ -111,7 +106,8 @@ public class Communication {
                 decodeXMLMessage(command);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("CLIENT NOT FOUND! MAKE SURE THE CLIENT IS ONLINE! RECONNECTING...");
+            status = Status.INITIALIZE;
         }
     }
 
@@ -172,7 +168,8 @@ public class Communication {
         operation = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                Thread thisThread = Thread.currentThread();
+                while (operation == thisThread) {
                     try {
                         switch (status) {
                             case INITIALIZE:
@@ -185,9 +182,6 @@ public class Communication {
                                 break;
                             case SENDING:
                                 status = Status.SENDING;
-                                break;
-                            case DISPOSE:
-                                operation.stop();
                                 break;
                         }
                     } catch (Throwable e) {
