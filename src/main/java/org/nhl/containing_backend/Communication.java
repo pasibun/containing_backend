@@ -13,14 +13,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-/*
- * Commands:
- * 
- * CREATE + [OJECT] + {DATA} + /CEATE
- * MOVE + [OBJECT] + [DESTINATION X,DESTINATION Y} + [SPEED] + /MOVE
- * DISPOSE + [OBJECT] + [DESTINATION X, DESTINATION Y] + SPEED + /DISPOSE
- * 
- */
 
 /**
  * Used to communicate with the Simulation

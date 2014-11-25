@@ -24,7 +24,7 @@ public class Controller {
         containers = new ArrayList();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
-        cal.set(Calendar.MONTH, 12);
+        cal.set(Calendar.MONTH, 11);
         cal.set(Calendar.DAY_OF_MONTH, 13);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -55,6 +55,30 @@ public class Controller {
         Scanner keyboard = new Scanner(System.in);
         keyboard.nextLine();
         createContainer();
+        moveObject("AGV1", "Parkingplace3", 2);
+        disposeObject("AGV1");
+    }
+
+    /**
+     * Sends a move message to the simulation
+     *
+     * @param objectName The object we are going to move
+     * @param destination The destination where this object will be going to
+     * @param speed the speed of the movement
+     */
+    public void moveObject(String objectName, String destination, float speed) {
+        String moveMessage = "<Move><objectName>" + objectName + "</objectName><destinationName>" + destination + "</destinationName><speed>" + speed + "</speed></Move>";
+        server.sendMessage(moveMessage);
+    }
+
+    /**
+     * Sends a delete message to the simulation which will delete the object
+     *
+     * @param objectName The object we are going to delete
+     */
+    public void disposeObject(String objectName) {
+        String disposeMessage = "<Dispose><objectName>" + objectName + "</objectName></Dispose>";
+        server.sendMessage(disposeMessage);
     }
 
     /**
