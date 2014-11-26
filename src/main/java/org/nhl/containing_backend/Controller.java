@@ -18,10 +18,13 @@ public class Controller {
     private Communication server;
     private ArrayList<Container> containers;
     private Date currentDate;
+    private Database data;
 
     public Controller() {
+        data = new Database();
         server = new Communication();
         containers = new ArrayList();
+        data.createDatabase();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 11);
