@@ -92,26 +92,25 @@ public class Container {
         return metres;
     }
 
-    public Date getArrivalDate() {
+    private static Date generateDate(int day, int month, int year) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, 2000 + arrivalYear);
-        cal.set(Calendar.MONTH, arrivalMonth - 1);
-        cal.set(Calendar.DAY_OF_MONTH, arrivalDay);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.YEAR, 2000 + year);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        Date dateRepresentation = cal.getTime();
-        return dateRepresentation;
+
+        return cal.getTime();
+    }
+
+    public Date getArrivalDate() {
+        return generateDate(arrivalDay, arrivalMonth, arrivalYear);
     }
 
     public Date getDepartureDate() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, 2000 + departureYear);
-        cal.set(Calendar.MONTH, departureMonth - 1);
-        cal.set(Calendar.DAY_OF_MONTH, departureDay);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date dateRepresentation = cal.getTime();
-        return dateRepresentation;
+        return generateDate(departureDay, departureMonth, departureYear);
     }
 
     public int getNumber() {

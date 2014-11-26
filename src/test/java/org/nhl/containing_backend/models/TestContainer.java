@@ -47,6 +47,7 @@ public class TestContainer {
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 8);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Date expected = cal.getTime();
@@ -64,6 +65,7 @@ public class TestContainer {
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 8);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Date expected = cal.getTime();
