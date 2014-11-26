@@ -2,6 +2,7 @@ package org.nhl.containing_backend;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,7 +20,7 @@ import org.xml.sax.InputSource;
  */
 public class Communication {
 
-    private ServerSocket serverSocket;
+    private static final int PORT = 6666;
 
     public enum Status {
 
@@ -30,7 +31,7 @@ public class Communication {
     private DataInputStream input;
     private DataOutputStream output;
     private Thread operation;
-    private final int PORT = 6666;
+    private ServerSocket serverSocket;
     private String command;
     private String okObject;
     private int okId;
@@ -54,11 +55,9 @@ public class Communication {
         try {
             serverSocket = new ServerSocket(PORT);
             serverSocket.setSoTimeout(0);
-            System.out.println("Waiting for client on port "
-                    + serverSocket.getLocalPort() + "...");
+            System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
             server = serverSocket.accept();
-            System.out.println("Just connected to "
-                    + server.getRemoteSocketAddress());
+            System.out.println("Just connected to " + server.getRemoteSocketAddress());
         } catch (Exception e) {
             System.out.println("CLIENT NOT FOUND! MAKE SURE THE CLIENT IS ONLINE! RECONNECTING...");
             status = Status.INITIALIZE;
@@ -71,6 +70,13 @@ public class Communication {
      */
     public void closeServer() {
         operation = null;
+
+        try {
+            server.close();
+            serverSocket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -81,7 +87,6 @@ public class Communication {
     public void sendMessage(String message) {
         status = Status.SENDING;
         try {
-            //server = serverSocket.accept();
             System.out.println("Trying to send message " + message + " to the Simulation system!");
             output = new DataOutputStream(server.getOutputStream());
             output.writeUTF(message);
@@ -99,7 +104,7 @@ public class Communication {
         try {
             input = new DataInputStream(server.getInputStream());
             command = input.readUTF();
-            if (command.equals("")) {
+            if (command.length() == 0) {
                 input.reset();
             } else {
                 System.out.println("Received string " + command + " from the simulation system. Now trying to decode... ");
@@ -109,6 +114,7 @@ public class Communication {
             System.out.println("CLIENT NOT FOUND! MAKE SURE THE CLIENT IS ONLINE! RECONNECTING...");
             status = Status.INITIALIZE;
         }
+        sleep(3000);
     }
 
     /**
@@ -128,17 +134,17 @@ public class Communication {
             Document doc = db.parse(is);
 
             NodeList nodes = doc.getElementsByTagName("OK");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
+            int nodesDepth = nodes.getLength();
+            if (nodesDepth > 0) {
+                for (int i = 0; i < nodesDepth; i++) {
                     Element element = (Element) nodes.item(i);
-
-                    NodeList numberOfContainers = element.getElementsByTagName("OBJECT");
-                    Element line = (Element) numberOfContainers.item(0);
+                    NodeList nodeList = element.getElementsByTagName("OBJECT");
+                    Element line = (Element) nodeList.item(0);
                     okObject = getCharacterDataFromElement(line);
                     System.out.println("OBJECT: " + okObject);
 
-                    numberOfContainers = element.getElementsByTagName("OBJECTID");
-                    line = (Element) numberOfContainers.item(0);
+                    nodeList = element.getElementsByTagName("OBJECTID");
+                    line = (Element) nodeList.item(0);
                     okId = Integer.parseInt(getCharacterDataFromElement(line));
                     System.out.println("OBJECTID: " + okId);
                 }
@@ -187,8 +193,6 @@ public class Communication {
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
-
-
                 }
             }
         });
