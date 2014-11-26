@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestAgv {
-    Agv agv;
+    private Agv agv;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

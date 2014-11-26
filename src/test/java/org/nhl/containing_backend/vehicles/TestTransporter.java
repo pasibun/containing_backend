@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestTransporter {
-    Transporter transporter;
+    private Transporter transporter;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

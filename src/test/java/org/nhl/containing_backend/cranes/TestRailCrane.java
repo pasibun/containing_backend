@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestRailCrane {
-    RailCrane railCrane;
+    private RailCrane railCrane;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

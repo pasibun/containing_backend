@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestStorage {
-    Storage storage;
+    private Storage storage;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

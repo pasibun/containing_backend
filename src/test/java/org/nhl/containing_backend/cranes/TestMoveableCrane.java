@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestMoveableCrane {
-    MoveableCrane moveableCrane;
+    private MoveableCrane moveableCrane;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
