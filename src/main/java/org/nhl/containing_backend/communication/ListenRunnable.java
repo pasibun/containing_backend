@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  */
 public class ListenRunnable implements Runnable {
+
     BufferedReader in;
     ConcurrentLinkedQueue<String> queue;
-
     private boolean running;
 
     public ListenRunnable(BufferedReader in) {
