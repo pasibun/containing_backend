@@ -1,8 +1,5 @@
 package org.nhl.containing_backend.communication;
 
-import org.nhl.containing_backend.communication.ListenRunnable;
-import org.nhl.containing_backend.communication.SendRunnable;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,18 +8,15 @@ import java.net.Socket;
  * Server.
  */
 public class Server implements Runnable {
+
     private ServerSocket serverSocket;
     private final int portNumber = 6666;
-
     private Socket clientSocket;
-
     private ListenRunnable listenRunnable;
     private SendRunnable sendRunnable;
-
     private boolean running;
 
     public Server() {
-
     }
 
     @Override
