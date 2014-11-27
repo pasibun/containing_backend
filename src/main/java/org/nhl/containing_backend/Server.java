@@ -34,7 +34,7 @@ public class Server implements Runnable {
             System.out.println("Have client");
 
             listenRunnable = new ListenRunnable(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
-            sendRunnable = new SendRunnable(new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream())));
+            sendRunnable = new SendRunnable(new PrintWriter(clientSocket.getOutputStream(), true));
 
             Thread listenThread = new Thread(listenRunnable);
             Thread sendThread = new Thread(sendRunnable);

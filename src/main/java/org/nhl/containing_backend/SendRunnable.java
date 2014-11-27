@@ -1,20 +1,18 @@
 package org.nhl.containing_backend;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.Buffer;
+import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
  */
 public class SendRunnable implements Runnable {
-    BufferedWriter out;
+    PrintWriter out;
     ConcurrentLinkedQueue<String> queue;
 
     private boolean running;
 
-    public SendRunnable(BufferedWriter out) {
+    public SendRunnable(PrintWriter out) {
         this.out = out;
         this.queue = new ConcurrentLinkedQueue<String>();
     }
@@ -34,14 +32,10 @@ public class SendRunnable implements Runnable {
                 }
             } else {
                 // Send outputLine to client
-                try {
-                    out.write(outputLine);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                out.println(outputLine);
+                System.out.println("Sent " + outputLine);
             }
         }
-        System.out.println("Left SendRunnable");
     }
 
     public void stop() {

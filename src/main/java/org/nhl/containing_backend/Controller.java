@@ -51,11 +51,15 @@ public class Controller {
     public void startServer() {
         Thread serverThread = new Thread(server);
         serverThread.start();
-        /*readXml();
-        System.out.println("Press ENTER to proceed when the server is connected with the client...");
-        Scanner keyboard = new Scanner(System.in);
-        keyboard.nextLine();
-        createContainer();
+        //readXml();
+        while (true) {
+            System.out.println("Press ENTER to proceed when the server is connected with the client...");
+            Scanner keyboard = new Scanner(System.in);
+            keyboard.nextLine();
+            server.writeMessage("Hello world");
+            server.writeMessage("Spam eggs");
+        }
+        /*createContainer();
         moveObject("AGV1", "Parkingplace3", 2);
         disposeObject("AGV1");*/
     }
@@ -93,7 +97,7 @@ public class Controller {
             Date d = c.getArrivalDate();
             if (d.equals(currentDate)) {
                 createMessage = "<Create><iso>" + c.getIso() + "</iso><owner>" + c.getOwner() + "</owner><arrivalTransportType>" + c.getArrivalTransportType() + "</arrivalTransportType></Create>";
-                //server.sendMessage(createMessage);
+                //server.writeMessage(createMessage);
                 numberOfContainers++;
             }
         }

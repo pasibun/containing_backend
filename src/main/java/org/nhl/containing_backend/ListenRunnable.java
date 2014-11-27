@@ -26,7 +26,6 @@ public class ListenRunnable implements Runnable {
         try {
             while ((inputLine = in.readLine()) != null) {
                 if (!running || inputLine.equals("quit")) {
-                    running = false;
                     break;
                 }
                 // Write to queue
@@ -37,7 +36,7 @@ public class ListenRunnable implements Runnable {
             e.printStackTrace();
         }
 
-        System.out.println("Left ListenRunnable");
+        running = false;
     }
 
     public void stop() {
