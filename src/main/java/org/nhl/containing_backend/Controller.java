@@ -15,12 +15,12 @@ import org.nhl.containing_backend.xml.Xml;
  */
 public class Controller {
 
-    private Communication server;
+    private Server server;
     private ArrayList<Container> containers;
     private Date currentDate;
 
     public Controller() {
-        server = new Communication();
+        server = new Server();
         containers = new ArrayList();
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
@@ -49,14 +49,15 @@ public class Controller {
      * server has succesfully connected with the client!
      */
     public void startServer() {
-        server.Start();
-        readXml();
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+        /*readXml();
         System.out.println("Press ENTER to proceed when the server is connected with the client...");
         Scanner keyboard = new Scanner(System.in);
         keyboard.nextLine();
         createContainer();
         moveObject("AGV1", "Parkingplace3", 2);
-        disposeObject("AGV1");
+        disposeObject("AGV1");*/
     }
 
     /**
@@ -68,7 +69,7 @@ public class Controller {
      */
     public void moveObject(String objectName, String destination, float speed) {
         String moveMessage = "<Move><objectName>" + objectName + "</objectName><destinationName>" + destination + "</destinationName><speed>" + speed + "</speed></Move>";
-        server.sendMessage(moveMessage);
+        //server.sendMessage(moveMessage);
     }
 
     /**
@@ -78,7 +79,7 @@ public class Controller {
      */
     public void disposeObject(String objectName) {
         String disposeMessage = "<Dispose><objectName>" + objectName + "</objectName></Dispose>";
-        server.sendMessage(disposeMessage);
+        //server.sendMessage(disposeMessage);
     }
 
     /**
@@ -92,11 +93,11 @@ public class Controller {
             Date d = c.getArrivalDate();
             if (d.equals(currentDate)) {
                 createMessage = "<Create><iso>" + c.getIso() + "</iso><owner>" + c.getOwner() + "</owner><arrivalTransportType>" + c.getArrivalTransportType() + "</arrivalTransportType></Create>";
-                server.sendMessage(createMessage);
+                //server.sendMessage(createMessage);
                 numberOfContainers++;
             }
         }
-        server.sendMessage("<LastMessage><numberOfContainers>" + numberOfContainers + "</numberOfContainers></LastMessage>");
+        //server.sendMessage("<LastMessage><numberOfContainers>" + numberOfContainers + "</numberOfContainers></LastMessage>");
     }
 
     /**
@@ -107,6 +108,6 @@ public class Controller {
     public void prepareMessage() throws IOException {
         System.out.println("Please input a string to send to the simulator :");
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        server.sendMessage(inFromUser.readLine());
+        //server.sendMessage(inFromUser.readLine());
     }
 }
