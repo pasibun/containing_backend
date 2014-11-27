@@ -1,4 +1,4 @@
-package org.nhl.containing_backend;
+package org.nhl.containing_backend.communication;
 
 import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;

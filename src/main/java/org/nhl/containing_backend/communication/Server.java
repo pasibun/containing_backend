@@ -1,4 +1,7 @@
-package org.nhl.containing_backend;
+package org.nhl.containing_backend.communication;
+
+import org.nhl.containing_backend.communication.ListenRunnable;
+import org.nhl.containing_backend.communication.SendRunnable;
 
 import java.io.*;
 import java.net.ServerSocket;
