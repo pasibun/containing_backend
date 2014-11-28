@@ -35,7 +35,7 @@ public class TestXml {
     public void testParse() {
         List<Container> containers;
         try {
-            containers = Xml.parse(TestXml.class.getResourceAsStream("/test.xml"));
+            containers = Xml.parseContainerXml(TestXml.class.getResourceAsStream("/test.xml"));
         }
         catch (Exception e){
             containers = new ArrayList<Container>();

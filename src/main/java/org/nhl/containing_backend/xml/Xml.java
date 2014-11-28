@@ -31,7 +31,7 @@ public class Xml {
     public static String speed;
     public static Command command;
 
-    public static List<Container> parse(InputStream xmlFile) {
+    public static List<Container> parseContainerXml(InputStream xmlFile) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             SAXParser saxParser = factory.newSAXParser();

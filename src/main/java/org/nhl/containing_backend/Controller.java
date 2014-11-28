@@ -39,7 +39,7 @@ public class Controller {
      */
     public void readXml() {
         try {
-            containers.addAll(Xml.parse(Controller.class.getResourceAsStream("/xml1.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
         } catch (Exception e) {
             e.printStackTrace();
         }
