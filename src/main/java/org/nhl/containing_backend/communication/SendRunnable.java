@@ -4,9 +4,9 @@ import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- *
+ * Sender thread.
  */
-public class SendRunnable implements Runnable {
+class SendRunnable implements Runnable {
 
     PrintWriter out;
     ConcurrentLinkedQueue<String> queue;

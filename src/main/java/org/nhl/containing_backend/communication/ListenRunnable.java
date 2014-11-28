@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- *
+ * Listener thread.
  */
-public class ListenRunnable implements Runnable {
+class ListenRunnable implements Runnable {
 
     BufferedReader in;
     ConcurrentLinkedQueue<String> queue;

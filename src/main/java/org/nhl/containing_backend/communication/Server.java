@@ -64,6 +64,9 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * Shuts down the listeners and itself.
+     */
     public void stop() {
         try {
             listenRunnable.stop();
@@ -76,10 +79,20 @@ public class Server implements Runnable {
         running = false;
     }
 
+    /**
+     * Fetches the latest message from the listener.
+     *
+     * @return XML message.
+     */
     public String getMessage() {
         return listenRunnable.getMessage();
     }
 
+    /**
+     * Writes a message to the sender buffer.
+     *
+     * @param message XML message.
+     */
     public void writeMessage(String message) {
         sendRunnable.writeMessage(message);
     }
