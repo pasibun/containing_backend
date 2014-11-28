@@ -18,7 +18,7 @@ enum Command {
 }
 
 /**
- * Parses provided XML files and returns Containers.
+ * Parse messages from and to the server.
  */
 public class Xml {
 
