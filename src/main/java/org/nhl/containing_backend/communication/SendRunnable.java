@@ -7,9 +7,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  */
 public class SendRunnable implements Runnable {
+
     PrintWriter out;
     ConcurrentLinkedQueue<String> queue;
-
     private boolean running;
 
     public SendRunnable(PrintWriter out) {

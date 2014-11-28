@@ -1,20 +1,21 @@
 package org.nhl.containing_backend.xml;
 
 import org.nhl.containing_backend.models.Container;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+enum Command {
+    Create, Move, Dispose, LastMessage
+}
 
 /**
  * Parses provided XML files and returns Containers.
@@ -28,11 +29,6 @@ public class Xml {
     public static String objectName;
     public static String destinationName;
     public static String speed;
-
-    private enum Command {
-
-        Create, Move, Dispose, LastMessage
-    };
     public static Command command;
 
     public static List<Container> parse(InputStream xmlFile) {
@@ -51,8 +47,8 @@ public class Xml {
     /**
      * Tries to decode the incoming XML message and splits it within attributes
      * of this class.
-     *     
-* @param xmlMessage The xml message you're willing to decode
+     *
+     * @param xmlMessage The xml message you're willing to decode
      */
     public static void decodeXMLMessage(String xmlMessage) {
         try {

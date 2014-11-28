@@ -1,12 +1,9 @@
 package org.nhl.containing_backend.vehicles;
 
 import org.nhl.containing_backend.models.Container;
-import org.nhl.containing_backend.exceptions.FullStackException;
 
 import java.awt.*;
 import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.EmptyStackException;
 
 /**
  * Mass-transport vehicle that transports containers.
@@ -30,7 +27,7 @@ public class Transporter extends Vehicle {
     /**
      * Put a container in the stack positioned at the provided coordinate location.
      *
-     * @param point 2D integer coordinate where a container must be put on the stack.
+     * @param point     2D integer coordinate where a container must be put on the stack.
      * @param container Provided container.
      */
     @Override

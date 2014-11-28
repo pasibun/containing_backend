@@ -4,7 +4,6 @@ import java.io.IOException;
 
 /**
  * Hello world!
- *
  */
 public class Main {
 

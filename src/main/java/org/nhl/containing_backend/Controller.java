@@ -1,5 +1,9 @@
 package org.nhl.containing_backend;
 
+import org.nhl.containing_backend.communication.Server;
+import org.nhl.containing_backend.models.Container;
+import org.nhl.containing_backend.xml.Xml;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,10 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
-
-import org.nhl.containing_backend.communication.Server;
-import org.nhl.containing_backend.models.Container;
-import org.nhl.containing_backend.xml.Xml;
 
 /**
  * Main controller class.
@@ -69,9 +69,9 @@ public class Controller {
     /**
      * Sends a move message to the simulation
      *
-     * @param objectName The object we are going to move
+     * @param objectName  The object we are going to move
      * @param destination The destination where this object will be going to
-     * @param speed the speed of the movement
+     * @param speed       the speed of the movement
      */
     public void moveObject(String objectName, String destination, float speed) {
         String moveMessage = "<Move><objectName>" + objectName + "</objectName><destinationName>" + destination + "</destinationName><speed>" + speed + "</speed></Move>";

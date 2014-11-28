@@ -1,7 +1,5 @@
 package org.nhl.containing_backend.models;
 
-import org.nhl.containing_backend.models.Container;
-
 import java.awt.*;
 import java.util.ArrayDeque;
 
@@ -24,7 +22,7 @@ public class Storage extends ContainerHolder {
     /**
      * Put a container in the stack positioned at the provided coordinate location.
      *
-     * @param point 2D integer coordinate where a container must be put on the stack.
+     * @param point     2D integer coordinate where a container must be put on the stack.
      * @param container Provided container.
      */
     @Override

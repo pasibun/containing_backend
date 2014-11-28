@@ -18,7 +18,7 @@ class SaxHandler extends DefaultHandler {
     public List<Container> containers = new ArrayList<Container>();
 
     private Stack<String> elementStack = new Stack<String>();
-    private Stack<Container> containerStack  = new Stack<Container>();
+    private Stack<Container> containerStack = new Stack<Container>();
 
     @Override
     public void startDocument() throws SAXException {
@@ -113,9 +113,9 @@ class SaxHandler extends DefaultHandler {
         } else if (currentElement().equals("h")) {
             container.setHeight(Container.calculateLength(value));
         } else if (currentElement().equals("leeg")) {
-            container.setEmptyWeight((float)Integer.parseInt(value));
+            container.setEmptyWeight((float) Integer.parseInt(value));
         } else if (currentElement().equals("inhoud") && currentElementParent().equals("gewicht")) {
-            container.setContentsWeight((float)Integer.parseInt(value));
+            container.setContentsWeight((float) Integer.parseInt(value));
         } else if (currentElement().equals("naam") && currentElementParent().equals("inhoud")) {
             container.setContentsName(value);
         } else if (currentElement().equals("soort") && currentElementParent().equals("inhoud")) {
@@ -143,13 +143,13 @@ class SaxHandler extends DefaultHandler {
         if (elementStack.size() < 2) {
             return null;
         }
-        return elementStack.get(elementStack.size()-2);
+        return elementStack.get(elementStack.size() - 2);
     }
 
     private String currentElementGrandParent() {
         if (elementStack.size() < 3) {
             return null;
         }
-        return elementStack.get(elementStack.size()-3);
+        return elementStack.get(elementStack.size() - 3);
     }
 }
