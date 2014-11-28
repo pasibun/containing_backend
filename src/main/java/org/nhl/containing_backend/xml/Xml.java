@@ -35,7 +35,7 @@ public class Xml {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             SAXParser saxParser = factory.newSAXParser();
-            SaxHandler handler = new SaxHandler();
+            XmlFileHandler handler = new XmlFileHandler();
             saxParser.parse(xmlFile, handler);
             return handler.containers;
         } catch (Throwable e) {

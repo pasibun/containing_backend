@@ -14,7 +14,7 @@ import java.util.Stack;
 /**
  * Handler class for use in Xml.
  */
-class SaxHandler extends DefaultHandler {
+class XmlFileHandler extends DefaultHandler {
     public List<Container> containers = new ArrayList<Container>();
 
     private Stack<String> elementStack = new Stack<String>();
