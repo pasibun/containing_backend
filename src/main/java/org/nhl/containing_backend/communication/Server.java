@@ -60,7 +60,6 @@ public class Server implements Runnable {
             if (!listenRunnable.isRunning()) {
                 this.stop();
             }
-            System.out.println("Still alive");
         }
     }
 
