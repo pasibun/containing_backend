@@ -32,15 +32,9 @@ public class TestXml {
     }
 
     @Test
-    public void testParse() {
+    public void testParseContainerXml() {
         List<Container> containers;
-        try {
-            containers = Xml.parseContainerXml(TestXml.class.getResourceAsStream("/test.xml"));
-        }
-        catch (Exception e){
-            containers = new ArrayList<Container>();
-            e.printStackTrace();
-        }
+        containers = Xml.parseContainerXml(TestXml.class.getResourceAsStream("/test.xml"));
         float delta = 0.0001f;
 
         Container container = containers.get(0);
@@ -71,6 +65,18 @@ public class TestXml {
         assertEquals("gas", container.getContentsType());
         assertEquals("brandbaar", container.getContentsDanger());
         assertEquals("1496-1", container.getIso());
+    }
+
+    @Test
+    public void testParseContainerXmlAllFiles() {
+        List<Container> containers;
+        containers = Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml1.xml"));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml2.xml")));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml3.xml")));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml4.xml")));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml5.xml")));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml6.xml")));
+        containers.addAll(Xml.parseContainerXml(TestXml.class.getResourceAsStream("/xml7.xml")));
     }
 
     @After
