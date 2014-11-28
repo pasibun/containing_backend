@@ -53,14 +53,14 @@ public class Server implements Runnable {
             try {
                 // Do nothing.
                 Thread.sleep(1000);
-                // In case the client shut down the listener, shut down everything.
-                if (!listenRunnable.isRunning()) {
-                    this.stop();
-                }
-                System.out.println("Still alive");
             } catch (Throwable e) {
                 e.printStackTrace();
             }
+            // In case the client shut down the listener, shut down everything.
+            if (!listenRunnable.isRunning()) {
+                this.stop();
+            }
+            System.out.println("Still alive");
         }
     }
 
@@ -77,6 +77,11 @@ public class Server implements Runnable {
         } catch (Throwable e) {
         }
         running = false;
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -95,5 +100,9 @@ public class Server implements Runnable {
      */
     public void writeMessage(String message) {
         sendRunnable.writeMessage(message);
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
