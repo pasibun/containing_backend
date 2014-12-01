@@ -29,6 +29,19 @@ public class TestContainer {
     }
 
     @Test
+    public void testFinaliseLorryCoordinates() {
+        Container con = new Container();
+        con.setSpawnX(1);
+        con.setSpawnY(0);
+        con.setSpawnZ(0);
+        con.setArrivalTransportType("vrachtauto");
+
+        con.finalise();
+
+        assertEquals(0, con.getSpawnX());
+    }
+
+    @Test
     public void testCalculateLength() {
         float delta = 0.0001f;
         assertEquals(0.0254f, Container.calculateLength("0'1\""), delta);

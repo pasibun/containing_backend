@@ -72,6 +72,15 @@ public class Container {
     }
 
     /**
+     * Fixes all (known) errors from XML input.
+     */
+    public void finalise() {
+        if (getSpawnX() == 1 && getSpawnY() == 0 && getSpawnZ() == 0 && arrivalTransportType.equals("vrachtauto")) {
+            setSpawnX(0);
+        }
+    }
+
+    /**
      * Calculate the metric equivalent of the feet-and-inches input.
      *
      * @param value String value in feet and inches

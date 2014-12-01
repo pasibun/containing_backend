@@ -49,6 +49,8 @@ class XmlFileHandler extends DefaultHandler {
 
         if (qName.equals("record")) {
             Container container = containerStack.pop();
+            // Technically not mandatory, but fixes XML input errors.
+            container.finalise();
             containers.add(container);
         }
     }
