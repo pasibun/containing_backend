@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+import org.nhl.containing_backend.models.Model;
 
 /**
  * Main controller class.
@@ -20,8 +21,10 @@ public class Controller {
     private Server server;
     private ArrayList<Container> containers;
     private Date currentDate;
+    private Database database;
 
     public Controller() {
+        database = new Database();
         server = new Server();
         containers = new ArrayList();
         Calendar cal = Calendar.getInstance();
@@ -32,6 +35,8 @@ public class Controller {
         cal.set(Calendar.MILLISECOND, 0);
         Date dateRepresentation = cal.getTime();
         currentDate = dateRepresentation;
+        database.startDatabase();
+        database.updateDatabaseAGV();
     }
 
     /**
@@ -62,16 +67,16 @@ public class Controller {
             server.writeMessage("Spam eggs");
         }
         /*createContainer();
-        moveObject("AGV1", "Parkingplace3", 2);
-        disposeObject("AGV1");*/
+         moveObject("AGV1", "Parkingplace3", 2);
+         disposeObject("AGV1");*/
     }
 
     /**
      * Sends a move message to the simulation
      *
-     * @param objectName  The object we are going to move
+     * @param objectName The object we are going to move
      * @param destination The destination where this object will be going to
-     * @param speed       the speed of the movement
+     * @param speed the speed of the movement
      */
     public void moveObject(String objectName, String destination, float speed) {
         String moveMessage = "<Move><objectName>" + objectName + "</objectName><destinationName>" + destination + "</destinationName><speed>" + speed + "</speed></Move>";
