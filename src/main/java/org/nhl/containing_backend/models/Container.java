@@ -100,25 +100,27 @@ public class Container {
         return metres;
     }
 
-    private static Date generateDate(int day, int month, int year) {
+    private static Date generateDate(int day, int month, int year, String timeSpan) {
+        int hour = Integer.parseInt(timeSpan.substring(0, 1));
+        int minute = Integer.parseInt(timeSpan.substring(3, 4));
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, day);
         cal.set(Calendar.MONTH, month - 1);
         cal.set(Calendar.YEAR, 2000 + year);
-        cal.set(Calendar.MINUTE, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.SECOND, 1);
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTime();
     }
 
     public Date getArrivalDate() {
-        return generateDate(arrivalDay, arrivalMonth, arrivalYear);
+        return generateDate(arrivalDay, arrivalMonth, arrivalYear, arrivalSpanStart);
     }
 
     public Date getDepartureDate() {
-        return generateDate(departureDay, departureMonth, departureYear);
+        return generateDate(departureDay, departureMonth, departureYear, departureSpanStart);
     }
 
     public int getNumber() {
