@@ -180,7 +180,7 @@ public class Controller {
     /**
      * Provides an user input which will be sent to the Simulation client
      *     
-* @throws IOException
+     * @throws IOException
      */
     public void prepareMessage() throws IOException {
         System.out.println("Please input a string to send to the simulator :");
