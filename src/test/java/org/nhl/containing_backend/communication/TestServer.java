@@ -114,34 +114,34 @@ public class TestServer {
         client = new Client();
         Thread clientThread = new Thread(client);
         clientThread.start();
-        sleep(1000);
+        sleep(5000);
     }
 
     @Test
     public void testWriteMessageFromClientToServer() {
         client.writeMessage("Hello, world!");
-        sleep(1000);
+        sleep(5000);
         assertEquals("Hello, world!", server.getMessage());
     }
 
     @Test
     public void testWriteMessageFromServerToClient() {
         server.writeMessage("Hello, world!");
-        sleep(1000);
+        sleep(5000);
         assertEquals("Hello, world!", client.getMessage());
     }
 
     @Test
     public void testServerShutsDownQuitMessage() {
         client.writeMessage("quit");
-        sleep(2000);
+        sleep(5000);
         assertFalse(server.isRunning());
     }
 
     @Test
     public void testServerShutsDownConnectionLost() {
         client.stop();
-        sleep(2000);
+        sleep(5000);
         assertFalse(server.isRunning());
     }
 
@@ -149,7 +149,7 @@ public class TestServer {
     public void tearDown() throws Exception {
         server.stop();
         client.stop();
-        sleep(1000);
+        sleep(5000);
     }
 
     private void sleep(int i) {
