@@ -33,7 +33,7 @@ public class Server implements Runnable {
 
             // Wait for client.
             clientSocket = serverSocket.accept();
-            System.out.println("Have client");
+            System.out.println("Connected to " + clientSocket.toString());
 
             listenRunnable = new ListenRunnable(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
             sendRunnable = new SendRunnable(new PrintWriter(clientSocket.getOutputStream(), true));
