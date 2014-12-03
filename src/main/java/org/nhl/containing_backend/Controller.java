@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
-import org.nhl.containing_backend.models.Model;
 
 /**
  * Main controller class.
@@ -35,8 +34,7 @@ public class Controller {
         cal.set(Calendar.MILLISECOND, 0);
         Date dateRepresentation = cal.getTime();
         currentDate = dateRepresentation;
-        database.startDatabase();
-        database.updateDatabaseAGV();
+        database.setup();
     }
 
     /**

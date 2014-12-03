@@ -20,12 +20,11 @@ public class Database {
     private String driver = "com.mysql.jdbc.Driver";
     private String userName = "root";
     private String password = "";
-    private Model model;
 
     public Database() {
     }
 
-    public void startDatabase() {
+    public void setup() {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
