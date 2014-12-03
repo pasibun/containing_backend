@@ -61,13 +61,12 @@ public class Xml {
                         
                         currentItem = element.getElementsByTagName("OBJECTID");
                         line = (Element) currentItem.item(0);
-                        message.setObjectId(Integer.parseInt(getCharacterDataFromElement(line)));
                         
                         currentItem = element.getElementsByTagName("OBJECTSIZE");
                         line = (Element) currentItem.item(0);
                         message.setObjectSize(Integer.parseInt(getCharacterDataFromElement(line)));
                         
-                        message.setCommand(Command.OK);
+                        message.setCommand(Message.Command.OK);
                         
                         messageList.add(message);
                     }
