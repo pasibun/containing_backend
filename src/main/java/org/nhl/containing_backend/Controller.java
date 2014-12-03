@@ -100,6 +100,12 @@ public class Controller {
     public void readXml() {
         try {
             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml2.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml3.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml4.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml5.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml6.xml")));
+            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml7.xml")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,21 +159,20 @@ public class Controller {
      * for the current date
      */
     public void createContainer() {
-        String createMessage;
+        String createMessage = "";
         int numberOfContainers = 0;
         Iterator<Container> i = containers.iterator();
         while (i.hasNext()) {
             Container c = i.next();
             Date d = c.getArrivalDate();
             if (d.equals(currentDate)) {
-                createMessage = "<Create><iso>" + c.getIso() + "</iso><owner>" + c.getOwner() + "</owner><arrivalTransportType>" + c.getArrivalTransportType() + "</arrivalTransportType><xLoc>" + c.getSpawnX() + "</xLoc><yLoc>" + c.getSpawnY() + "</yLoc><zLoc>" + c.getSpawnZ() + "</zLoc></Create>";
-                server.writeMessage(createMessage);
+                createMessage = createMessage + "<Create><iso>" + c.getIso() + "</iso><owner>" + c.getOwner() + "</owner><arrivalTransportType>" + c.getArrivalTransportType() + "</arrivalTransportType><xLoc>" + c.getSpawnX() + "</xLoc><yLoc>" + c.getSpawnY() + "</yLoc><zLoc>" + c.getSpawnZ() + "</zLoc></Create>";
                 numberOfContainers++;
                 i.remove();
             }
         }
         if (numberOfContainers > 0) {
-            server.writeMessage("<LastMessage><numberOfContainers>" + numberOfContainers + "</numberOfContainers></LastMessage>");
+            server.writeMessage(createMessage);
         }
         numberOfContainers = 0;
     }

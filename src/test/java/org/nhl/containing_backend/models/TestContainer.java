@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.nhl.containing_backend.models.Container;
 
 import static org.junit.Assert.*;
 
@@ -55,14 +54,14 @@ public class TestContainer {
         con.setArrivalDay(1);
         con.setArrivalMonth(9);
         con.setArrivalYear(4);
-
+        con.setArrivalSpanStart("00:01");
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 8);
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.MINUTE, 1);
+        cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.SECOND, 1);
         cal.set(Calendar.MILLISECOND, 0);
         Date expected = cal.getTime();
         assertEquals(expected, con.getArrivalDate());
@@ -74,14 +73,14 @@ public class TestContainer {
         con.setDepartureDay(1);
         con.setDepartureMonth(9);
         con.setDepartureYear(4);
-        
+        con.setDepartureSpanStart("00:01");
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 8);
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.MINUTE, 1);
+        cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.SECOND, 1);
         cal.set(Calendar.MILLISECOND, 0);
         Date expected = cal.getTime();
         assertEquals(expected, con.getDepartureDate());
