@@ -128,7 +128,7 @@ public class TestServer {
     public void testWriteMessageFromServerToClient() {
         server.writeMessage("Hello, world!");
         sleep(1000);
-        assertEquals("Hello, world!", client.getMessage());
+        assertEquals("<Controller>Hello, world!</Controller>", client.getMessage());
     }
 
     @Test

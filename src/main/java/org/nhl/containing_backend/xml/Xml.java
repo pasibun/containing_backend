@@ -11,26 +11,14 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
-
-enum Command {
-    Create, Move, Dispose, LastMessage
-}
 
 /**
  * Parse messages from and to the server.
  */
 public class Xml {
-
-    public static int maxValueContainers;
-    public static String containerIso;
-    public static String containerOwner;
-    public static String transportType;
-    public static String objectName;
-    public static String destinationName;
-    public static String speed;
-    public static Command command;
-
+    
     public static List<Container> parseContainerXml(InputStream xmlFile) {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
@@ -50,7 +38,8 @@ public class Xml {
      *
      * @param xmlMessage The xml message you're willing to decode
      */
-    public static void decodeXMLMessage(String xmlMessage) {
+    public static ArrayList<Message> decodeXMLMessage(String xmlMessage) {
+        ArrayList<Message> messageList = new ArrayList();
         try {
             DocumentBuilderFactory dbf =
                     DocumentBuilderFactory.newInstance();
@@ -58,87 +47,35 @@ public class Xml {
             InputSource is = new InputSource();
             is.setCharacterStream(new StringReader(xmlMessage));
             Document doc = db.parse(is);
-            NodeList nodes = doc.getElementsByTagName("LastMessage");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Element element = (Element) nodes.item(i);
-                    NodeList numberOfContainers = element.getElementsByTagName("numberOfContainers");
-                    Element line = (Element) numberOfContainers.item(0);
-                    maxValueContainers = Integer.parseInt(getCharacterDataFromElement(line));
-                    System.out.println("numberOfContainers: " + maxValueContainers);
+            NodeList parent = doc.getElementsByTagName("Simulation");
+            if (parent.getLength() > 0) {
+                NodeList attributes = doc.getElementsByTagName("OK");
+                int lengthAttributes = attributes.getLength();
+                if (lengthAttributes > 0) {
+                    for (int i = 0; i < lengthAttributes; i++) {
+                        Message message = new Message();
+                        Element element = (Element) attributes.item(i);
+                        NodeList currentItem = element.getElementsByTagName("OBJECTNAME");
+                        Element line = (Element) currentItem.item(0);
+                        message.setObjectName(getCharacterDataFromElement(line));
+                        
+                        currentItem = element.getElementsByTagName("OBJECTID");
+                        line = (Element) currentItem.item(0);
+                        
+                        currentItem = element.getElementsByTagName("OBJECTSIZE");
+                        line = (Element) currentItem.item(0);
+                        message.setObjectSize(Integer.parseInt(getCharacterDataFromElement(line)));
+                        
+                        message.setCommand(Message.Command.OK);
+                        
+                        messageList.add(message);
+                    }
                 }
-                containerIso = null;
-                containerOwner = null;
-                transportType = null;
-                objectName = null;
-                destinationName = null;
-                speed = null;
-                command = Command.LastMessage;
-            }
-            nodes = doc.getElementsByTagName("Create");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Element element = (Element) nodes.item(i);
-                    NodeList nodeList = element.getElementsByTagName("iso");
-                    Element line = (Element) nodeList.item(0);
-                    containerIso = getCharacterDataFromElement(line);
-                    System.out.println("ISO: " + containerIso);
-                    nodeList = element.getElementsByTagName("owner");
-                    line = (Element) nodeList.item(0);
-                    containerOwner = getCharacterDataFromElement(line);
-                    System.out.println("Owner: " + containerOwner);
-                    nodeList = element.getElementsByTagName("arrivalTransportType");
-                    line = (Element) nodeList.item(0);
-                    transportType = getCharacterDataFromElement(line);
-                    System.out.println("arrivalTransportType: " + transportType);
-                }
-                objectName = null;
-                destinationName = null;
-                speed = null;
-                command = Command.Create;
-            }
-            nodes = doc.getElementsByTagName("Move");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Element element = (Element) nodes.item(i);
-                    NodeList nodeList = element.getElementsByTagName("objectName");
-                    Element line = (Element) nodeList.item(0);
-                    objectName = getCharacterDataFromElement(line);
-                    System.out.println("objectName: " + objectName);
-                    nodeList = element.getElementsByTagName("destinationName");
-                    line = (Element) nodeList.item(0);
-                    destinationName = getCharacterDataFromElement(line);
-                    System.out.println("destinationName: " + destinationName);
-                    nodeList = element.getElementsByTagName("speed");
-                    line = (Element) nodeList.item(0);
-                    speed = getCharacterDataFromElement(line);
-                    System.out.println("speed: " + speed);
-                }
-                containerIso = null;
-                containerOwner = null;
-                transportType = null;
-                command = Command.Move;
-            }
-            nodes = doc.getElementsByTagName("Dispose");
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    Element element = (Element) nodes.item(i);
-                    NodeList nodeList = element.getElementsByTagName("objectName");
-                    Element line = (Element) nodeList.item(0);
-                    objectName = getCharacterDataFromElement(line);
-                    System.out.println("objectName: " + objectName);
-                }
-                containerIso = null;
-                containerOwner = null;
-                transportType = null;
-                objectName = null;
-                destinationName = null;
-                speed = null;
-                command = Command.Dispose;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return messageList;
     }
 
     /**

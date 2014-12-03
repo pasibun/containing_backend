@@ -98,7 +98,7 @@ public class Server implements Runnable {
      * @param message XML message.
      */
     public void writeMessage(String message) {
-        sendRunnable.writeMessage(message);
+        sendRunnable.writeMessage("<Controller>" + message + "</Controller>");
     }
 
     public boolean isRunning() {
