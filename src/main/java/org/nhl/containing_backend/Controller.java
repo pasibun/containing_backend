@@ -145,7 +145,7 @@ public class Controller {
      * for the current date
      */
     public void createContainer() {
-        String createMessage = "<Controller>";
+        String createMessage = "";
         int numberOfContainers = 0;
         Iterator<Container> i = containers.iterator();
         while (i.hasNext()) {
@@ -158,7 +158,6 @@ public class Controller {
             }
         }
         if (numberOfContainers > 0) {
-            createMessage = createMessage + "<LastMessage><numberOfContainers>" + numberOfContainers + "</numberOfContainers></LastMessage></Controller>";
             server.writeMessage(createMessage);
         }
         numberOfContainers = 0;
