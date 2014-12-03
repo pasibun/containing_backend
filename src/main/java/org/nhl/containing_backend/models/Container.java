@@ -100,9 +100,7 @@ public class Container {
         return metres;
     }
 
-    private static Date generateDate(int day, int month, int year, String timeSpan) {
-        int hour = Integer.parseInt(timeSpan.substring(0, 1));
-        int minute = Integer.parseInt(timeSpan.substring(3, 4));
+    private static Date generateDate(int year, int month, int day, int hour, int minute) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, day);
         cal.set(Calendar.MONTH, month - 1);
@@ -116,11 +114,15 @@ public class Container {
     }
 
     public Date getArrivalDate() {
-        return generateDate(arrivalDay, arrivalMonth, arrivalYear, arrivalSpanStart);
+        // Substring reads hours and minutes from HH:MM format.
+        return generateDate(arrivalYear, arrivalMonth, arrivalDay, Integer.parseInt(arrivalSpanStart.substring(0, 1)),
+                Integer.parseInt(arrivalSpanStart.substring(3, 4)));
     }
 
     public Date getDepartureDate() {
-        return generateDate(departureDay, departureMonth, departureYear, departureSpanStart);
+        // Substring reads hours and minutes from HH:MM format.
+        return generateDate(departureYear, departureMonth, departureDay, Integer.parseInt(departureSpanStart.substring(0, 1)),
+                Integer.parseInt(departureSpanStart.substring(3, 4)));
     }
 
     public int getNumber() {
