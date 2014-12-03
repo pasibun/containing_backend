@@ -38,7 +38,7 @@ public class Xml {
      *
      * @param xmlMessage The xml message you're willing to decode
      */
-    public ArrayList<Message> decodeXMLMessage(String xmlMessage) {
+    public static ArrayList<Message> decodeXMLMessage(String xmlMessage) {
         ArrayList<Message> messageList = new ArrayList();
         try {
             DocumentBuilderFactory dbf =
