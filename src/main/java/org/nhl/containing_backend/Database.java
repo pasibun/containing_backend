@@ -21,7 +21,6 @@ public class Database {
     private String userName = "root";
     private String password = "";
     private Model model;
-    private Agv agv;
 
     public Database() {
     }
@@ -30,11 +29,11 @@ public class Database {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-            Statement st = conn.createStatement();
+            Statement statement = conn.createStatement();
 
             String delete = "DROP TABLE IF EXISTS agv, transporter, storage, railcrane, movablecrane";
 
-            st.executeUpdate(delete);
+            statement.executeUpdate(delete);
 
             String sqlAGV = "CREATE TABLE agv "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
@@ -58,11 +57,11 @@ public class Database {
                     + " movablecrane_name VARCHAR(255), "
                     + " PRIMARY KEY ( id ))";
 
-            st.executeUpdate(sqlAGV);
-            st.executeUpdate(sqlTransporter);
-            st.executeUpdate(sqlStorage);
-            st.executeUpdate(sqlRailCrane);
-            st.executeUpdate(sqlMovableCrane);
+            statement.executeUpdate(sqlAGV);
+            statement.executeUpdate(sqlTransporter);
+            statement.executeUpdate(sqlStorage);
+            statement.executeUpdate(sqlRailCrane);
+            statement.executeUpdate(sqlMovableCrane);
 
             conn.close();
         } catch (Exception e) {
