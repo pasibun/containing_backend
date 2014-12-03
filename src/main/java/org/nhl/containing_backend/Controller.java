@@ -57,14 +57,14 @@ public class Controller {
         cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 11);
-        cal.set(Calendar.DAY_OF_MONTH, 12);
+        cal.set(Calendar.DAY_OF_MONTH, 2);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Date dateRepresentation = cal.getTime();
         currentDate = dateRepresentation;
-        database.setup();
+        //database.setup();
     }
 
     /**
@@ -119,17 +119,6 @@ public class Controller {
     public void startServer() {
         Thread serverThread = new Thread(server);
         serverThread.start();
-        //readXml();
-        while (true) {
-            System.out.println("Press ENTER to proceed when the server is connected with the client...");
-            Scanner keyboard = new Scanner(System.in);
-            keyboard.nextLine();
-            server.writeMessage("Hello world");
-            server.writeMessage("Spam eggs");
-        }
-        //createContainer();
-        //moveObject("AGV1", "Parkingplace3", 2);
-        //disposeObject("AGV1");
     }
 
     /**
