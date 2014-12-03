@@ -66,9 +66,9 @@ public class Controller {
             server.writeMessage("Hello world");
             server.writeMessage("Spam eggs");
         }
-        /*createContainer();
-         moveObject("AGV1", "Parkingplace3", 2);
-         disposeObject("AGV1");*/
+        //createContainer();
+        //moveObject("AGV1", "Parkingplace3", 2);
+        //disposeObject("AGV1");
     }
 
     /**
