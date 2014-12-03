@@ -111,6 +111,8 @@ public class TestServer {
         Thread serverThread = new Thread(server);
         serverThread.start();
 
+        sleep(5000);
+
         client = new Client();
         Thread clientThread = new Thread(client);
         clientThread.start();
