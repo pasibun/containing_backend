@@ -22,11 +22,13 @@ public class Controller {
     private ArrayList<Container> containers;
     private Date currentDate;
     private long startTime;
-//Our project is SECOND_MULTIPLIER faster than real life
+    //Our project is SECOND_MULTIPLIER faster than real life
     private static final int SECOND_MULTIPLIER = 200;
     private Calendar cal;
+    private Database database;
 
     public Controller() {
+        database = new Database();
         server = new Server();
         containers = new ArrayList();
     }
@@ -62,6 +64,7 @@ public class Controller {
         cal.set(Calendar.MILLISECOND, 0);
         Date dateRepresentation = cal.getTime();
         currentDate = dateRepresentation;
+        database.setup();
     }
 
     /**
@@ -110,12 +113,23 @@ public class Controller {
     public void startServer() {
         Thread serverThread = new Thread(server);
         serverThread.start();
+        //readXml();
+        while (true) {
+            System.out.println("Press ENTER to proceed when the server is connected with the client...");
+            Scanner keyboard = new Scanner(System.in);
+            keyboard.nextLine();
+            server.writeMessage("Hello world");
+            server.writeMessage("Spam eggs");
+        }
+        //createContainer();
+        //moveObject("AGV1", "Parkingplace3", 2);
+        //disposeObject("AGV1");
     }
 
     /**
      * Sends a move message to the simulation
-     *     
-* @param objectName The object we are going to move
+     *
+     * @param objectName The object we are going to move
      * @param destination The destination where this object will be going to
      * @param speed the speed of the movement
      */
