@@ -69,7 +69,7 @@ public class Database {
         }
     }
 
-    public void updateDatabaseAGV() {
+    /*public void updateDatabaseAGV() {
         try {
             model = new Model();
             model.createAgv();
@@ -87,6 +87,6 @@ public class Database {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
     
 }

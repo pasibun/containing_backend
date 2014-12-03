@@ -27,12 +27,12 @@ public class Model {
         moveableCranes = new ArrayList<MoveableCrane>();
     }
 
-    public void createAgv() {
+    /*public void createAgv() {
         for (int i = 0; i < 100; i++) {
             agv = new Agv();
             agvs.add(agv);
         }
-    }
+    }*/
 
     public List<Agv> getAgvs() {
         return agvs;
