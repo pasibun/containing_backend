@@ -13,14 +13,15 @@ import java.util.List;
  */
 public class Model {
 
+    private List<Container> containerPool;
     private List<Agv> agvs;
     private List<Transporter> transporters;
     private Storage storage;
-    private Agv agv;
     private List<RailCrane> railCranes;
     private List<MoveableCrane> moveableCranes;
 
     public Model() {
+        containerPool = new ArrayList<Container>();
         agvs = new ArrayList<Agv>();
         transporters = new ArrayList<Transporter>();
         railCranes = new ArrayList<RailCrane>();
@@ -33,6 +34,10 @@ public class Model {
             agvs.add(agv);
         }
     }*/
+
+    public List<Container> getContainerPool() {
+        return containerPool;
+    }
 
     public List<Agv> getAgvs() {
         return agvs;

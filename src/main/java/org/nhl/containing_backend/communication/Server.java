@@ -67,6 +67,7 @@ public class Server implements Runnable {
      * Shuts down the listeners and itself.
      */
     public void stop() {
+        System.out.println("Shutting down server");
         try {
             listenRunnable.stop();
         } catch (Throwable e) {
