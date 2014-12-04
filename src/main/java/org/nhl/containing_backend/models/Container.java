@@ -80,6 +80,21 @@ public class Container {
         }
     }
 
+    public String toXml() {
+        String message = "";
+        message += "<Container>";
+
+        message += "<iso>" + iso + "</iso>";
+        message += "<owner>" + owner + "</owner>";
+        message += "<xLoc>" + getSpawnX() + "</xLoc>";
+        message += "<yLoc>" + getSpawnY() + "</yLoc>";
+        message += "<zLoc>" + getSpawnZ() + "</zLoc>";
+
+        message += "</Container>";
+
+        return message;
+    }
+
     /**
      * Calculate the metric equivalent of the feet-and-inches input.
      *

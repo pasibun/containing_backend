@@ -33,7 +33,7 @@ public class TestTransporter {
     public void setUp() throws Exception {
         // Two rows, three columns, two "height".
         // For future unit testing, perhaps try more variables?
-        transporter = new Transporter(2, 3, 2);
+        transporter = new Transporter("type", 2, 3, 2);
     }
 
     @Test

@@ -1,13 +1,18 @@
 package org.nhl.containing_backend;
 
+import org.nhl.containing_backend.communication.CreateMessage;
 import org.nhl.containing_backend.communication.Server;
 import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.models.Model;
+import org.nhl.containing_backend.vehicles.Transporter;
 import org.nhl.containing_backend.xml.Xml;
+
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.List;
 
 /**
  * Main controller class.
@@ -47,7 +52,7 @@ public class Controller implements Runnable {
                 return;
             }
             updateDate();
-            spawnContainersForCurrentDate();
+            spawnTransporters();
 
             try {
                 Thread.sleep(50);
@@ -165,32 +170,161 @@ public class Controller implements Runnable {
     }
 
     /**
-     * Sends an create container message to the client when there are containers
-     * for the current date
+     * Pops the containers from the pool that are set to be dispatched for the current date.
      */
-    private void spawnContainersForCurrentDate() {
-        String createMessage = "";
-        int numberOfContainers = 0;
+    private List<Container> containersForCurrentDate() {
+        List<Container> result = new ArrayList<Container>();
+
         Iterator<Container> i = model.getContainerPool().iterator();
         while (i.hasNext()) {
             Container container = i.next();
             Date arrivalDate = container.getArrivalDate();
             if (arrivalDate.before(currentDate)) {
-                createMessage += createContainerXml(container);
-                numberOfContainers++;
+                result.add(container);
                 i.remove();
             }
         }
-        if (numberOfContainers > 0) {
-            server.writeMessage(createMessage);
+
+        return result;
+    }
+
+    /**
+     * Spawns new transporters if the time is right.
+     */
+    private void spawnTransporters() {
+        List<Container> containers = containersForCurrentDate();
+
+        if (containers.size() == 0) {
+            return;
+        }
+
+        List<Transporter> transporters = distributeContainers(containers);
+
+        for (Transporter transporter : transporters) {
+            CreateMessage message = new CreateMessage(transporter);
+            server.writeMessage(message.generateXml());
         }
     }
 
-    private String createContainerXml(Container container) {
-        return "<Create><iso>" + container.getIso() + "</iso><owner>" + container.getOwner() +
-                "</owner><arrivalTransportType>" + container.getArrivalTransportType() +
-                "</arrivalTransportType><xLoc>" + container.getSpawnX() + "</xLoc><yLoc>" + container.getSpawnY() +
-                "</yLoc><zLoc>" + container.getSpawnZ() + "</zLoc></Create>";
+    /**
+     * Distributes the provided containers over a list of newly generated transporters.
+     * </p>
+     * WARNING: Method is butt-ugly.
+     *
+     * @param containers Containers that have to arrive in harbour.
+     * @return Transporters loaded with containers that are ready to arrive.
+     */
+    private List<Transporter> distributeContainers(List<Container> containers) {
+        List<Container> lorryContainers = new ArrayList<Container>();
+        List<Container> trainContainers = new ArrayList<Container>();
+        List<Container> inlandshipContainers = new ArrayList<Container>();
+        List<Container> seashipContainers = new ArrayList<Container>();
+
+        String[] types = new String[] {"vrachtauto", "trein", "binnenschip", "zeeschip"};
+
+        // Create separate lists for all transporter types.
+        for (Container container : containers) {
+            if (container.getArrivalTransportType().equals(types[0])) {
+                lorryContainers.add(container);
+            } else if (container.getArrivalTransportType().equals(types[1])) {
+                trainContainers.add(container);
+            } else if (container.getArrivalTransportType().equals(types[2])) {
+                inlandshipContainers.add(container);
+            } else if (container.getArrivalTransportType().equals(types[3])) {
+                seashipContainers.add(container);
+            }
+        }
+
+        List<List<Container>> listOfLists = new ArrayList<List<Container>>();
+        listOfLists.add(lorryContainers);
+        listOfLists.add(trainContainers);
+        listOfLists.add(inlandshipContainers);
+        listOfLists.add(seashipContainers);
+
+        List<Transporter> result = new ArrayList<Transporter>();
+
+        int counter = 0;
+
+        // Loop over all the lists.
+        for (List<Container> containers_ : listOfLists) {
+            String type = types[counter];
+
+            if (containers_.size() == 0) {
+                counter++;
+                continue;
+            }
+
+            // Create a dictionary where a key is a (x, y, z) coordinate, and the value is a list of containers.
+            Map<String, List<Container>> dict = new HashMap<String, List<Container>>();
+
+            // Distribute the containers over the dictionary.
+            for (Container container : containers_) {
+                String point = "";
+                point += container.getSpawnX() + ",";
+                point += container.getSpawnY() + ",";
+                point += container.getSpawnZ();
+
+                if (!dict.containsKey(point)) {
+                    List<Container> pointList = new ArrayList<Container>();
+                    pointList.add(container);
+                    dict.put(point, pointList);
+                } else {
+                    dict.get(point).add(container);
+                }
+            }
+
+            // Figure out the biggest list in the dictionary. This is also the amount of transporters.
+            int amountOfTransporters = 0;
+            for (List<Container> containerList : dict.values()) {
+                if (amountOfTransporters < containerList.size()) {
+                    amountOfTransporters = containerList.size();
+                }
+            }
+
+            // Figure out the boundaries of the transporters.
+            int limitX = 1;
+            int limitY = 1;
+            int limitZ = 1;
+            for (String point : dict.keySet()) {
+                String[] coords = point.split(",");
+                if (limitX < Integer.parseInt(coords[0]) + 1) {
+                    limitX = Integer.parseInt(coords[0]) + 1;
+                }
+                if (limitY < Integer.parseInt(coords[1]) + 1) {
+                    limitY = Integer.parseInt(coords[1]) + 1;
+                }
+                if (limitZ < Integer.parseInt(coords[2]) + 1) {
+                    limitZ = Integer.parseInt(coords[2]) + 1;
+                }
+            }
+
+            // For every transporter, fill it with containers and add it to the list.
+            for (int i = 0; i < amountOfTransporters; i++) {
+                Transporter transporter = new Transporter(type, limitX, limitY, limitZ);
+
+                Iterator iterator = dict.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, List<Container>> pair = (Map.Entry<String, List<Container>>)iterator.next();
+                    Point point = new Point(Integer.parseInt(pair.getKey().split(",")[0]),
+                            Integer.parseInt(pair.getKey().split(",")[1]));
+                    Container container = null;
+                    try {
+                        container = pair.getValue().remove(0);
+                    } catch (IndexOutOfBoundsException e) {
+                        iterator.remove();
+                        continue;
+                    }
+                    transporter.putContainer(point, container);
+                }
+                if (transporter.getContainers().size() > 0) {
+                    result.add(transporter);
+                }
+            }
+
+            counter++;
+        }
+
+        return result;
     }
 
     /**

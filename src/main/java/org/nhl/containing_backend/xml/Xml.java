@@ -1,5 +1,6 @@
 package org.nhl.containing_backend.xml;
 
+import org.nhl.containing_backend.communication.Message;
 import org.nhl.containing_backend.models.Container;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
@@ -38,7 +39,7 @@ public class Xml {
      *
      * @param xmlMessage The xml message you're willing to decode
      */
-    public static ArrayList<Message> decodeXMLMessage(String xmlMessage) {
+    /*public static ArrayList<Message> decodeXMLMessage(String xmlMessage) {
         ArrayList<Message> messageList = new ArrayList();
         try {
             DocumentBuilderFactory dbf =
@@ -76,7 +77,7 @@ public class Xml {
             e.printStackTrace();
         }
         return messageList;
-    }
+    }*/
 
     /**
      * Gets the characterdata from the specified element

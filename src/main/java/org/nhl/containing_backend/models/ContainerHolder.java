@@ -3,8 +3,8 @@ package org.nhl.containing_backend.models;
 import org.nhl.containing_backend.exceptions.FullStackException;
 
 import java.awt.*;
-import java.util.Deque;
-import java.util.EmptyStackException;
+import java.util.*;
+import java.util.List;
 
 /**
  * Abstract class that can hold containers.
@@ -66,5 +66,22 @@ public abstract class ContainerHolder {
     protected int heightAt(Point point) {
         Deque<Container> deque = containers[point.x][point.y];
         return deque.size();
+    }
+
+    /**
+     * Return a list of all containers in the Transporter.
+     *
+     * @return List of all containers.
+     */
+    public List<Container> getContainers() {
+        List<Container> result = new ArrayList<Container>();
+        for (int i = 0; i < containers.length; i++) {
+            for (int j = 0; j < containers[i].length; j++) {
+                for (Container container : containers[i][j]) {
+                    result.add(container);
+                }
+            }
+        }
+        return result;
     }
 }

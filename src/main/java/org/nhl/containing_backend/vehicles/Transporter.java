@@ -10,7 +10,10 @@ import java.util.ArrayDeque;
  */
 public class Transporter extends Vehicle {
 
-    public Transporter(int rowsCount, int columnsCount, int containerAmountLimit) {
+    String type;
+
+    public Transporter(String type, int rowsCount, int columnsCount, int containerAmountLimit) {
+        this.type = type;
         // Ignore the assignment error; it's stupid.
         this.containers = new ArrayDeque[rowsCount][columnsCount];
 
@@ -55,5 +58,9 @@ public class Transporter extends Vehicle {
     @Override
     public int heightAt(Point point) {
         return super.heightAt(point);
+    }
+
+    public String getType() {
+        return type;
     }
 }
