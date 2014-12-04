@@ -13,7 +13,7 @@ import java.util.*;
  * Main controller class.
  * 
 */
-public class Controller {
+public class Controller implements Runnable {
 
     private Server server;
     private Date currentDate;
@@ -34,12 +34,10 @@ public class Controller {
     }
 
     /**
-     * Starts the controller and all the neccesary functions to connect with the
-     * simulation
+     * Starts the controller and all the necessary initialisations.
      */
     public void start() {
         model.getContainerPool().addAll(createContainersFromXmlResource());
-
         startServer();
         waitForServerConnection();
         initDate();
@@ -59,13 +57,16 @@ public class Controller {
         }
     }
 
+    /**
+     * Shuts down the server and sets running to false.
+     */
     public void stop() {
         server.stop();
         running = false;
     }
 
     /**
-     * Inits the date of the project
+     * Initialises the simulation date.
      */
     private void initDate() {
         startTime = System.currentTimeMillis();
@@ -79,16 +80,13 @@ public class Controller {
         cal.set(Calendar.MILLISECOND, 0);
         currentDate = cal.getTime();
         lastTime = System.currentTimeMillis();
-        //database.setup();
     }
 
     /**
-     * Checks whether a second has passed in real life and sets the simulation
-     * time according to the SECOND_MULTIPLIER constant value
-     *     
-     * 1 hour in our project takes about 24 seconds Therefore 1 day in our
-     * project = 9.6 Minutes
-     *     
+     * Updates the simulation date.
+     * <p/>
+     * Compares the time since the last function call to the current time. This is the delta time.
+     * The delta time is added to the simulation date, multiplied by the specified TIME_MULTIPLIER.
      */
     private void updateDate() {
         long curTime = System.currentTimeMillis();
@@ -101,7 +99,7 @@ public class Controller {
     }
 
     /**
-     * Prepares the simulation with some starting data
+     * Halts the program until the server has connected to a client.
      */
     private void waitForServerConnection() {
         while (true) {
@@ -117,7 +115,7 @@ public class Controller {
     }
 
     /**
-     * Reads the xml files and puts the containers in an arraylist
+     * Return a list of all containers described in the XML files.
      */
     private List<Container> createContainersFromXmlResource() {
         List<Container> containers = new ArrayList<Container>();
@@ -137,9 +135,7 @@ public class Controller {
     }
 
     /**
-     * Boots up the server and starts sending the first Container data when the
-     * ENTER key has been pressed. NOTE: Only press enter when you're sure the
-     * server has succesfully connected with the client!
+     * Starts up the server in a separate thread.
      */
     private void startServer() {
         Thread serverThread = new Thread(server);
@@ -206,5 +202,10 @@ public class Controller {
         System.out.println("Please input a string to send to the simulator :");
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         server.writeMessage(inFromUser.readLine());
+    }
+
+    @Override
+    public void run() {
+        start();
     }
 }
