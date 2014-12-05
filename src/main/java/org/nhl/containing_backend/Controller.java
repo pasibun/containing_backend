@@ -9,28 +9,24 @@ import org.nhl.containing_backend.vehicles.Transporter;
 import org.nhl.containing_backend.xml.Xml;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.List;
 
 /**
  * Main controller class.
- * 
-*/
+ */
 public class Controller implements Runnable {
 
+    //Our project is SECOND_MULTIPLIER faster than real life
+    private static final int TIME_MULTIPLIER = 200;
+    private boolean running;
     private Server server;
     private Date currentDate;
     private long startTime;
     private long lastTime;
-    //Our project is SECOND_MULTIPLIER faster than real life
-    private static final int TIME_MULTIPLIER = 200;
     private Calendar cal;
     private Database database;
     private Model model;
-    boolean running;
 
     public Controller() {
         database = new Database();
@@ -98,7 +94,7 @@ public class Controller implements Runnable {
     private void updateDate() {
         long curTime = System.currentTimeMillis();
 
-        int deltaTime = (int)(curTime - lastTime);
+        int deltaTime = (int) (curTime - lastTime);
         cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
         currentDate = cal.getTime();
 
@@ -202,7 +198,7 @@ public class Controller implements Runnable {
         List<Container> inlandshipContainers = new ArrayList<Container>();
         List<Container> seashipContainers = new ArrayList<Container>();
 
-        String[] types = new String[] {"vrachtauto", "trein", "binnenschip", "zeeschip"};
+        String[] types = new String[]{"vrachtauto", "trein", "binnenschip", "zeeschip"};
 
         // Create separate lists for all transporter types.
         for (Container container : containers) {
@@ -286,7 +282,7 @@ public class Controller implements Runnable {
 
                 Iterator iterator = dict.entrySet().iterator();
                 while (iterator.hasNext()) {
-                    Map.Entry<String, List<Container>> pair = (Map.Entry<String, List<Container>>)iterator.next();
+                    Map.Entry<String, List<Container>> pair = (Map.Entry<String, List<Container>>) iterator.next();
                     Point point = new Point(Integer.parseInt(pair.getKey().split(",")[0]),
                             Integer.parseInt(pair.getKey().split(",")[1]));
                     Container container = null;
