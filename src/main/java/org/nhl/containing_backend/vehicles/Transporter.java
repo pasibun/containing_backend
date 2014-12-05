@@ -13,6 +13,7 @@ public class Transporter extends Vehicle {
     String type;
 
     public Transporter(String type, int rowsCount, int columnsCount, int containerAmountLimit) {
+        super();
         this.type = type;
         // Ignore the assignment error; it's stupid.
         this.containers = new ArrayDeque[rowsCount][columnsCount];

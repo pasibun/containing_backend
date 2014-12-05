@@ -11,6 +11,10 @@ import java.awt.*;
 public abstract class Crane extends ContainerHolder {
     private Point point = new Point(0, 0);
 
+    public Crane() {
+        super();
+    }
+
     /**
      * Attach a container to the Crane.
      *

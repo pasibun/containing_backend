@@ -9,6 +9,7 @@ import java.util.ArrayDeque;
  */
 public class RailCrane extends Crane {
     public RailCrane() {
+        super();
         containers = new ArrayDeque[1][1];
         containers[0][0] = new ArrayDeque<Container>();
     }
