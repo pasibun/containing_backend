@@ -50,16 +50,26 @@ public class Controller implements Runnable {
         startServer();
         waitForServerConnection();
         initDate(); // Keep this as CLOSE to `while (running)` as possible.
+        int sumTime = Integer.MAX_VALUE;
         running = true;
         while (running) {
             if (!server.isRunning()) {
                 return;
             }
-            updateDate();
-            spawnTransporters();
+            long curTime = System.currentTimeMillis();
+            int deltaTime = (int) (curTime - lastTime);
+            updateDate(deltaTime);
+            sumTime += deltaTime;
+
+            if (sumTime > 1000) {
+                spawnTransporters();
+                sumTime = 0;
+            }
             assignTransportersToDepots();
 
             handleOkMessages();
+            
+            lastTime = curTime;
 
             try {
                 Thread.sleep(50);
@@ -100,14 +110,9 @@ public class Controller implements Runnable {
      * Compares the time since the last function call to the current time. This is the delta time.
      * The delta time is added to the simulation date, multiplied by the specified TIME_MULTIPLIER.
      */
-    private void updateDate() {
-        long curTime = System.currentTimeMillis();
-
-        int deltaTime = (int) (curTime - lastTime);
+    private void updateDate(int deltaTime) {
         cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
         currentDate = cal.getTime();
-
-        lastTime = curTime;
     }
 
     /**
