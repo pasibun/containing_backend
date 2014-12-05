@@ -106,6 +106,14 @@ public class Controller implements Runnable {
     }
 
     /**
+     * Starts up the server in a separate thread.
+     */
+    private void startServer() {
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+    }
+
+    /**
      * Halts the program until the server has connected to a client.
      */
     private void waitForServerConnection() {
@@ -139,36 +147,6 @@ public class Controller implements Runnable {
             e.printStackTrace();
         }
         return containers;
-    }
-
-    /**
-     * Starts up the server in a separate thread.
-     */
-    private void startServer() {
-        Thread serverThread = new Thread(server);
-        serverThread.start();
-    }
-
-    /**
-     * Sends a move message to the simulation
-     *
-     * @param objectName The object we are going to move
-     * @param destination The destination where this object will be going to
-     * @param speed the speed of the movement
-     */
-    private void moveObject(String objectName, String destination, float speed) {
-        String moveMessage = "<Move><objectName>" + objectName + "</objectName><destinationName>" + destination + "</destinationName><speed>" + speed + "</speed></Move>";
-        server.writeMessage(moveMessage);
-    }
-
-    /**
-     * Sends a delete message to the simulation which will delete the object
-     *     
-     * @param objectName The object we are going to delete
-     */
-    private void disposeObject(String objectName) {
-        String disposeMessage = "<Dispose><objectName>" + objectName + "</objectName></Dispose>";
-        server.writeMessage(disposeMessage);
     }
 
     /**
@@ -353,17 +331,6 @@ public class Controller implements Runnable {
                 server.writeMessage(message.generateXml());
             }
         }
-    }
-
-    /**
-     * Provides an user input which will be sent to the Simulation client
-     *
-     * @throws IOException
-     */
-    private void prepareMessage() throws IOException {
-        System.out.println("Please input a string to send to the simulator :");
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        server.writeMessage(inFromUser.readLine());
     }
 
     @Override
