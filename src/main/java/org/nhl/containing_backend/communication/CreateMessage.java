@@ -33,4 +33,9 @@ public class CreateMessage extends Message {
 
         return message;
     }
+
+    @Override
+    public ProcessesMessage getProcessor() {
+        return transporter;
+    }
 }

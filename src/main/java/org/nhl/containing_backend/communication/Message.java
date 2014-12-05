@@ -12,6 +12,8 @@ public abstract class Message {
 
     public abstract String generateXml();
 
+    public abstract ProcessesMessage getProcessor();
+
     public int getId() {
         return id;
     }

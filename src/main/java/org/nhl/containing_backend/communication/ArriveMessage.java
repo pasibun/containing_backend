@@ -28,4 +28,9 @@ public class ArriveMessage extends Message {
 
         return message;
     }
+
+    @Override
+    public ProcessesMessage getProcessor() {
+        return transporter;
+    }
 }
