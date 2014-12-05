@@ -22,6 +22,8 @@ public class CreateMessage extends Message {
         message += "<Create>";
         message += "<" + transporter.getType() + ">";
 
+        message += "<identifier>" + transporter.getId() + "</identifier>";
+
         for (Container container : transporter.getContainers()) {
             message += container.toXml();
         }

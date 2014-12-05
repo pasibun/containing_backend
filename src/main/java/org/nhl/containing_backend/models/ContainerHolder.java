@@ -28,6 +28,14 @@ public abstract class ContainerHolder {
     // Stacks and recommends Deques instead).
     protected Deque<Container>[][] containers;
     protected int containerAmountLimit = 1;
+    private boolean occupied = false;
+    private static int counter = 0;
+    private int id;
+
+    public ContainerHolder() {
+        counter++;
+        id = counter;
+    }
 
     /**
      * Put a container in the stack positioned at the provided coordinate location.
@@ -83,5 +91,17 @@ public abstract class ContainerHolder {
             }
         }
         return result;
+    }
+
+    public boolean isOccupied() {
+        return occupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        this.occupied = occupied;
+    }
+
+    public int getId() {
+        return id;
     }
 }

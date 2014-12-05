@@ -12,6 +12,7 @@ public class Agv extends Vehicle {
     private Point point = new Point(0, 0);
 
     public Agv() {
+        super();
         containers = new ArrayDeque[1][1];
         containers[0][0] = new ArrayDeque<Container>();
     }

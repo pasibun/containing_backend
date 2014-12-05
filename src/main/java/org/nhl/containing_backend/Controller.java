@@ -1,5 +1,6 @@
 package org.nhl.containing_backend;
 
+import org.nhl.containing_backend.communication.ArriveMessage;
 import org.nhl.containing_backend.communication.CreateMessage;
 import org.nhl.containing_backend.communication.Server;
 import org.nhl.containing_backend.models.Container;
@@ -45,7 +46,7 @@ public class Controller implements Runnable {
         model.getContainerPool().addAll(createContainersFromXmlResource());
         startServer();
         waitForServerConnection();
-        initDate();
+        initDate(); // Keep this as CLOSE to `while (running)` as possible.
         running = true;
         while (running) {
             if (!server.isRunning()) {
@@ -53,6 +54,7 @@ public class Controller implements Runnable {
             }
             updateDate();
             spawnTransporters();
+            assignTransportersToDepots();
 
             try {
                 Thread.sleep(50);
@@ -199,6 +201,7 @@ public class Controller implements Runnable {
         }
 
         List<Transporter> transporters = distributeContainers(containers);
+        model.getTransporters().addAll(transporters);
 
         for (Transporter transporter : transporters) {
             CreateMessage message = new CreateMessage(transporter);
@@ -325,6 +328,27 @@ public class Controller implements Runnable {
         }
 
         return result;
+    }
+
+    /**
+     * From the pool of transporters that are currently out of bounds, assign as much of them as possible to a depot
+     * that isn't currently being used.
+     */
+    private void assignTransportersToDepots() {
+        HashMap<String, List<Integer>> availableDepots = model.availableDepots();
+
+        for (Transporter transporter : model.getTransporters()) {
+            // If the transporter is doing nothing, and there is a free depot.
+            if (!transporter.isOccupied() && !availableDepots.get(transporter.getType()).isEmpty()) {
+                // In the array of depots for the type of the transporter, set the first available depot to the current
+                // transporter.
+                int spot = availableDepots.get(transporter.getType()).remove(0);
+                model.getDepots().get(transporter.getType())[spot] = transporter;
+                transporter.setOccupied(true);
+                ArriveMessage message = new ArriveMessage(transporter, spot);
+                server.writeMessage(message.generateXml());
+            }
+        }
     }
 
     /**
