@@ -340,7 +340,8 @@ public class Controller implements Runnable {
 
         for (Transporter transporter : model.getTransporters()) {
             // If the transporter is doing nothing, has finished processing its message, and there is a free depot.
-            if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1 && !availableDepots.get(transporter.getType()).isEmpty()) {
+            if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1 &&
+                    !availableDepots.get(transporter.getType()).isEmpty()) {
                 // In the array of depots for the type of the transporter, set the first available depot to the current
                 // transporter.
                 int spot = availableDepots.get(transporter.getType()).remove(0);
