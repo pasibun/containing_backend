@@ -28,9 +28,12 @@ public abstract class ContainerHolder {
     // Stacks and recommends Deques instead).
     protected Deque<Container>[][] containers;
     protected int containerAmountLimit = 1;
-    private boolean occupied = false;
+    private boolean occupied = false;  // Whether the ContainerHolder is currently DOING something. This can remain true
+                                       // even if no message is currently being processed.
     private static int counter = 0;
     private int id;
+    private int processingMessageId = -1;  // Shows which message is currently being processed for this ContainerHolder.
+                                           // Set to -1 if no message is currently being processed.
 
     public ContainerHolder() {
         counter++;
@@ -103,5 +106,13 @@ public abstract class ContainerHolder {
 
     public int getId() {
         return id;
+    }
+
+    public int getProcessingMessageId() {
+        return processingMessageId;
+    }
+
+    public void setProcessingMessageId(int processingMessageId) {
+        this.processingMessageId = processingMessageId;
     }
 }

@@ -205,6 +205,7 @@ public class Controller implements Runnable {
 
         for (Transporter transporter : transporters) {
             CreateMessage message = new CreateMessage(transporter);
+            transporter.setProcessingMessageId(message.getId());
             server.writeMessage(message.generateXml());
         }
     }
@@ -338,14 +339,16 @@ public class Controller implements Runnable {
         HashMap<String, List<Integer>> availableDepots = model.availableDepots();
 
         for (Transporter transporter : model.getTransporters()) {
-            // If the transporter is doing nothing, and there is a free depot.
-            if (!transporter.isOccupied() && !availableDepots.get(transporter.getType()).isEmpty()) {
+            // If the transporter is doing nothing, has finished processing its message, and there is a free depot.
+            if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1 && !availableDepots.get(transporter.getType()).isEmpty()) {
                 // In the array of depots for the type of the transporter, set the first available depot to the current
                 // transporter.
                 int spot = availableDepots.get(transporter.getType()).remove(0);
                 model.getDepots().get(transporter.getType())[spot] = transporter;
                 transporter.setOccupied(true);
+
                 ArriveMessage message = new ArriveMessage(transporter, spot);
+                transporter.setProcessingMessageId(message.getId());
                 server.writeMessage(message.generateXml());
             }
         }
