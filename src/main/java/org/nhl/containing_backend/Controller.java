@@ -1,14 +1,19 @@
 package org.nhl.containing_backend;
 
-import org.nhl.containing_backend.communication.ArriveMessage;
-import org.nhl.containing_backend.communication.CreateMessage;
-import org.nhl.containing_backend.communication.Server;
+import org.nhl.containing_backend.communication.*;
 import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.models.Model;
 import org.nhl.containing_backend.vehicles.Transporter;
 import org.nhl.containing_backend.xml.Xml;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
+import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 
@@ -27,11 +32,13 @@ public class Controller implements Runnable {
     private Calendar cal;
     private Database database;
     private Model model;
+    private List<Message> messagePool;
 
     public Controller() {
         database = new Database();
         server = new Server();
         model = new Model();
+        messagePool = new ArrayList<Message>();
         running = false;
     }
 
@@ -51,6 +58,8 @@ public class Controller implements Runnable {
             updateDate();
             spawnTransporters();
             assignTransportersToDepots();
+
+            handleOkMessages();
 
             try {
                 Thread.sleep(50);
@@ -179,6 +188,7 @@ public class Controller implements Runnable {
 
         for (Transporter transporter : transporters) {
             CreateMessage message = new CreateMessage(transporter);
+            messagePool.add(message);
             transporter.setProcessingMessageId(message.getId());
             server.writeMessage(message.generateXml());
         }
@@ -323,10 +333,70 @@ public class Controller implements Runnable {
                 transporter.setOccupied(true);
 
                 ArriveMessage message = new ArriveMessage(transporter, spot);
+                messagePool.add(message);
                 transporter.setProcessingMessageId(message.getId());
                 server.writeMessage(message.generateXml());
             }
         }
+    }
+
+    /**
+     * Processes all received OK messages. Removes them from the pool and sets the message processors to -1.
+     */
+    private void handleOkMessages() {
+        List<String> xmlMessages = new ArrayList<String>();
+        while (true) {
+            String xmlMessage = server.getMessage();
+            if (xmlMessage == null) {
+                break;
+            }
+            xmlMessages.add(xmlMessage);
+        }
+
+        for (String message : xmlMessages) {
+            try {
+                handleOkMessage(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void handleOkMessage(String xmlMessage) throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        InputSource source = new InputSource();
+        source.setCharacterStream(new StringReader(xmlMessage));
+
+        Document doc = db.parse(source);
+
+        NodeList nodes = doc.getElementsByTagName("id");
+        if (nodes.getLength() != 1) {
+            throw new Exception(xmlMessage + " is not a valid message");
+        }
+
+        Element line = (Element) nodes.item(0);
+        int id = Integer.parseInt(Xml.getCharacterDataFromElement(line));
+
+        Message message = null;
+        boolean nobreak = true;
+
+        for (Message message_ : messagePool) {
+            if (message_.getId() == id) {
+                message = message_;
+                nobreak = false;
+                break;
+            }
+        }
+        if (nobreak) {
+            throw new Exception(id + " doesn't exist");
+        }
+
+        ProcessesMessage processor = message.getProcessor();
+        processor.setProcessingMessageId(-1);
+        // Maybe set occupied to false as well? Not sure yet.
+        messagePool.remove(message);
     }
 
     @Override
