@@ -46,7 +46,7 @@ public class Controller implements Runnable {
         model.getContainerPool().addAll(createContainersFromXmlResource());
         startServer();
         waitForServerConnection();
-        initDate();
+        initDate(); // Keep this as CLOSE to `while (running)` as possible.
         running = true;
         while (running) {
             if (!server.isRunning()) {
@@ -330,6 +330,10 @@ public class Controller implements Runnable {
         return result;
     }
 
+    /**
+     * From the pool of transporters that are currently out of bounds, assign as much of them as possible to a depot
+     * that isn't currently being used.
+     */
     private void assignTransportersToDepots() {
         HashMap<String, List<Integer>> availableDepots = model.availableDepots();
 

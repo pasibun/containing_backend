@@ -35,6 +35,11 @@ public class Model {
         moveableCranes = new ArrayList<MoveableCrane>();
     }
 
+    /**
+     * Figure out which sets of depots aren't currently occupied by a transporter.
+     *
+     * @return A dictionary with the type as key, and a list of available depots (indices) for that type as value.
+     */
     public HashMap<String, List<Integer>> availableDepots() {
         HashMap<String, List<Integer>> result = new HashMap<String, List<Integer>>();
         for (String key : depots.keySet()) {
