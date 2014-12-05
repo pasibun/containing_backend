@@ -1,5 +1,6 @@
 package org.nhl.containing_backend.models;
 
+import org.nhl.containing_backend.communication.ProcessesMessage;
 import org.nhl.containing_backend.exceptions.FullStackException;
 
 import java.awt.*;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Abstract class that can hold containers.
  */
-public abstract class ContainerHolder {
+public abstract class ContainerHolder implements ProcessesMessage {
     // 2D array of Container Stacks.
     // Top-down visualisation:
     //
@@ -100,18 +101,22 @@ public abstract class ContainerHolder {
         return occupied;
     }
 
+    @Override
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public int getProcessingMessageId() {
         return processingMessageId;
     }
 
+    @Override
     public void setProcessingMessageId(int processingMessageId) {
         this.processingMessageId = processingMessageId;
     }
