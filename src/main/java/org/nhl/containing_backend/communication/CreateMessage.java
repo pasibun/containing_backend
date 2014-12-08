@@ -20,15 +20,15 @@ public class CreateMessage extends Message {
         String message = "";
         message += "<id>" + getId() + "</id>";
         message += "<Create>";
-        message += "<" + transporter.getType() + ">";
+        message += "<Transporter>";
 
         message += "<identifier>" + transporter.getId() + "</identifier>";
-
+        message += "<type>" + transporter.getContainers().get(0).getArrivalTransportType() + "</type>";
         for (Container container : transporter.getContainers()) {
             message += container.toXml();
         }
 
-        message += "</" + transporter.getType() + ">";
+        message += "</Transporter>";
         message += "</Create>";
 
         return message;
