@@ -27,8 +27,8 @@ public class Controller implements Runnable {
     private boolean running;
     private Server server;
     private Date currentDate;
-    private long startTime;
     private long lastTime;
+    private long sumTime = Integer.MAX_VALUE;
     private Calendar cal;
     private Database database;
     private Model model;
@@ -50,16 +50,12 @@ public class Controller implements Runnable {
         startServer();
         waitForServerConnection();
         initDate(); // Keep this as CLOSE to `while (running)` as possible.
-        int sumTime = Integer.MAX_VALUE;
         running = true;
         while (running) {
             if (!server.isRunning()) {
                 return;
             }
-            long curTime = System.currentTimeMillis();
-            int deltaTime = (int) (curTime - lastTime);
-            updateDate(deltaTime);
-            sumTime += deltaTime;
+            updateDate();
 
             if (sumTime > 1000) {
                 spawnTransporters();
@@ -68,8 +64,6 @@ public class Controller implements Runnable {
             assignTransportersToDepots();
 
             handleOkMessages();
-            
-            lastTime = curTime;
 
             try {
                 Thread.sleep(50);
@@ -91,7 +85,6 @@ public class Controller implements Runnable {
      * Initialises the simulation date.
      */
     private void initDate() {
-        startTime = System.currentTimeMillis();
         cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 11);
@@ -110,9 +103,13 @@ public class Controller implements Runnable {
      * Compares the time since the last function call to the current time. This is the delta time.
      * The delta time is added to the simulation date, multiplied by the specified TIME_MULTIPLIER.
      */
-    private void updateDate(int deltaTime) {
+    private void updateDate() {
+        long curTime = System.currentTimeMillis();
+        int deltaTime = (int) (curTime - lastTime);
+        sumTime += deltaTime;
         cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
         currentDate = cal.getTime();
+        lastTime = curTime;
     }
 
     /**
