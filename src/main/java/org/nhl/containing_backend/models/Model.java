@@ -21,8 +21,8 @@ public class Model {
     private List<Transporter> transporters;
     private HashMap<String, Transporter[]> depots;
     private Storage storage;
-    private List<StorageCrane> storageCrane;
-    private List<DockingCrane> dockingCrane;
+    private List<StorageCrane> storageCranes;
+    private List<DockingCrane> dockingCranes;
     private List<TrainCrane> trainCranes;
     private List<TruckCrane> truckCranes;
 
@@ -35,10 +35,11 @@ public class Model {
         depots.put("trein", new Transporter[1]);
         depots.put("binnenschip", new Transporter[2]);
         depots.put("zeeschip", new Transporter[1]);
-        storageCrane = new ArrayList<StorageCrane>();
-        dockingCrane = new ArrayList<DockingCrane>();
+        storageCranes = new ArrayList<StorageCrane>();
+        dockingCranes = new ArrayList<DockingCrane>();
         trainCranes = new ArrayList<TrainCrane>();
         truckCranes = new ArrayList<TruckCrane>();
+        initStartModel();
     }
 
     /**
@@ -66,6 +67,53 @@ public class Model {
         return result;
     }
 
+    /**
+     * Create starting model
+     */
+    private void initStartModel() {
+        initAgv();
+        initDockingCrane();
+        initStorageCrane();
+        initTrainCrane();
+        initTruckCrane();
+    }
+
+    private void initAgv() {
+        for (int i = 0; i < 100; i++) {
+            Agv agv = new Agv();
+            agvs.add(agv);
+        }
+    }
+
+    private void initDockingCrane() {
+        for (int i = 0; i < 18; i++) {
+            DockingCrane dockingCrane = new DockingCrane();
+            dockingCranes.add(dockingCrane);
+
+        }
+    }
+
+    private void initStorageCrane() {
+        for (int i = 0; i < 12; i++) {
+            StorageCrane storageCrane = new StorageCrane();
+            storageCranes.add(storageCrane);
+        }
+    }
+
+    private void initTrainCrane() {
+        for (int i = 0; i < 4; i++) {
+            TrainCrane trainCrane = new TrainCrane();
+            trainCranes.add(trainCrane);
+        }
+    }
+
+    private void initTruckCrane() {
+        for (int i = 0; i < 20; i++) {
+            TruckCrane truckCrane = new TruckCrane();
+            truckCranes.add(truckCrane);
+        }
+    }
+
     public List<Container> getContainerPool() {
         return containerPool;
     }
@@ -75,11 +123,11 @@ public class Model {
     }
 
     public List<DockingCrane> getDockingCrane() {
-        return dockingCrane;
+        return dockingCranes;
     }
 
     public List<StorageCrane> getStorageCrane() {
-        return storageCrane;
+        return storageCranes;
     }
 
     public List<TrainCrane> getTrainCranes() {

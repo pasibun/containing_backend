@@ -41,7 +41,7 @@ public class Database {
 
             String sqlAGV = "CREATE TABLE agv "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " avg_counter int, "
+                    + " agv_counter int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlDockingCrane = "CREATE TABLE dockingcrane "
@@ -110,7 +110,7 @@ public class Database {
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(avg_counter) "
+                String sqlupdate = "INSERT INTO agv(agv_counter) "
                         + " VALUES('1')";
                 st.executeUpdate(sqlupdate);
 
