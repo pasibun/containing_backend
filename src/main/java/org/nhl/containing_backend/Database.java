@@ -86,108 +86,7 @@ public class Database {
             statement.executeUpdate(sqlTruckCrane);
 
             conn.close();
-            startValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Create starting value of the database
-     */
-    private void startValue() {
-        startingValueAGV();
-        stringValueDockingCrane();
-        stringValueStorageCrane();
-        stringValueTrainCrane();
-        stringValueTruckCrane();
-    }
-
-    private void startingValueAGV() {
-        try {
-            for (Agv agv : model.getAgvs()) {
-                Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-                Statement st = conn.createStatement();
-
-                String sqlupdate = "INSERT INTO agv(agv_counter) "
-                        + " VALUES('1')";
-                st.executeUpdate(sqlupdate);
-
-                conn.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stringValueDockingCrane() {
-        try {
-            for (DockingCrane dockingCrane : model.getDockingCrane()) {
-                Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-                Statement st = conn.createStatement();
-
-                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
-                        + " VALUES('0')";
-                st.executeUpdate(sqlupdate);
-
-                conn.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stringValueStorageCrane() {
-        try {
-            for (StorageCrane storageCrane : model.getStorageCrane()) {
-                Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-                Statement st = conn.createStatement();
-
-                String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
-                        + " VALUES('0')";
-                st.executeUpdate(sqlupdate);
-
-                conn.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stringValueTrainCrane() {
-        try {
-            for (TrainCrane trainCrane : model.getTrainCranes()) {
-                Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-                Statement st = conn.createStatement();
-
-                String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
-                        + " VALUES('0')";
-                st.executeUpdate(sqlupdate);
-
-                conn.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stringValueTruckCrane() {
-        try {
-            for (TruckCrane truckCrane : model.getTruckCranes()) {
-                Class.forName(driver).newInstance();
-                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-                Statement st = conn.createStatement();
-
-                String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
-                        + " VALUES('0')";
-                st.executeUpdate(sqlupdate);
-
-                conn.close();
-            }
+            initValues();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -235,6 +134,107 @@ public class Database {
 
             conn.close();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create starting value of the database
+     */
+    private void initValues() {
+        initAgv();
+        initDockingCrane();
+        initStorageCrane();
+        initTrainCrane();
+        initTruckCrane();
+    }
+
+    private void initAgv() {
+        try {
+            for (Agv agv : model.getAgvs()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO agv(agv_counter) "
+                        + " VALUES('1')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initDockingCrane() {
+        try {
+            for (DockingCrane dockingCrane : model.getDockingCrane()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initStorageCrane() {
+        try {
+            for (StorageCrane storageCrane : model.getStorageCrane()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initTrainCrane() {
+        try {
+            for (TrainCrane trainCrane : model.getTrainCranes()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initTruckCrane() {
+        try {
+            for (TruckCrane truckCrane : model.getTruckCranes()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
