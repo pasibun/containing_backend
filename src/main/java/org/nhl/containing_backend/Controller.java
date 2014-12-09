@@ -29,7 +29,7 @@ public class Controller implements Runnable {
     private Model model;
 
     public Controller() {
-        database = new Database();
+        database = new Database(model);
         server = new Server();
         model = new Model();
         running = false;
