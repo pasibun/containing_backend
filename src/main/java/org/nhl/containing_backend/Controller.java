@@ -35,7 +35,7 @@ public class Controller implements Runnable {
     private List<Message> messagePool;
 
     public Controller() {
-        database = new Database();
+        database = new Database(model);
         server = new Server();
         model = new Model();
         messagePool = new ArrayList<Message>();
