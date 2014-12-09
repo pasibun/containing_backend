@@ -34,11 +34,11 @@ public class Controller implements Runnable {
     private Model model;
     private List<Message> messagePool;
 
-    public Controller() {
-        database = new Database();
+    public Controller() {        
         server = new Server();
         model = new Model();
         messagePool = new ArrayList<Message>();
+        database = new Database(model);
         running = false;
     }
 

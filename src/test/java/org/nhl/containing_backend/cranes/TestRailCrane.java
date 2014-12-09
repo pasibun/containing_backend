@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestRailCrane {
-    private RailCrane railCrane;
+    private StorageCrane railCrane;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -30,7 +30,7 @@ public class TestRailCrane {
 
     @Before
     public void setUp() throws Exception {
-        railCrane = new RailCrane();
+        railCrane = new StorageCrane();
     }
 
     @Test

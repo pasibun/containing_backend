@@ -5,9 +5,11 @@
 package org.nhl.containing_backend;
 
 import java.sql.*;
-import java.util.List;
+import org.nhl.containing_backend.cranes.*;
 import org.nhl.containing_backend.models.Model;
+import org.nhl.containing_backend.models.Storage;
 import org.nhl.containing_backend.vehicles.Agv;
+import org.nhl.containing_backend.vehicles.Transporter;
 
 /**
  *
@@ -20,8 +22,11 @@ public class Database {
     private String driver = "com.mysql.jdbc.Driver";
     private String userName = "root";
     private String password = "";
+    private Model model;
 
-    public Database() {
+    public Database(Model model) {
+        this.model = model;
+        setup();
     }
 
     public void setup() {
@@ -30,55 +35,83 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement statement = conn.createStatement();
 
-            String delete = "DROP TABLE IF EXISTS agv, transporter, storage, railcrane, movablecrane";
+            String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storeagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
 
             String sqlAGV = "CREATE TABLE agv "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " agv_name VARCHAR(255), "
+                    + " agv_counter int, "
                     + " PRIMARY KEY ( id ))";
+
+            String sqlDockingCrane = "CREATE TABLE dockingcrane "
+                    + "(id INTEGER NULL AUTO_INCREMENT, "
+                    + " crane_container_processed int, "
+                    + " PRIMARY KEY ( id ))";
+
+            String sqlStorageCrane = "CREATE TABLE storagecrane "
+                    + "(id INTEGER NULL AUTO_INCREMENT, "
+                    + " crane_container_processed int, "
+                    + " PRIMARY KEY ( id ))";
+
+            String sqlTrainCrane = "CREATE TABLE traincrane "
+                    + "(id INTEGER NULL AUTO_INCREMENT, "
+                    + " crane_container_processed int, "
+                    + " PRIMARY KEY ( id ))";
+
+            String sqlTruckCrane = "CREATE TABLE truckcrane "
+                    + "(id INTEGER NULL AUTO_INCREMENT, "
+                    + " crane_container_processed int, "
+                    + " PRIMARY KEY ( id ))";
+
             String sqlTransporter = "CREATE TABLE transporter "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " transporter_name VARCHAR(255), "
+                    + " container_counter int, "
                     + " PRIMARY KEY ( id ))";
+
             String sqlStorage = "CREATE TABLE storage "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " container_name VARCHAR(255), "
-                    + " container_total INT(255), "
+                    + " container_total int, "
                     + " PRIMARY KEY ( id ))";
-            String sqlRailCrane = "CREATE TABLE railCrane "
-                    + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " railcrane_name VARCHAR(255), "
-                    + " PRIMARY KEY ( id ))";
-            String sqlMovableCrane = "CREATE TABLE movableCrane "
-                    + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " movablecrane_name VARCHAR(255), "
-                    + " PRIMARY KEY ( id ))";
+
+
 
             statement.executeUpdate(sqlAGV);
             statement.executeUpdate(sqlTransporter);
             statement.executeUpdate(sqlStorage);
-            statement.executeUpdate(sqlRailCrane);
-            statement.executeUpdate(sqlMovableCrane);
+            statement.executeUpdate(sqlDockingCrane);
+            statement.executeUpdate(sqlStorageCrane);
+            statement.executeUpdate(sqlTrainCrane);
+            statement.executeUpdate(sqlTruckCrane);
 
             conn.close();
+            startValue();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /*public void updateDatabaseAGV() {
+    /**
+     * Create starting value of the database
+     */
+    private void startValue() {
+        startingValueAGV();
+        stringValueDockingCrane();
+        stringValueStorageCrane();
+        stringValueTrainCrane();
+        stringValueTruckCrane();
+    }
+
+    private void startingValueAGV() {
         try {
-            model = new Model();
-            model.createAgv();
             for (Agv agv : model.getAgvs()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(agv_name) "
-                        + " VALUES('avg')";
+                String sqlupdate = "INSERT INTO agv(agv_counter) "
+                        + " VALUES('1')";
                 st.executeUpdate(sqlupdate);
 
                 conn.close();
@@ -86,6 +119,124 @@ public class Database {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
-    
+    }
+
+    private void stringValueDockingCrane() {
+        try {
+            for (DockingCrane dockingCrane : model.getDockingCrane()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueStorageCrane() {
+        try {
+            for (StorageCrane storageCrane : model.getStorageCrane()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueTrainCrane() {
+        try {
+            for (TrainCrane trainCrane : model.getTrainCranes()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueTruckCrane() {
+        try {
+            for (TruckCrane truckCrane : model.getTruckCranes()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update database for transporter
+     *
+     * @param transport
+     */
+    public void updateDatabaseTransporters(Transporter transport) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO transporter(id, transporter_name, container_counter) "
+                    + " VALUES('" + transport.getId() + "')"
+                    + " VALUES('" + transport.getType() + "')"
+                    + " VALUES('" + transport.getContainers().size() + "')";
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update database for storage
+     *
+     * @param storage
+     */
+    public void updateDatabaseStorage(Storage storage) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO transporter(container_total) "
+                    + " VALUES('" + storage.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
