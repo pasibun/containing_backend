@@ -140,6 +140,98 @@ public class Database {
     }
 
     /**
+     * Update Database for docking crane
+     *
+     * @param dockingCrane
+     */
+    public void updateDockingCrane(DockingCrane dockingCrane) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                    + " VALUES('" + dockingCrane.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update Database for storage crane
+     *
+     * @param storageCrane
+     */
+    public void updateStorageCrane(StorageCrane storageCrane) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
+                    + " VALUES('" + storageCrane.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update Database for train crane
+     *
+     * @param trainCrane
+     */
+    public void updateTrainCrane(TrainCrane trainCrane) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
+                    + " VALUES('" + trainCrane.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update Database for truck crane
+     *
+     * @param truckCrane
+     */
+    public void updateTruckCrane(TruckCrane truckCrane) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
+                    + " VALUES('" + truckCrane.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Create starting value of the database
      */
     private void initValues() {
