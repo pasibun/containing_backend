@@ -95,9 +95,89 @@ public class Database {
 
     private void startValue() {
         startingValueAGV();
+        stringValueDockingCrane();
+        stringValueStorageCrane();
+        stringValueTrainCrane();
+        stringValueTruckCrane();
     }
 
     private void startingValueAGV() {
+        try {
+            for (Agv agv : model.getAgvs()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
+                        + " VALUES('0')"
+                        + " VALUES('" + agv.getId() + "')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueDockingCrane() {
+        try {
+            for (Agv agv : model.getAgvs()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
+                        + " VALUES('0')"
+                        + " VALUES('" + agv.getId() + "')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueStorageCrane() {
+        try {
+            for (Agv agv : model.getAgvs()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
+                        + " VALUES('0')"
+                        + " VALUES('" + agv.getId() + "')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueTrainCrane() {
+        try {
+            for (Agv agv : model.getAgvs()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
+                        + " VALUES('0')"
+                        + " VALUES('" + agv.getId() + "')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stringValueTruckCrane() {
         try {
             for (Agv agv : model.getAgvs()) {
                 Class.forName(driver).newInstance();
@@ -130,7 +210,7 @@ public class Database {
             String sqlupdate = "INSERT INTO transporter(id, transporter_name, container_counter) "
                     + " VALUES('" + transport.getId() + "')"
                     + " VALUES('" + transport.getType() + "')"
-                    + " VALUES('" + transport.getContainers() + "')";
+                    + " VALUES('" + transport.getContainers().size() + "')";
             st.executeUpdate(sqlupdate);
 
             conn.close();
@@ -141,7 +221,8 @@ public class Database {
     }
 
     /**
-     *Update database for storage
+     * Update database for storage
+     *
      * @param storage
      */
     public void updateDatabaseStorage(Storage storage) {
