@@ -1,13 +1,15 @@
 package org.nhl.containing_backend.models;
 
 import java.util.ArrayList;
-import org.nhl.containing_backend.cranes.MoveableCrane;
-import org.nhl.containing_backend.cranes.RailCrane;
+import org.nhl.containing_backend.cranes.DockingCrane;
+import org.nhl.containing_backend.cranes.StorageCrane;
 import org.nhl.containing_backend.vehicles.Agv;
 import org.nhl.containing_backend.vehicles.Transporter;
 
 import java.util.HashMap;
 import java.util.List;
+import org.nhl.containing_backend.cranes.TrainCrane;
+import org.nhl.containing_backend.cranes.TruckCrane;
 
 /**
  * Representation of the state of the program.
@@ -19,8 +21,10 @@ public class Model {
     private List<Transporter> transporters;
     private HashMap<String, Transporter[]> depots;
     private Storage storage;
-    private List<RailCrane> railCranes;
-    private List<MoveableCrane> moveableCranes;
+    private List<StorageCrane> storageCrane;
+    private List<DockingCrane> dockingCrane;
+    private List<TrainCrane> trainCranes;
+    private List<TruckCrane> truckCranes;
 
     public Model() {
         containerPool = new ArrayList<Container>();
@@ -31,14 +35,18 @@ public class Model {
         depots.put("trein", new Transporter[1]);
         depots.put("binnenschip", new Transporter[2]);
         depots.put("zeeschip", new Transporter[1]);
-        railCranes = new ArrayList<RailCrane>();
-        moveableCranes = new ArrayList<MoveableCrane>();
+        storageCrane = new ArrayList<StorageCrane>();
+        dockingCrane = new ArrayList<DockingCrane>();
+        trainCranes = new ArrayList<TrainCrane>();
+        truckCranes = new ArrayList<TruckCrane>();
     }
 
     /**
-     * Figure out which sets of depots aren't currently occupied by a transporter.
+     * Figure out which sets of depots aren't currently occupied by a
+     * transporter.
      *
-     * @return A dictionary with the type as key, and a list of available depots (indices) for that type as value.
+     * @return A dictionary with the type as key, and a list of available depots
+     * (indices) for that type as value.
      */
     public HashMap<String, List<Integer>> availableDepots() {
         HashMap<String, List<Integer>> result = new HashMap<String, List<Integer>>();
@@ -66,12 +74,20 @@ public class Model {
         return agvs;
     }
 
-    public List<MoveableCrane> getMoveableCranes() {
-        return moveableCranes;
+    public List<DockingCrane> getDockingCrane() {
+        return dockingCrane;
     }
 
-    public List<RailCrane> getRailCranes() {
-        return railCranes;
+    public List<StorageCrane> getStorageCrane() {
+        return storageCrane;
+    }
+
+    public List<TrainCrane> getTrainCranes() {
+        return trainCranes;
+    }
+
+    public List<TruckCrane> getTruckCranes() {
+        return truckCranes;
     }
 
     public List<Transporter> getTransporters() {

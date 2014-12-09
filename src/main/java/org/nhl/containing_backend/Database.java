@@ -5,13 +5,11 @@
 package org.nhl.containing_backend;
 
 import java.sql.*;
-import java.util.List;
-import org.nhl.containing_backend.cranes.Crane;
+import org.nhl.containing_backend.cranes.*;
 import org.nhl.containing_backend.models.Model;
 import org.nhl.containing_backend.models.Storage;
 import org.nhl.containing_backend.vehicles.Agv;
 import org.nhl.containing_backend.vehicles.Transporter;
-import sun.rmi.transport.Transport;
 
 /**
  *
@@ -28,6 +26,7 @@ public class Database {
 
     public Database(Model model) {
         this.model = model;
+        setup();
     }
 
     public void setup() {
@@ -36,44 +35,43 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement statement = conn.createStatement();
 
-            String delete = "DROP TABLE IF EXISTS agv, transporter, storage, "
-                    + "dockingcrane, storeagecrane, traincrane, truckcrane";
+            String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storeagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
 
             String sqlAGV = "CREATE TABLE agv "
-                    + " avg_counter INTEGER(50), "
-                    + "(agv_id INTEGER(50)) ";
+                    + "(avg_counter INTEGER(50), "
+                    + "agv_id int) ";
 
             String sqlDockingCrane = "CREATE TABLE dockingcrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " crane_container_processed INTEGER(50), "
+                    + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlStorageCrane = "CREATE TABLE storeagecrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " crane_container_processed INTEGER(50), "
+                    + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlTrainCrane = "CREATE TABLE traincrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " crane_container_processed INTEGER(50), "
+                    + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlTruckCrane = "CREATE TABLE truckcrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " crane_container_processed INTEGER(50), "
+                    + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlTransporter = "CREATE TABLE transporter "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " transporter_name VARCHAR(255), "
-                    + " container_counter INTEGER(50), "
+                    + " container_counter int, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlStorage = "CREATE TABLE storage "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
-                    + " container_total INT(50), "
+                    + " container_total int, "
                     + " PRIMARY KEY ( id ))";
 
 
@@ -93,6 +91,9 @@ public class Database {
         }
     }
 
+    /**
+     * Create starting value of the database
+     */
     private void startValue() {
         startingValueAGV();
         stringValueDockingCrane();
@@ -122,14 +123,13 @@ public class Database {
 
     private void stringValueDockingCrane() {
         try {
-            for (Agv agv : model.getAgvs()) {
+            for (DockingCrane dockingCrane : model.getDockingCrane()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
-                        + " VALUES('0')"
-                        + " VALUES('" + agv.getId() + "')";
+                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                        + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
                 conn.close();
@@ -141,14 +141,13 @@ public class Database {
 
     private void stringValueStorageCrane() {
         try {
-            for (Agv agv : model.getAgvs()) {
+            for (StorageCrane storageCrane : model.getStorageCrane()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
-                        + " VALUES('0')"
-                        + " VALUES('" + agv.getId() + "')";
+                String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
+                        + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
                 conn.close();
@@ -160,14 +159,13 @@ public class Database {
 
     private void stringValueTrainCrane() {
         try {
-            for (Agv agv : model.getAgvs()) {
+            for (TrainCrane trainCrane : model.getTrainCranes()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
-                        + " VALUES('0')"
-                        + " VALUES('" + agv.getId() + "')";
+                String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
+                        + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
                 conn.close();
@@ -179,14 +177,13 @@ public class Database {
 
     private void stringValueTruckCrane() {
         try {
-            for (Agv agv : model.getAgvs()) {
+            for (TruckCrane truckCrane : model.getTruckCranes()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO agv(avg_counter, agv_id) "
-                        + " VALUES('0')"
-                        + " VALUES('" + agv.getId() + "')";
+                String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
+                        + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
                 conn.close();
