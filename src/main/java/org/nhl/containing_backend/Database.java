@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.List;
 import org.nhl.containing_backend.cranes.Crane;
 import org.nhl.containing_backend.models.Model;
+import org.nhl.containing_backend.models.Storage;
 import org.nhl.containing_backend.vehicles.Agv;
 import org.nhl.containing_backend.vehicles.Transporter;
 import sun.rmi.transport.Transport;
@@ -67,7 +68,6 @@ public class Database {
             String sqlTransporter = "CREATE TABLE transporter "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " transporter_name VARCHAR(255), "
-                    + " transporter_counter INTEGER(50), "
                     + " container_counter INTEGER(50), "
                     + " PRIMARY KEY ( id ))";
 
@@ -96,7 +96,8 @@ public class Database {
     private void startValue() {
         startingValueAGV();
     }
-    public void startingValueAGV() {
+
+    private void startingValueAGV() {
         try {
             for (Agv agv : model.getAgvs()) {
                 Class.forName(driver).newInstance();
@@ -116,23 +117,20 @@ public class Database {
     }
 
     /**
-     * Update de transporter in de database
-     * @param id
-     * @param name
-     * @param transportCounter
-     * @param containerCounter 
+     * Update database for transporter
+     *
+     * @param transport
      */
-    public void updateDatabaseTransporters(int id, String name, int transportCounter, int containerCounter) {
+    public void updateDatabaseTransporters(Transporter transport) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO transporter(id, transporter_name, transporter_counter, container_counter) "
-                    + " VALUES('" + id + "')"
-                    + " VALUES('" + name + "')"
-                    + " VALUES('" + transportCounter + "')"
-                    + " VALUES('" + containerCounter + "')";
+            String sqlupdate = "INSERT INTO transporter(id, transporter_name, container_counter) "
+                    + " VALUES('" + transport.getId() + "')"
+                    + " VALUES('" + transport.getType() + "')"
+                    + " VALUES('" + transport.getContainers() + "')";
             st.executeUpdate(sqlupdate);
 
             conn.close();
@@ -142,5 +140,25 @@ public class Database {
         }
     }
 
+    /**
+     *Update database for storage
+     * @param storage
+     */
+    public void updateDatabaseStorage(Storage storage) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
 
+            String sqlupdate = "INSERT INTO transporter(container_total) "
+                    + " VALUES('" + storage.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
