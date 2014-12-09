@@ -49,7 +49,7 @@ public class Database {
                     + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
 
-            String sqlStorageCrane = "CREATE TABLE storeagecrane "
+            String sqlStorageCrane = "CREATE TABLE storagecrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
