@@ -5,10 +5,10 @@ import org.nhl.containing_backend.models.Container;
 import java.util.ArrayDeque;
 
 /**
- * Crane that moves around, somehow. I don't know; don't ask me.
+ * Crane that moves around on the rails. Choo choo!
  */
-public class MoveableCrane extends Crane {
-    public MoveableCrane() {
+public class TrainCrane extends Crane {
+    public TrainCrane() {
         super();
         containers = new ArrayDeque[1][1];
         containers[0][0] = new ArrayDeque<Container>();
