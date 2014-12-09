@@ -18,7 +18,7 @@ import org.nhl.containing_backend.vehicles.Transporter;
 public class Database {
 
     private String url = "jdbc:mysql://localhost:3306/";
-    private String dbName = "demo";
+    private String dbName = "containing";
     private String driver = "com.mysql.jdbc.Driver";
     private String userName = "root";
     private String password = "";
@@ -32,9 +32,17 @@ public class Database {
     public void setup() {
         try {
             Class.forName(driver).newInstance();
-            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Connection conn = DriverManager.getConnection(url, userName, password);
             Statement statement = conn.createStatement();
 
+            String create = "CREATE DATABASE " + dbName;
+            try {
+                statement.executeUpdate(create);
+            } catch (Exception e) {
+            }
+            conn = DriverManager.getConnection(url + dbName, userName, password);
+            statement = conn.createStatement();
+            
             String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storeagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
@@ -74,8 +82,6 @@ public class Database {
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " container_total int, "
                     + " PRIMARY KEY ( id ))";
-
-
 
             statement.executeUpdate(sqlAGV);
             statement.executeUpdate(sqlTransporter);
