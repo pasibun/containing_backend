@@ -1,5 +1,6 @@
-package org.nhl.containing_backend.communication;
+package org.nhl.containing_backend.communication.messages;
 
+import org.nhl.containing_backend.communication.ProcessesMessage;
 import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.vehicles.Transporter;
 

@@ -1,18 +1,12 @@
 package org.nhl.containing_backend.xml;
 
-import org.nhl.containing_backend.communication.Message;
 import org.nhl.containing_backend.models.Container;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

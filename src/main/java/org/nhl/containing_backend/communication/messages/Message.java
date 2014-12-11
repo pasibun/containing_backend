@@ -1,5 +1,7 @@
-package org.nhl.containing_backend.communication;
+package org.nhl.containing_backend.communication.messages;
 
+
+import org.nhl.containing_backend.communication.ProcessesMessage;
 
 public abstract class Message {
     private static int counter = 0;

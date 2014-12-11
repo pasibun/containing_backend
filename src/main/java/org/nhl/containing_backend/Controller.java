@@ -1,6 +1,10 @@
 package org.nhl.containing_backend;
 
 import org.nhl.containing_backend.communication.*;
+import org.nhl.containing_backend.communication.messages.ArriveMessage;
+import org.nhl.containing_backend.communication.messages.CreateMessage;
+import org.nhl.containing_backend.communication.messages.Message;
+import org.nhl.containing_backend.communication.messages.SpeedMessage;
 import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.models.Model;
 import org.nhl.containing_backend.vehicles.Transporter;
