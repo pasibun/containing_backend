@@ -1,8 +1,5 @@
 package org.nhl.containing_backend.communication.messages;
 
-import org.nhl.containing_backend.communication.ProcessesMessage;
-import org.nhl.containing_backend.communication.messages.Message;
-
 /**
  *
  */
@@ -11,7 +8,7 @@ public class SpeedMessage extends Message {
     private float speed;
 
     public SpeedMessage(float speed) {
-        super();
+        super(Message.SPEED);
         this.speed = speed;
     }
 
@@ -26,8 +23,7 @@ public class SpeedMessage extends Message {
         return message;
     }
 
-    @Override
-    public ProcessesMessage getProcessor() {
-        return null;
+    public float getSpeed() {
+        return speed;
     }
 }

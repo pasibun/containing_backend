@@ -1,6 +1,5 @@
 package org.nhl.containing_backend.communication.messages;
 
-import org.nhl.containing_backend.communication.ProcessesMessage;
 import org.nhl.containing_backend.vehicles.Transporter;
 
 /**
@@ -12,7 +11,7 @@ public class ArriveMessage extends Message {
     private int depotIndex;
 
     public ArriveMessage(Transporter transporter, int depotIndex) {
-        super();
+        super(Message.ARRIVE);
         this.transporter = transporter;
         this.depotIndex = depotIndex;
     }
@@ -30,8 +29,11 @@ public class ArriveMessage extends Message {
         return message;
     }
 
-    @Override
-    public ProcessesMessage getProcessor() {
+    public Transporter getTransporter() {
         return transporter;
+    }
+
+    public int getDepotIndex() {
+        return depotIndex;
     }
 }

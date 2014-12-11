@@ -1,6 +1,5 @@
 package org.nhl.containing_backend.communication.messages;
 
-import org.nhl.containing_backend.communication.ProcessesMessage;
 import org.nhl.containing_backend.models.Container;
 import org.nhl.containing_backend.vehicles.Transporter;
 
@@ -12,7 +11,7 @@ public class CreateMessage extends Message {
     private Transporter transporter;
 
     public CreateMessage(Transporter transporter) {
-        super();
+        super(Message.CREATE);
         this.transporter = transporter;
     }
 
@@ -33,8 +32,7 @@ public class CreateMessage extends Message {
         return message;
     }
 
-    @Override
-    public ProcessesMessage getProcessor() {
+    public Transporter getTransporter() {
         return transporter;
     }
 }
