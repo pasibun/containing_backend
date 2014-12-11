@@ -22,8 +22,7 @@ import java.util.List;
  */
 public class Controller implements Runnable {
 
-    //Our project is SECOND_MULTIPLIER faster than real life
-    private static final int TIME_MULTIPLIER = 200;
+    private float speed;
     private boolean running;
     private Server server;
     private Date currentDate;
@@ -34,7 +33,8 @@ public class Controller implements Runnable {
     private Model model;
     private List<Message> messagePool;
 
-    public Controller() {        
+    public Controller() {
+        speed = 200;
         server = new Server();
         model = new Model();
         messagePool = new ArrayList<Message>();
@@ -49,6 +49,7 @@ public class Controller implements Runnable {
         model.getContainerPool().addAll(createContainersFromXmlResource());
         startServer();
         waitForServerConnection();
+        updateSpeed(speed);
         initDate(); // Keep this as CLOSE to `while (running)` as possible.
         running = true;
         while (running) {
@@ -81,6 +82,13 @@ public class Controller implements Runnable {
         running = false;
     }
 
+    public void updateSpeed(float speed) {
+        this.speed = speed;
+        SpeedMessage message = new SpeedMessage(speed);
+        messagePool.add(message);
+        server.writeMessage(message.generateXml());
+    }
+
     /**
      * Initialises the simulation date.
      */
@@ -107,7 +115,7 @@ public class Controller implements Runnable {
         long curTime = System.currentTimeMillis();
         int deltaTime = (int) (curTime - lastTime);
         sumTime += deltaTime;
-        cal.add(Calendar.MILLISECOND, deltaTime * TIME_MULTIPLIER);
+        cal.add(Calendar.MILLISECOND, (int) (deltaTime * speed));
         currentDate = cal.getTime();
         lastTime = curTime;
     }
@@ -396,7 +404,11 @@ public class Controller implements Runnable {
         }
 
         ProcessesMessage processor = message.getProcessor();
-        processor.setProcessingMessageId(-1);
+        try {
+            processor.setProcessingMessageId(-1);
+        } catch (NullPointerException e) {
+            // Not every message truly has a processor.
+        }
         // Maybe set occupied to false as well? Not sure yet.
         messagePool.remove(message);
     }
