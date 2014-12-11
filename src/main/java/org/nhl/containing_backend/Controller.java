@@ -87,7 +87,6 @@ public class Controller implements Runnable {
     }
 
     public void updateSpeed(float speed) {
-        this.speed = speed;
         SpeedMessage message = new SpeedMessage(speed);
         messagePool.add(message);
         server.writeMessage(message.generateXml());
@@ -390,8 +389,7 @@ public class Controller implements Runnable {
             throw new Exception(xmlMessage + " is not a valid message");
         }
 
-        Element line = (Element) nodes.item(0);
-        int id = Integer.parseInt(Xml.getCharacterDataFromElement(line));
+        int id = Integer.parseInt(nodes.item(0).getTextContent());
 
         Message message = null;
         boolean nobreak = true;
@@ -407,14 +405,30 @@ public class Controller implements Runnable {
             throw new Exception(id + " doesn't exist");
         }
 
-        ProcessesMessage processor = message.getProcessor();
-        try {
-            processor.setProcessingMessageId(-1);
-        } catch (NullPointerException e) {
-            // Not every message truly has a processor.
+        switch (message.getMessageType()) {
+            case Message.CREATE:
+                handleOkCreateMessage((CreateMessage) message);
+                break;
+            case Message.ARRIVE:
+                handleOkArriveMessage((ArriveMessage) message);
+                break;
+            case Message.SPEED:
+                handleOkSpeedMessage((SpeedMessage) message);
+                break;
         }
-        // Maybe set occupied to false as well? Not sure yet.
         messagePool.remove(message);
+    }
+
+    private void handleOkCreateMessage(CreateMessage message) {
+        message.getTransporter().setProcessingMessageId(-1);
+    }
+
+    private void handleOkArriveMessage(ArriveMessage message) {
+        message.getTransporter().setProcessingMessageId(-1);
+    }
+
+    private void handleOkSpeedMessage(SpeedMessage message) {
+        this.speed = message.getSpeed();
     }
 
     @Override
