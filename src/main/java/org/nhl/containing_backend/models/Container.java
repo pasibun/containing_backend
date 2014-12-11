@@ -72,30 +72,6 @@ public class Container {
     }
 
     /**
-     * Fixes all (known) errors from XML input.
-     */
-    public void finalise() {
-        if (getSpawnX() == 1 && getSpawnY() == 0 && getSpawnZ() == 0 && arrivalTransportType.equals("vrachtauto")) {
-            setSpawnX(0);
-        }
-    }
-
-    public String toXml() {
-        String message = "";
-        message += "<Container>";
-
-        message += "<iso>" + iso + "</iso>";
-        message += "<owner>" + owner + "</owner>";
-        message += "<xLoc>" + getSpawnX() + "</xLoc>";
-        message += "<yLoc>" + getSpawnY() + "</yLoc>";
-        message += "<zLoc>" + getSpawnZ() + "</zLoc>";
-
-        message += "</Container>";
-
-        return message;
-    }
-
-    /**
      * Calculate the metric equivalent of the feet-and-inches input.
      *
      * @param value String value in feet and inches
@@ -126,6 +102,30 @@ public class Container {
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTime();
+    }
+
+    /**
+     * Fixes all (known) errors from XML input.
+     */
+    public void finalise() {
+        if (getSpawnX() == 1 && getSpawnY() == 0 && getSpawnZ() == 0 && arrivalTransportType.equals("vrachtauto")) {
+            setSpawnX(0);
+        }
+    }
+
+    public String toXml() {
+        String message = "";
+        message += "<Container>";
+
+        message += "<iso>" + iso + "</iso>";
+        message += "<owner>" + owner + "</owner>";
+        message += "<xLoc>" + getSpawnX() + "</xLoc>";
+        message += "<yLoc>" + getSpawnY() + "</yLoc>";
+        message += "<zLoc>" + getSpawnZ() + "</zLoc>";
+
+        message += "</Container>";
+
+        return message;
     }
 
     public Date getArrivalDate() {
