@@ -422,6 +422,9 @@ public class Controller implements Runnable {
             case Message.CRANE:
                 handleOkCraneMessage((CraneMessage) message);
                 break;
+            case Message.MOVE:
+                handleOkMoveMessage((CraneMessage) message);
+                break;
         }
         messagePool.remove(message);
     }
@@ -441,6 +444,10 @@ public class Controller implements Runnable {
     private void handleOkCraneMessage(CraneMessage message) {
         message.getTransporter().setProcessingMessageId(-1);
         message.getAgv().setProcessingMessageId(-1);
+    }
+
+    private void handleOkMoveMessage(CraneMessage message) {
+
     }
 
     @Override
