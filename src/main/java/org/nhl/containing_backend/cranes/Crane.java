@@ -9,10 +9,13 @@ import java.awt.*;
  * Picks up containers and drops them.
  */
 public abstract class Crane extends ContainerHolder {
-    private Point point = new Point(0, 0);
 
-    public Crane() {
+    private Point point = new Point(0, 0);
+    String type;
+
+    public Crane(String type) {
         super();
+        this.type = type;
     }
 
     /**
@@ -41,4 +44,9 @@ public abstract class Crane extends ContainerHolder {
     public Container getContainer() {
         return containers[0][0].peek();
     }
+
+    public String getType() {
+        return type;
+    }
+    
 }

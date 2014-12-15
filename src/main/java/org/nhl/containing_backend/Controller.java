@@ -20,6 +20,7 @@ import java.awt.*;
 import java.io.StringReader;
 import java.util.*;
 import java.util.List;
+import org.nhl.containing_backend.communication.messages.CraneMessage;
 
 /**
  * Main controller class.
@@ -111,8 +112,9 @@ public class Controller implements Runnable {
     /**
      * Updates the simulation date.
      * <p/>
-     * Compares the time since the last function call to the current time. This is the delta time.
-     * The delta time is added to the simulation date, multiplied by the specified TIME_MULTIPLIER.
+     * Compares the time since the last function call to the current time. This
+     * is the delta time. The delta time is added to the simulation date,
+     * multiplied by the specified TIME_MULTIPLIER.
      */
     private void updateDate() {
         long curTime = System.currentTimeMillis();
@@ -168,7 +170,8 @@ public class Controller implements Runnable {
     }
 
     /**
-     * Pops the containers from the pool that are set to be dispatched for the current date.
+     * Pops the containers from the pool that are set to be dispatched for the
+     * current date.
      */
     private List<Container> containersForCurrentDate() {
         List<Container> result = new ArrayList<Container>();
@@ -208,7 +211,8 @@ public class Controller implements Runnable {
     }
 
     /**
-     * Distributes the provided containers over a list of newly generated transporters.
+     * Distributes the provided containers over a list of newly generated
+     * transporters.
      * </p>
      * WARNING: Method is butt-ugly.
      *
@@ -329,16 +333,16 @@ public class Controller implements Runnable {
     }
 
     /**
-     * From the pool of transporters that are currently out of bounds, assign as much of them as possible to a depot
-     * that isn't currently being used.
+     * From the pool of transporters that are currently out of bounds, assign as
+     * much of them as possible to a depot that isn't currently being used.
      */
     private void assignTransportersToDepots() {
         HashMap<String, List<Integer>> availableDepots = model.availableDepots();
 
         for (Transporter transporter : model.getTransporters()) {
             // If the transporter is doing nothing, has finished processing its message, and there is a free depot.
-            if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1 &&
-                    !availableDepots.get(transporter.getType()).isEmpty()) {
+            if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1
+                    && !availableDepots.get(transporter.getType()).isEmpty()) {
                 // In the array of depots for the type of the transporter, set the first available depot to the current
                 // transporter.
                 int spot = availableDepots.get(transporter.getType()).remove(0);
@@ -354,7 +358,8 @@ public class Controller implements Runnable {
     }
 
     /**
-     * Processes all received OK messages. Removes them from the pool and sets the message processors to -1.
+     * Processes all received OK messages. Removes them from the pool and sets
+     * the message processors to -1.
      */
     private void handleOkMessages() {
         List<String> xmlMessages = new ArrayList<String>();
@@ -374,7 +379,6 @@ public class Controller implements Runnable {
             }
         }
     }
-
 
     private void handleOkMessage(String xmlMessage) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -415,6 +419,9 @@ public class Controller implements Runnable {
             case Message.SPEED:
                 handleOkSpeedMessage((SpeedMessage) message);
                 break;
+            case Message.CRANE:
+                handleOkCraneMessage((CraneMessage) message);
+                break;
         }
         messagePool.remove(message);
     }
@@ -429,6 +436,11 @@ public class Controller implements Runnable {
 
     private void handleOkSpeedMessage(SpeedMessage message) {
         this.speed = message.getSpeed();
+    }
+
+    private void handleOkCraneMessage(CraneMessage message) {
+        message.getTransporter().setProcessingMessageId(-1);
+        message.getAgv().setProcessingMessageId(-1);
     }
 
     @Override
