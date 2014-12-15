@@ -117,7 +117,7 @@ public class Container {
         String message = "";
         message += "<Container>";
 
-        message += "<iso>" + iso + "</iso>";
+        message += "<containernr>" + number + "</containernr>";
         message += "<owner>" + owner + "</owner>";
         message += "<xLoc>" + getSpawnX() + "</xLoc>";
         message += "<yLoc>" + getSpawnY() + "</yLoc>";

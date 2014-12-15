@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestRailCrane {
-    private StorageCrane railCrane;
+    /**private StorageCrane railCrane;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -66,4 +66,6 @@ public class TestRailCrane {
     public void tearDown() throws Exception {
         // Code executed after each test
     }
+    */
+    
 }

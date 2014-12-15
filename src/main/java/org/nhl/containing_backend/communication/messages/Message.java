@@ -5,7 +5,8 @@ public abstract class Message {
     public static final int CREATE = 1;
     public static final int ARRIVE = 2;
     public static final int SPEED = 3;
-
+    public static final int CRANE = 4;
+    
     private static int counter = 0;
     private final int messageType;
     private int id;

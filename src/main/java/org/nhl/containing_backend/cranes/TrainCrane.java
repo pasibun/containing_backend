@@ -8,8 +8,9 @@ import java.util.ArrayDeque;
  * Crane that moves around on the rails. Choo choo!
  */
 public class TrainCrane extends Crane {
-    public TrainCrane() {
-        super();
+
+    public TrainCrane(String type) {
+        super(type);
         containers = new ArrayDeque[1][1];
         containers[0][0] = new ArrayDeque<Container>();
     }

@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
  * Basic empty test template for unit tests.
  */
 public class TestMoveableCrane {
+    /**
     private DockingCrane moveableCrane;
 
     @Rule
@@ -66,4 +67,6 @@ public class TestMoveableCrane {
     public void tearDown() throws Exception {
         // Code executed after each test
     }
+    * 
+    */
 }
