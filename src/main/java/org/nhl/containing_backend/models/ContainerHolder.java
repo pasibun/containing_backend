@@ -111,6 +111,11 @@ public abstract class ContainerHolder implements ProcessesMessage {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+
     @Override
     public int getProcessingMessageId() {
         return processingMessageId;

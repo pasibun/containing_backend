@@ -13,7 +13,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
@@ -21,6 +20,9 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 import org.nhl.containing_backend.communication.messages.CraneMessage;
+import org.nhl.containing_backend.cranes.Crane;
+import org.nhl.containing_backend.models.Storage;
+import org.nhl.containing_backend.vehicles.Agv;
 
 /**
  * Main controller class.
@@ -358,6 +360,132 @@ public class Controller implements Runnable {
     }
 
     /**
+     * Er moet nog een functie gemaakt worden die de juiste Storage pakt findStorage(Transporter transporter)
+     * Er moet nog een functie gemaakt worden die de juiste agv pakt findAgv()
+     *
+     * @param message
+     */
+    private void moveCranes(Message message) {
+        if (message.getMessageType() == message.ARRIVE) {
+            ArriveMessage arrivedMessage = (ArriveMessage) message;
+            if (arrivedMessage.getTransporter().getType().equals("vrachtauto")) {
+                int craneID = arrivedMessage.getDepotIndex();
+                Crane getCrane = findCrane("vrachtauto", craneID);
+
+                CraneMessage cranemessage = new CraneMessage(getCrane,
+                        arrivedMessage.getTransporter(), findAgv(),
+                        findContainer(arrivedMessage.getTransporter().
+                        getContainers()), null);
+
+                messagePool.add(cranemessage);
+                //getCrane.setProcessingMessageId(cranemessage.getId());
+                server.writeMessage(cranemessage.generateXml());
+            }
+            if (arrivedMessage.getTransporter().getType().equals("trein")) {
+                int craneID = arrivedMessage.getDepotIndex();
+                Crane getCrane = findCrane("trein", craneID);
+
+                CraneMessage cranemessage = new CraneMessage(getCrane,
+                        arrivedMessage.getTransporter(), findAgv(),
+                        findContainer(arrivedMessage.getTransporter().
+                        getContainers()), null);
+
+                messagePool.add(cranemessage);
+                //getCrane.setProcessingMessageId(cranemessage.getId());
+                server.writeMessage(cranemessage.generateXml());
+            }
+            if (arrivedMessage.getTransporter().getType().equals("binnenschip")) {
+                int craneID = arrivedMessage.getDepotIndex();
+                Crane getCrane = findCrane("binnenschip", craneID);
+
+                CraneMessage cranemessage = new CraneMessage(getCrane,
+                        arrivedMessage.getTransporter(), findAgv(),
+                        findContainer(arrivedMessage.getTransporter().
+                        getContainers()), null);
+
+                messagePool.add(cranemessage);
+                //getCrane.setProcessingMessageId(cranemessage.getId());
+                server.writeMessage(cranemessage.generateXml());
+            }
+            if (arrivedMessage.getTransporter().getType().equals("zeeschip")) {
+                int craneID = arrivedMessage.getDepotIndex();
+                Crane getCrane = findCrane("zeeschip", craneID);
+
+                CraneMessage cranemessage = new CraneMessage(getCrane,
+                        arrivedMessage.getTransporter(), findAgv(),
+                        findContainer(arrivedMessage.getTransporter().
+                        getContainers()), null);
+
+                messagePool.add(cranemessage);
+                //getCrane.setProcessingMessageId(cranemessage.getId());
+                server.writeMessage(cranemessage.generateXml());
+            }
+        }
+    }
+
+    private Crane findCrane(String transporttype, int craneId) {
+        if (transporttype.equals("vrachtauto")) {
+            for (Crane crane : model.getTruckCranes()) {
+                if (crane.getId() == craneId) {
+                    return crane;
+                }
+            }
+        }
+        if (transporttype.equals("trein")) {
+            for (Crane crane : model.getTrainCranes()) {
+                if (crane.getId() == craneId) {
+                    return crane;
+                }
+            }
+        }
+        if (transporttype.equals("binnenschip")) {
+            for (Crane crane : model.getDockingCrane()) {
+                if (crane.getId() == craneId) {
+                    return crane;
+                }
+            }
+        }
+        if (transporttype.equals("zeeschip")) {
+            for (Crane crane : model.getDockingCrane()) {
+                if (crane.getId() == craneId) {
+                    return crane;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Agv findAgv() {
+
+        return null;
+    }
+
+    private Container findContainer(List<Container> containers) {
+        Date firstDate = null;
+        for (Container container : containers) {
+            if (firstDate == null) {
+                firstDate = container.getDepartureDate();
+            } else if (firstDate.after(container.getDepartureDate())) {
+                firstDate = container.getDepartureDate();
+            }
+        }
+        for (Container container : containers) {
+            if (container.getDepartureDate().equals(firstDate)) {
+                return container;
+            }
+        }
+        return null;
+    }
+
+    private Storage findStorage(Transporter transporter) {
+        if (transporter == null) {
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Processes all received OK messages. Removes them from the pool and sets
      * the message processors to -1.
      */
@@ -403,8 +531,10 @@ public class Controller implements Runnable {
                 message = message_;
                 nobreak = false;
                 break;
-            }
+            }            
         }
+        moveCranes(message);
+
         if (nobreak) {
             throw new Exception(id + " doesn't exist");
         }
@@ -439,8 +569,10 @@ public class Controller implements Runnable {
     }
 
     private void handleOkCraneMessage(CraneMessage message) {
-        message.getTransporter().setProcessingMessageId(-1);
-        message.getAgv().setProcessingMessageId(-1);
+
+        message.getCrane().setProcessingMessageId(-1);
+
+        message.getStorage().setProcessingMessageId(-1);
     }
 
     @Override

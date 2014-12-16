@@ -12,6 +12,7 @@ public abstract class Crane extends ContainerHolder {
 
     private Point point = new Point(0, 0);
     String type;
+    int id;
 
     public Crane(String type) {
         super();
@@ -47,6 +48,5 @@ public abstract class Crane extends ContainerHolder {
 
     public String getType() {
         return type;
-    }
-    
+    }    
 }
