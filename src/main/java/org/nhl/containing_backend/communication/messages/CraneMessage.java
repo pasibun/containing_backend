@@ -30,13 +30,19 @@ public class CraneMessage extends Message {
     public String generateXml() {
         String message = "";
         message += "<id>" + getId() + "</id>";
-        message += "<CRANE>";
-        message += "<Crane type=\"" + crane.getType() + "\" identifier=\"" + crane.getId() + "\"></Crane>";
-        message += "<Transporter type=\"" + transporter.getType() + "\" identifier=\"" + transporter.getId() + "\"></Transporter>";
+        message += "<Crane>";
+        
+        message += "<CraneType>" + crane.getType() + "</Crane>";
+        message += "<CraneId>"+ crane.getId() + "</CraneId>";
+        
+        message += "<TransporterType>" + transporter.getType() + "</Transporter>";
+        message += "<TransporterId>"+ transporter.getId() + "</TransporterId>";
+        
         //message += "<Storage>" + storage.getId() + "</Storage>";
         //message += "<AgvId>" + agv.getId() + "</AgvId>";
+        
         message += "<Container>" + container.getNumber() + "</Container>";
-        message += "</CRANE>";
+        message += "</Crane>";
 
         return message;
     }

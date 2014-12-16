@@ -20,6 +20,8 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.List;
 import org.nhl.containing_backend.communication.messages.CraneMessage;
+import org.nhl.containing_backend.communication.messages.DepartMessage;
+import org.nhl.containing_backend.communication.messages.MoveMessage;
 import org.nhl.containing_backend.cranes.Crane;
 import org.nhl.containing_backend.models.Storage;
 import org.nhl.containing_backend.vehicles.Agv;
@@ -360,8 +362,9 @@ public class Controller implements Runnable {
     }
 
     /**
-     * Er moet nog een functie gemaakt worden die de juiste Storage pakt findStorage(Transporter transporter)
-     * Er moet nog een functie gemaakt worden die de juiste agv pakt findAgv()
+     * Er moet nog een functie gemaakt worden die de juiste Storage pakt
+     * findStorage(Transporter transporter) Er moet nog een functie gemaakt
+     * worden die de juiste agv pakt findAgv()
      *
      * @param message
      */
@@ -531,7 +534,7 @@ public class Controller implements Runnable {
                 message = message_;
                 nobreak = false;
                 break;
-            }            
+            }
         }
         moveCranes(message);
 
@@ -551,6 +554,12 @@ public class Controller implements Runnable {
                 break;
             case Message.CRANE:
                 handleOkCraneMessage((CraneMessage) message);
+                break;
+            case Message.MOVE:
+                handleOkMoveMessage((MoveMessage) message);
+                break;
+            case Message.DEPART:
+                handleOkDepartMessage((DepartMessage) message);
                 break;
         }
         messagePool.remove(message);
@@ -573,6 +582,14 @@ public class Controller implements Runnable {
         message.getCrane().setProcessingMessageId(-1);
 
         message.getStorage().setProcessingMessageId(-1);
+    }
+
+    private void handleOkMoveMessage(MoveMessage message) {
+
+    }
+
+    private void handleOkDepartMessage(DepartMessage message) {
+
     }
 
     @Override
