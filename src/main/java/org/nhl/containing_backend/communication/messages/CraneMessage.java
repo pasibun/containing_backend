@@ -32,10 +32,10 @@ public class CraneMessage extends Message {
         message += "<id>" + getId() + "</id>";
         message += "<Crane>";
         
-        message += "<CraneType>" + crane.getType() + "</Crane>";
+        message += "<CraneType>" + crane.getType() + "</CraneType>";
         message += "<CraneId>"+ crane.getId() + "</CraneId>";
         
-        message += "<TransporterType>" + transporter.getType() + "</Transporter>";
+        message += "<TransporterType>" + transporter.getType() + "</TransporterType>";
         message += "<TransporterId>"+ transporter.getId() + "</TransporterId>";
         
         //message += "<Storage>" + storage.getId() + "</Storage>";
