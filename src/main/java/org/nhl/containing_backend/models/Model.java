@@ -88,6 +88,7 @@ public class Model {
     private void initDockingCrane() {
         for (int i = 0; i < 18; i++) {
             DockingCrane dockingCrane = new DockingCrane("DockingCrane");
+            dockingCrane.setId(i);
             dockingCranes.add(dockingCrane);
 
         }
@@ -96,6 +97,7 @@ public class Model {
     private void initStorageCrane() {
         for (int i = 0; i < 12; i++) {
             StorageCrane storageCrane = new StorageCrane("StorageCrane");
+            storageCrane.setId(i);
             storageCranes.add(storageCrane);
         }
     }
@@ -103,6 +105,7 @@ public class Model {
     private void initTrainCrane() {
         for (int i = 0; i < 4; i++) {
             TrainCrane trainCrane = new TrainCrane("TrainCrane");
+            trainCrane.setId(i);
             trainCranes.add(trainCrane);
         }
     }
@@ -110,6 +113,7 @@ public class Model {
     private void initTruckCrane() {
         for (int i = 0; i < 20; i++) {
             TruckCrane truckCrane = new TruckCrane("TruckCrane");
+            truckCrane.setId(i);
             truckCranes.add(truckCrane);
         }
     }
