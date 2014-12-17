@@ -43,7 +43,7 @@ public class Controller implements Runnable {
     private List<Message> messagePool;
 
     public Controller() {
-        speed = 200;
+        speed = 1;
         server = new Server();
         model = new Model();
         messagePool = new ArrayList<Message>();
@@ -479,6 +479,17 @@ public class Controller implements Runnable {
         }
         return null;
     }
+    
+    private Container findContainerByNumber(List<Container> containers, int containerNumber)
+    {
+        for(Container con : containers)
+        {
+            if(con.getNumber() == containerNumber)
+                return con;
+        }
+        
+        return null;
+    }
 
     private Storage findStorage(Transporter transporter) {
         if (transporter == null) {
@@ -494,7 +505,6 @@ public class Controller implements Runnable {
      * @param message
      */
     private void departTransporter(Message message) {
-        if (message.getMessageType() == message.CRANE) {
             CraneMessage craneMessage = (CraneMessage) message;
             if (craneMessage.getTransporter().getContainers().isEmpty()) {
                 DepartMessage departMessage = new DepartMessage(craneMessage.getTransporter());
@@ -502,7 +512,7 @@ public class Controller implements Runnable {
                 craneMessage.getTransporter().setProcessingMessageId(departMessage.getId());
                 server.writeMessage(departMessage.generateXml());
             }
-        }
+        
     }
 
     private void moveAgv(Message message) {
@@ -557,7 +567,7 @@ public class Controller implements Runnable {
             }
         }
         moveCranes(message);
-        departTransporter(message);
+        
         if (nobreak) {
             throw new Exception(id + " doesn't exist");
         }
@@ -599,6 +609,11 @@ public class Controller implements Runnable {
 
     private void handleOkCraneMessage(CraneMessage message) {
         message.getCrane().setProcessingMessageId(-1);
+        
+        Container con = findContainerByNumber(message.getTransporter().getContainers(),message.getContainer().getNumber());
+        Container junk = message.getTransporter().popContainerFromDeque(con);
+        
+        departTransporter(message);
     }
 
     private void handleOkMoveMessage(MoveMessage message) {

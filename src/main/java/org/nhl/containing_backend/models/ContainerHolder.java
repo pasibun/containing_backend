@@ -28,7 +28,7 @@ public abstract class ContainerHolder implements ProcessesMessage {
     // Deque is used for the sole purpose of being objectively better than Stacks (the Java documentation has deprecated
     // Stacks and recommends Deques instead).
 
-    protected Deque<Container>[][] containers;
+    protected ArrayDeque<Container>[][] containers;
     protected int containerAmountLimit = 1;
     private boolean occupied = false;  // Whether the ContainerHolder is currently DOING something. This can remain true
     // even if no message is currently being processed.
@@ -52,7 +52,7 @@ public abstract class ContainerHolder implements ProcessesMessage {
      * @param container Provided container.
      */
     protected void putContainer(Point point, Container container) {
-        Deque<Container> deque = containers[point.x][point.y];
+        ArrayDeque<Container> deque = containers[point.x][point.y];
         if (deque.size() == containerAmountLimit) {
             throw new FullStackException();
         }
@@ -102,7 +102,22 @@ public abstract class ContainerHolder implements ProcessesMessage {
         }
         return result;
     }
-
+    
+    public Container popContainerFromDeque(Container con)
+    {
+        for (int i = 0; i < containers.length; i++) {
+            for (int j = 0; j < containers[i].length; j++) {
+                for (Container container : containers[i][j]) {
+                    if(con == container)
+                    {
+                        containers[i][j].remove(con);
+                        return container;
+                    }
+                }
+            }
+        }
+        return null;
+    }
     public boolean isOccupied() {
         return occupied;
     }
