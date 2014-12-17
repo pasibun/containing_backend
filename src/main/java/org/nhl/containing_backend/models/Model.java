@@ -25,6 +25,9 @@ public class Model {
     private List<DockingCrane> dockingCranes;
     private List<TrainCrane> trainCranes;
     private List<TruckCrane> truckCranes;
+    private final int MAXAGV = 144;
+    private List<Float> agvParkingX;
+    private List<Float> agvParkingY;
 
     public Model() {
         containerPool = new ArrayList<Container>();
@@ -71,63 +74,34 @@ public class Model {
      * Create starting model
      */
     private void initStartModel() {
-        initAgvTrain();
-        initAgvLorry();
-        initAgvShip();
         initDockingCrane();
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
+        placeAgv();
     }
 
-    /*
-     * Spawn avg on ship storage deck
+    /**
+     * Spawn agv on given parkingspace and add it to agv list
+     *
+     * @param id used to place agv on the given parkingspace
      */
-    private void initAgvShip() {
-        int agvStartPoint = -167;
-        for (int i = 1; i < 29; i++) {
-            if (i % 7 != 0) {
-                Agv agv = new Agv();
-                agv.setX(agvStartPoint + (4.7f * i));
-                agv.setY(-122);
-                agvs.add(agv);
-            } else {
-                agvStartPoint += 17;
-            }
+    private void agvToParking(int id) {
+        try {
+            Agv agv = new Agv();
+            float agvX = agvParkingX.get(id);
+            float agvY = agvParkingY.get(id);
+            agv.setX(agvX);
+            agv.setY(agvY);
+            agvs.add(agv);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Error: Max parking id is 143, you used " + id);
         }
     }
-    /*
-     * Spawn avg on train storage deck
-     */
 
-    private void initAgvTrain() {
-        int agvStartPoint = -18;
-        for (int i = 29; i < 57; i++) {
-            if (i % 7 != 0) {
-                Agv agv = new Agv();
-                agv.setX(agvStartPoint + (4.7f * i));
-                agv.setY(-122);
-                agvs.add(agv);
-            } else {
-                agvStartPoint += 17;
-            }
-        }
-    }
-    /*
-     * Spawn avg on lorry storage deck
-     */
-
-    private void initAgvLorry() {
-        int agvStartPoint = 100;
-        for (int i = 57; i < 85; i++) {
-            if (i % 7 != 0) {
-                Agv agv = new Agv();
-                agv.setX(agvStartPoint + (4.7f * i));
-                agv.setY(-122);
-                agvs.add(agv);
-            } else {
-                agvStartPoint += 17;
-            }
+    private void placeAgv() {
+        for (int i = 0; i < MAXAGV; i++) {
+            agvToParking(i);
         }
     }
 
