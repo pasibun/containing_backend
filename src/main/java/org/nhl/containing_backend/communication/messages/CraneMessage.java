@@ -38,8 +38,8 @@ public class CraneMessage extends Message {
         message += "<TransporterType>" + transporter.getType() + "</TransporterType>";
         message += "<TransporterId>"+ transporter.getId() + "</TransporterId>";
         
-        //message += "<Storage>" + storage.getId() + "</Storage>";
-        //message += "<AgvId>" + agv.getId() + "</AgvId>";
+        message += "<Storage>" + 1 + "</Storage>";
+        message += "<AgvId>" + 1 + "</AgvId>";
         
         message += "<Container>" + container.getNumber() + "</Container>";
         message += "</Crane>";
