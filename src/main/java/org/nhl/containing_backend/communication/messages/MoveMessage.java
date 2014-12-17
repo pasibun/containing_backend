@@ -1,5 +1,7 @@
 package org.nhl.containing_backend.communication.messages;
 
+import org.nhl.containing_backend.Dijkstra;
+import org.nhl.containing_backend.vehicles.Agv;
 import org.nhl.containing_backend.vehicles.Transporter;
 
 /**
@@ -7,12 +9,14 @@ import org.nhl.containing_backend.vehicles.Transporter;
  */
 public class MoveMessage extends Message {
 
-    private Transporter transporter;
+    private Agv agv;
+    private Dijkstra dijkstra;
     private int depotIndex;
 
-    public MoveMessage(Transporter transporter, int depotIndex) {
+    public MoveMessage(Agv agv, Dijkstra dijkstra, int depotIndex) {
         super(Message.MOVE);
-        this.transporter = transporter;
+        this.agv = agv;
+        this.dijkstra = dijkstra;
         this.depotIndex = depotIndex;
     }
 
@@ -20,14 +24,21 @@ public class MoveMessage extends Message {
         String message = "";
         message += "<id>" + getId() + "</id>";
         message += "<Move>";
+        message += "<currentLocationX>" + agv.getX() + "</currentLocationX>";
+        message += "<currentLocationY>" + agv.getY() + "</currentLocationY>";
+        message += "<Dijkstra>";
 
         message += "</Move>";
 
         return message;
     }
 
-    public Transporter getTransporter() {
-        return transporter;
+    public Agv getAgv() {
+        return agv;
+    }
+
+    public Dijkstra getDijkstra() {
+        return dijkstra;
     }
 
     public int getDepotIndex() {
