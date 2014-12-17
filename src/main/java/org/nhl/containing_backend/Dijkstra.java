@@ -28,16 +28,25 @@ public class Dijkstra {
     // vertices are Strings and edge values are just doubles
         
         HipsterDirectedGraph<String, Double> graph = GraphBuilder.create()
-                .connect("A").to("C").withEdge(250d)
+                .connect("A").to("L").withEdge(125d)
+                .connect("L").to("C").withEdge(125d)
                 .connect("A").to("B").withEdge(275d)
-                .connect("B").to("D").withEdge(250d)
+                .connect("B").to("M").withEdge(125d)
+                .connect("M").to("D").withEdge(125d)
                 .connect("C").to("D").withEdge(275d)
-                .connect("C").to("E").withEdge(260d)
-                .connect("D").to("F").withEdge(260d)
+                .connect("C").to("O").withEdge(130d)
+                .connect("O").to("E").withEdge(125d)
+                .connect("D").to("N").withEdge(130d)
+                .connect("N").to("F").withEdge(130d)
                 .connect("E").to("F").withEdge(275d)
-                .connect("E").to("G").withEdge(280d)
-                .connect("F").to("H").withEdge(280d)
-                .connect("C").to("D").withEdge(275d)
+                .connect("E").to("P").withEdge(140d)
+                .connect("P").to("G").withEdge(140d)
+                .connect("F").to("Q").withEdge(140d)
+                .connect("Q").to("H").withEdge(140d)
+                .connect("G").to("H").withEdge(275d)
+                .connect("G").to("J").withEdge(50d)
+                .connect("H").to("K").withEdge(50d)
+                .connect("E").to("I").withEdge(275d)
                 .buildDirectedGraph();
         
         // Create the search problem. For graph problems, just use
