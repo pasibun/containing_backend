@@ -27,14 +27,16 @@ public abstract class ContainerHolder implements ProcessesMessage {
     //
     // Deque is used for the sole purpose of being objectively better than Stacks (the Java documentation has deprecated
     // Stacks and recommends Deques instead).
+
     protected Deque<Container>[][] containers;
     protected int containerAmountLimit = 1;
     private boolean occupied = false;  // Whether the ContainerHolder is currently DOING something. This can remain true
-                                       // even if no message is currently being processed.
+    // even if no message is currently being processed.
     private static int counter = 0;
     private int id;
     private int processingMessageId = -1;  // Shows which message is currently being processed for this ContainerHolder.
-                                           // Set to -1 if no message is currently being processed.
+    private float x;                        // Set to -1 if no message is currently being processed.
+    private float y;
 
     public ContainerHolder() {
         counter++;
@@ -42,9 +44,11 @@ public abstract class ContainerHolder implements ProcessesMessage {
     }
 
     /**
-     * Put a container in the stack positioned at the provided coordinate location.
+     * Put a container in the stack positioned at the provided coordinate
+     * location.
      *
-     * @param point     2D integer coordinate where a container must be put on the stack.
+     * @param point 2D integer coordinate where a container must be put on the
+     * stack.
      * @param container Provided container.
      */
     protected void putContainer(Point point, Container container) {
@@ -70,9 +74,11 @@ public abstract class ContainerHolder implements ProcessesMessage {
     }
 
     /**
-     * Small utility function that returns the size of a stack at a given coordinate
+     * Small utility function that returns the size of a stack at a given
+     * coordinate
      *
-     * @param point 2D integer coordinate of a container stack on the transporter.
+     * @param point 2D integer coordinate of a container stack on the
+     * transporter.
      * @return The amount of containers on the stack.
      */
     protected int heightAt(Point point) {
@@ -114,7 +120,6 @@ public abstract class ContainerHolder implements ProcessesMessage {
     public void setId(int id) {
         this.id = id;
     }
-    
 
     @Override
     public int getProcessingMessageId() {
@@ -125,4 +130,21 @@ public abstract class ContainerHolder implements ProcessesMessage {
     public void setProcessingMessageId(int processingMessageId) {
         this.processingMessageId = processingMessageId;
     }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+    
 }

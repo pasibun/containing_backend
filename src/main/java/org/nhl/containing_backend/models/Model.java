@@ -71,17 +71,63 @@ public class Model {
      * Create starting model
      */
     private void initStartModel() {
-        initAgv();
+        initAgvTrain();
+        initAgvLorry();
+        initAgvShip();
         initDockingCrane();
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
     }
 
-    private void initAgv() {
-        for (int i = 0; i < 100; i++) {
-            Agv agv = new Agv();
-            agvs.add(agv);
+    /*
+     * Spawn avg on ship storage deck
+     */
+    private void initAgvShip() {
+        int agvStartPoint = -167;
+        for (int i = 1; i < 29; i++) {
+            if (i % 7 != 0) {
+                Agv agv = new Agv();
+                agv.setX(agvStartPoint + (4.7f * i));
+                agv.setY(-122);
+                agvs.add(agv);
+            } else {
+                agvStartPoint += 17;
+            }
+        }
+    }
+    /*
+     * Spawn avg on train storage deck
+     */
+
+    private void initAgvTrain() {
+        int agvStartPoint = -18;
+        for (int i = 29; i < 57; i++) {
+            if (i % 7 != 0) {
+                Agv agv = new Agv();
+                agv.setX(agvStartPoint + (4.7f * i));
+                agv.setY(-122);
+                agvs.add(agv);
+            } else {
+                agvStartPoint += 17;
+            }
+        }
+    }
+    /*
+     * Spawn avg on lorry storage deck
+     */
+
+    private void initAgvLorry() {
+        int agvStartPoint = 100;
+        for (int i = 57; i < 85; i++) {
+            if (i % 7 != 0) {
+                Agv agv = new Agv();
+                agv.setX(agvStartPoint + (4.7f * i));
+                agv.setY(-122);
+                agvs.add(agv);
+            } else {
+                agvStartPoint += 17;
+            }
         }
     }
 
