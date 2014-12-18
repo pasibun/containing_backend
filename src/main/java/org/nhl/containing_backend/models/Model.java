@@ -42,6 +42,8 @@ public class Model {
         dockingCranes = new ArrayList<DockingCrane>();
         trainCranes = new ArrayList<TrainCrane>();
         truckCranes = new ArrayList<TruckCrane>();
+        agvParkingX = new ArrayList<>();
+        agvParkingY = new ArrayList<>();
         initStartModel();
     }
 
@@ -78,7 +80,7 @@ public class Model {
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
-        placeAgv();
+        agvToParking();
     }
 
     /**
@@ -86,22 +88,15 @@ public class Model {
      *
      * @param id used to place agv on the given parkingspace
      */
-    private void agvToParking(int id) {
-        try {
+    private void agvToParking() {
+
+        for (int i = 0; i < MAXAGV; i++) {
             Agv agv = new Agv();
-            float agvX = agvParkingX.get(id);
-            float agvY = agvParkingY.get(id);
+            float agvX = i;
+            float agvY = i;
             agv.setX(agvX);
             agv.setY(agvY);
             agvs.add(agv);
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Error: Max parking id is 143, you used " + id);
-        }
-    }
-
-    private void placeAgv() {
-        for (int i = 0; i < MAXAGV; i++) {
-            agvToParking(i);
         }
     }
 
