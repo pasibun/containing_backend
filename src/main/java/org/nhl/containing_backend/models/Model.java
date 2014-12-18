@@ -25,7 +25,7 @@ public class Model {
     private List<DockingCrane> dockingCranes;
     private List<TrainCrane> trainCranes;
     private List<TruckCrane> truckCranes;
-    private final int MAXAGV = 144;
+    private final int MAXAGV = 143;
     private List<Float> agvParkingX;
     private List<Float> agvParkingY;
 
