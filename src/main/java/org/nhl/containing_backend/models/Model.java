@@ -84,7 +84,100 @@ public class Model {
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
-        agvToParking();
+        initAgvParkingShip();
+        initAgvParkingTrain();
+        initAgvParkingLorry();
+        placeAgv();
+    }
+
+    /**
+     * Initializes the agv parking on the ship storage platform. The X and Y
+     * locations are storred in an ArrayList. To trigger the 6th parking spot,
+     * pull the 6th element from both array's agvParkingX.pull(5);
+     * agvParkingY.pull(5);
+     *
+     * 144 parking places
+     */
+    private void initAgvParkingShip() {
+        // Parking id 0 till 23
+        int agvStartPoint = -167;
+        for (int i = 1; i < 29; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvStartPoint + (4.7f * i)));
+                agvParkingY.add(-122f);
+            } else {
+                agvStartPoint += 17;
+            }
+        }
+
+        // Parking on the opposite side
+        // Parking id 24 till 47
+        int agvOpositeStartPoint = -298;
+        for (int i = 29; i < 57; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvOpositeStartPoint + (4.7f * i)));
+                agvParkingY.add(113f);
+            } else {
+                agvOpositeStartPoint += 17;
+            }
+        }
+    }
+
+    /**
+     * Initializes the agv parking on the train storage platform.
+     */
+    private void initAgvParkingTrain() {
+        // Parking id 48 till 71
+        int agvStartPoint = -149;
+        for (int i = 57; i < 85; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvStartPoint + (4.7f * i)));
+                agvParkingY.add(-122f);
+            } else {
+                agvStartPoint += 17;
+            }
+        }
+
+        // Parking on the opposite side
+        // Parking id 72 till 95
+        int agvOpositeStartPoint = -281;
+        for (int i = 85; i < 113; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvOpositeStartPoint + (4.7f * i)));
+                agvParkingY.add(113f);
+            } else {
+                agvOpositeStartPoint += 17;
+            }
+        }
+
+    }
+
+    /**
+     * Initializes the agv parking on the lorry storage platform.
+     */
+    private void initAgvParkingLorry() {
+        // Parking id 96 till 119
+        int agvStartPoint = -163;
+        for (int i = 113; i < 141; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvStartPoint + (4.7f * i)));
+                agvParkingY.add(-122f);
+            } else {
+                agvStartPoint += 17;
+            }
+        }
+
+        // Parking on the opposite side
+        // Parking id 120 till 143
+        int agvOpositeStartPoint = -295;
+        for (int i = 141; i < 169; i++) {
+            if (i % 7 != 0) {
+                agvParkingX.add((agvOpositeStartPoint + (4.7f * i)));
+                agvParkingY.add(113f);
+            } else {
+                agvOpositeStartPoint += 17;
+            }
+        }
     }
 
     /**
@@ -92,15 +185,23 @@ public class Model {
      *
      * @param id used to place agv on the given parkingspace
      */
-    private void agvToParking() {
-
-        for (int i = 0; i < MAXAGV; i++) {
+    private void agvToParking(int id) {
+        try {
             Agv agv = new Agv();
-            float agvX = i;
-            float agvY = i;
+            float agvX = agvParkingX.get(id);
+            float agvY = agvParkingY.get(id);
             agv.setX(agvX);
             agv.setY(agvY);
+
             agvs.add(agv);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Error: Max parking id is 143, you used " + id);
+        }
+    }
+
+    private void placeAgv() {
+        for (int i = 0; i < MAXAGV; i++) {
+            agvToParking(i);
         }
     }
 

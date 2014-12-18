@@ -30,7 +30,7 @@ import org.nhl.containing_backend.vehicles.Agv;
  * Main controller class.
  */
 public class Controller implements Runnable {
-    
+
     private float speed;
     private boolean running;
     private Server server;
@@ -41,7 +41,7 @@ public class Controller implements Runnable {
     private Database database;
     private Model model;
     private List<Message> messagePool;
-    
+
     public Controller() {
         speed = 1;
         server = new Server();
@@ -66,15 +66,15 @@ public class Controller implements Runnable {
                 return;
             }
             updateDate();
-            
+
             if (sumTime > 1000) {
                 spawnTransporters();
                 sumTime = 0;
             }
             assignTransportersToDepots();
-            
+
             handleOkMessages();
-            
+
             try {
                 Thread.sleep(50);
             } catch (Throwable e) {
@@ -90,7 +90,7 @@ public class Controller implements Runnable {
         server.stop();
         running = false;
     }
-    
+
     public void updateSpeed(float speed) {
         SpeedMessage message = new SpeedMessage(speed);
         messagePool.add(message);
@@ -179,7 +179,7 @@ public class Controller implements Runnable {
      */
     private List<Container> containersForCurrentDate() {
         List<Container> result = new ArrayList<Container>();
-        
+
         Iterator<Container> i = model.getContainerPool().iterator();
         while (i.hasNext()) {
             Container container = i.next();
@@ -189,7 +189,7 @@ public class Controller implements Runnable {
                 i.remove();
             }
         }
-        
+
         return result;
     }
 
@@ -198,14 +198,14 @@ public class Controller implements Runnable {
      */
     private void spawnTransporters() {
         List<Container> containers = containersForCurrentDate();
-        
+
         if (containers.size() == 0) {
             return;
         }
-        
+
         List<Transporter> transporters = distributeContainers(containers);
         model.getTransporters().addAll(transporters);
-        
+
         for (Transporter transporter : transporters) {
             CreateMessage message = new CreateMessage(transporter);
             messagePool.add(message);
@@ -228,7 +228,7 @@ public class Controller implements Runnable {
         List<Container> trainContainers = new ArrayList<Container>();
         List<Container> inlandshipContainers = new ArrayList<Container>();
         List<Container> seashipContainers = new ArrayList<Container>();
-        
+
         String[] types = new String[]{"vrachtauto", "trein", "binnenschip", "zeeschip"};
 
         // Create separate lists for all transporter types.
@@ -243,21 +243,21 @@ public class Controller implements Runnable {
                 seashipContainers.add(container);
             }
         }
-        
+
         List<List<Container>> listOfLists = new ArrayList<List<Container>>();
         listOfLists.add(lorryContainers);
         listOfLists.add(trainContainers);
         listOfLists.add(inlandshipContainers);
         listOfLists.add(seashipContainers);
-        
+
         List<Transporter> result = new ArrayList<Transporter>();
-        
+
         int counter = 0;
 
         // Loop over all the lists.
         for (List<Container> containers_ : listOfLists) {
             String type = types[counter];
-            
+
             if (containers_.size() == 0) {
                 counter++;
                 continue;
@@ -272,7 +272,7 @@ public class Controller implements Runnable {
                 point += container.getSpawnX() + ",";
                 point += container.getSpawnY() + ",";
                 point += container.getSpawnZ();
-                
+
                 if (!dict.containsKey(point)) {
                     List<Container> pointList = new ArrayList<Container>();
                     pointList.add(container);
@@ -310,7 +310,7 @@ public class Controller implements Runnable {
             // For every transporter, fill it with containers and add it to the list.
             for (int i = 0; i < amountOfTransporters; i++) {
                 Transporter transporter = new Transporter(type, limitX, limitY, limitZ);
-                
+
                 Iterator iterator = dict.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, List<Container>> pair = (Map.Entry<String, List<Container>>) iterator.next();
@@ -329,10 +329,10 @@ public class Controller implements Runnable {
                     result.add(transporter);
                 }
             }
-            
+
             counter++;
         }
-        
+
         return result;
     }
 
@@ -342,7 +342,7 @@ public class Controller implements Runnable {
      */
     private void assignTransportersToDepots() {
         HashMap<String, List<Integer>> availableDepots = model.availableDepots();
-        
+
         for (Transporter transporter : model.getTransporters()) {
             // If the transporter is doing nothing, has finished processing its message, and there is a free depot.
             if (!transporter.isOccupied() && transporter.getProcessingMessageId() == -1
@@ -352,7 +352,7 @@ public class Controller implements Runnable {
                 int spot = availableDepots.get(transporter.getType()).remove(0);
                 model.getDepots().get(transporter.getType())[spot] = transporter;
                 transporter.setOccupied(true);
-                
+
                 ArriveMessage message = new ArriveMessage(transporter, spot);
                 messagePool.add(message);
                 transporter.setProcessingMessageId(message.getId());
@@ -372,60 +372,60 @@ public class Controller implements Runnable {
         if (message.getMessageType() == message.MOVE) {
             ArriveMessage arrivedMessage = (ArriveMessage) message;
             if (arrivedMessage.getTransporter().getType().equals("vrachtauto")) {
-                
+
                 int craneID = arrivedMessage.getDepotIndex();
                 Crane getCrane = findCrane("vrachtauto", craneID);
                 Container container = findContainer(arrivedMessage.getTransporter().getContainers());
-                
+
                 CraneMessage cranemessage = new CraneMessage(getCrane,
                         arrivedMessage.getTransporter(), findAgv(), container, null);
-                
+
                 messagePool.add(cranemessage);
                 getCrane.setProcessingMessageId(cranemessage.getId());
                 server.writeMessage(cranemessage.generateXml());
             }
             if (arrivedMessage.getTransporter().getType().equals("trein")) {
-                
+
                 int craneID = arrivedMessage.getDepotIndex();
                 Crane getCrane = findCrane("trein", craneID);
                 Container container = findContainer(arrivedMessage.getTransporter().getContainers());
-                
+
                 CraneMessage cranemessage = new CraneMessage(getCrane,
                         arrivedMessage.getTransporter(), findAgv(), container, null);
-                
+
                 messagePool.add(cranemessage);
                 getCrane.setProcessingMessageId(cranemessage.getId());
                 server.writeMessage(cranemessage.generateXml());
             }
             if (arrivedMessage.getTransporter().getType().equals("binnenschip")) {
-                
+
                 int craneID = arrivedMessage.getDepotIndex();
                 Crane getCrane = findCrane("binnenschip", craneID);
                 Container container = findContainer(arrivedMessage.getTransporter().getContainers());
-                
+
                 CraneMessage cranemessage = new CraneMessage(getCrane,
                         arrivedMessage.getTransporter(), findAgv(), container, null);
-                
+
                 messagePool.add(cranemessage);
                 getCrane.setProcessingMessageId(cranemessage.getId());
                 server.writeMessage(cranemessage.generateXml());
             }
             if (arrivedMessage.getTransporter().getType().equals("zeeschip")) {
-                
+
                 int craneID = arrivedMessage.getDepotIndex();
                 Crane getCrane = findCrane("zeeschip", craneID);
                 Container container = findContainer(arrivedMessage.getTransporter().getContainers());
-                
+
                 CraneMessage cranemessage = new CraneMessage(getCrane,
                         arrivedMessage.getTransporter(), findAgv(), container, null);
-                
+
                 messagePool.add(cranemessage);
                 getCrane.setProcessingMessageId(cranemessage.getId());
                 server.writeMessage(cranemessage.generateXml());
             }
         }
     }
-    
+
     private Crane findCrane(String transporttype, int craneId) {
         if (transporttype.equals("vrachtauto")) {
             for (Crane crane : model.getTruckCranes()) {
@@ -457,12 +457,12 @@ public class Controller implements Runnable {
         }
         return null;
     }
-    
+
     private Agv findAgv() {
-        
+
         return null;
     }
-    
+
     private Container findContainer(List<Container> containers) {
         Date firstDate = null;
         for (Container container : containers) {
@@ -479,17 +479,17 @@ public class Controller implements Runnable {
         }
         return null;
     }
-    
+
     private Container findContainerByNumber(List<Container> containers, int containerNumber) {
         for (Container con : containers) {
             if (con.getNumber() == containerNumber) {
                 return con;
             }
         }
-        
+
         return null;
     }
-    
+
     private Storage findStorage(Transporter transporter) {
         if (transporter == null) {
             return null;
@@ -511,33 +511,32 @@ public class Controller implements Runnable {
             craneMessage.getTransporter().setProcessingMessageId(departMessage.getId());
             server.writeMessage(departMessage.generateXml());
         }
-        
+
     }
-    
+
     private void moveAgv(Message message) {
         if (message.getMessageType() == message.ARRIVE) {
             ArriveMessage arrivedMessage = (ArriveMessage) message;
-            Dijkstra dijkstra = new Dijkstra();
-            String beginPoint = "A";
-            String endPoint = "J";
-            String dijkie = dijkstra.shortestPath(beginPoint, endPoint);
-            dijkie = dijkie.replace("[[", "");
-            dijkie = dijkie.replace("]]", "");
+            String dijkstra;
             int agvId;
             float agvX;
             float agvY;
             Crane crane;
-            
+
             for (Agv agv : model.getAgvs()) {
                 if (!agv.isOccupied()) {
+
                     agvId = agv.getId();
                     agvX = agv.getX();
                     agvY = agv.getY();
                     crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
+
+                    dijkstra = getDijkstraPatg(agv, crane);
                     agv.setOccupied(true);
+
                     try {
-                        MoveMessage moveMessage = new MoveMessage(agv, dijkie, crane);
-                        
+                        MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
+
                         messagePool.add(moveMessage);
                         //getClass().setProcessingMessageId(moveMessage.getId());
                         server.writeMessage(moveMessage.generateXml());
@@ -547,6 +546,61 @@ public class Controller implements Runnable {
                 }
             }
         }
+    }
+
+    public String getDijkstraPatg(Agv agv, Crane crane) {
+        Dijkstra dijkstra = new Dijkstra();
+        String beginPoint = "";
+        String endPoint = "";
+        String dijkie = "";
+        float west = -122f;
+        float east = 113f;
+        //western ship platform -> goto waypoint P
+        if (agv.getX() < 12 && agv.getY() == west) {
+            beginPoint = "P";
+        } //eastern ship platform -> goto waypoint Q
+        else if (agv.getX() < 12 && agv.getY() == east) {
+            beginPoint = "Q";
+        } //western train platform -> goto waypoint O
+        else if (agv.getX() > 110f && agv.getX() < 300 && agv.getY() == west) {
+            beginPoint = "O";
+        } //eastern train platform -> goto waypoint N
+        else if (agv.getX() > 110f && agv.getX() < 300 && agv.getY() == east) {
+            beginPoint = "N";
+        } //western lorry platform -> goto waypoint L
+        else if (agv.getX() > 365f && agv.getX() < 550 && agv.getY() == west) {
+            beginPoint = "L";
+        } else if (agv.getX() > 365f && agv.getX() < 550 && agv.getY() == east) {
+            beginPoint = "M";
+        } else if (agv.getContainer().getArrivalTransportType().equals("trein")) {
+            beginPoint = "G";
+        } else if (agv.getContainer().getArrivalTransportType().equals("vrachtauto")) {
+            beginPoint = "B";
+        } else if (agv.getContainer().getArrivalTransportType().equals("binnenschip")) {
+            beginPoint = "N";
+        } else if (agv.getContainer().getArrivalTransportType().equals("zeeschip")) {
+            beginPoint = "K";
+        }
+        //only call move method when there's a valid waypoint in the char[] to avoid exception
+
+        if (crane.getType().equals("DockingCraneInlandShip")) {
+            endPoint = "K";
+        } else if (crane.getType().equals("DockingCraneSeaShip")) {
+            endPoint = "J";
+        } else if (crane.getType().equals("TrainCrane")) {
+            endPoint = "I";
+        } else if (crane.getType().equals("TruckCrane")) {
+            endPoint = "D";
+        } else if (crane.getType().equals("StorageCrane")) {
+            endPoint = "P";
+            // nog wat leuks voor bedenken
+        }
+
+        dijkie = dijkstra.shortestPath(beginPoint, endPoint);
+        dijkie = dijkie.replace("[[", "");
+        dijkie = dijkie.replace("]]", "");
+
+        return dijkie;
     }
 
     /**
@@ -562,7 +616,7 @@ public class Controller implements Runnable {
             }
             xmlMessages.add(xmlMessage);
         }
-        
+
         for (String message : xmlMessages) {
             try {
                 handleOkMessage(message);
@@ -571,25 +625,25 @@ public class Controller implements Runnable {
             }
         }
     }
-    
+
     private void handleOkMessage(String xmlMessage) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         InputSource source = new InputSource();
         source.setCharacterStream(new StringReader(xmlMessage));
-        
+
         Document doc = db.parse(source);
-        
+
         NodeList nodes = doc.getElementsByTagName("id");
         if (nodes.getLength() != 1) {
             throw new Exception(xmlMessage + " is not a valid message");
         }
-        
+
         int id = Integer.parseInt(nodes.item(0).getTextContent());
-        
+
         Message message = null;
         boolean nobreak = true;
-        
+
         for (Message message_ : messagePool) {
             if (message_.getId() == id) {
                 message = message_;
@@ -602,7 +656,7 @@ public class Controller implements Runnable {
         if (nobreak) {
             throw new Exception(id + " doesn't exist");
         }
-        
+
         switch (message.getMessageType()) {
             case Message.CREATE:
                 handleOkCreateMessage((CreateMessage) message);
@@ -624,38 +678,38 @@ public class Controller implements Runnable {
                 break;
         }
         messagePool.remove(message);
-        
-        
+
+
     }
-    
+
     private void handleOkCreateMessage(CreateMessage message) {
         message.getTransporter().setProcessingMessageId(-1);
     }
-    
+
     private void handleOkArriveMessage(ArriveMessage message) {
         message.getTransporter().setProcessingMessageId(-1);
     }
-    
+
     private void handleOkSpeedMessage(SpeedMessage message) {
         this.speed = message.getSpeed();
     }
-    
+
     private void handleOkCraneMessage(CraneMessage message) {
         message.getCrane().setProcessingMessageId(-1);
-        
+
         Container con = findContainerByNumber(message.getTransporter().getContainers(), message.getContainer().getNumber());
         Container junk = message.getTransporter().popContainerFromDeque(con);
-        
+
         departTransporter(message);
     }
-    
+
     private void handleOkMoveMessage(MoveMessage message) {
     }
-    
+
     private void handleOkDepartMessage(DepartMessage message) {
         message.getTransporter().setProcessingMessageId(-1);
     }
-    
+
     @Override
     public void run() {
         start();
