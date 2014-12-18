@@ -7,9 +7,9 @@ import java.util.ArrayDeque;
 /**
  * Crane that moves around, somehow. I don't know; don't ask me.
  */
-public class DockingCrane extends Crane {
+public class DockingCraneInlandShip extends Crane {
 
-    public DockingCrane(String type) {
+    public DockingCraneInlandShip(String type) {
         super(type);
         containers = new ArrayDeque[1][1];
         containers[0][0] = new ArrayDeque<Container>();

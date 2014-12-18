@@ -442,14 +442,14 @@ public class Controller implements Runnable {
             }
         }
         if (transporttype.equals("binnenschip")) {
-            for (Crane crane : model.getDockingCrane()) {
+            for (Crane crane : model.getDockingCranesInland()) {
                 if (crane.getId() == craneId) {
                     return crane;
                 }
             }
         }
         if (transporttype.equals("zeeschip")) {
-            for (Crane crane : model.getDockingCrane()) {
+            for (Crane crane : model.getDockingCranesSea()) {
                 if (crane.getId() == craneId) {
                     return crane;
                 }
