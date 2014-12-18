@@ -530,25 +530,33 @@ public class Controller implements Runnable {
 
             for (Agv agv : model.getAgvs()) {
                 if (!agv.isOccupied()) {
-                    agvId = agv.getId();
-                    agvX = agv.getX();
-                    agvY = agv.getY();
-                    crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
+                    if (agv.getContainer().equals(null)) {
+                        agvId = agv.getId();
+                        agvX = agv.getX();
+                        agvY = agv.getY();
+                        crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
+                        //determineDijkstra(agv, crane);
+                        try {
+                            MoveMessage moveMessage = new MoveMessage(agv, dijkie, crane);
 
-                    try {
-                        MoveMessage moveMessage = new MoveMessage(agv, dijkie, crane);
-
-                        messagePool.add(moveMessage);
-                        //getClass().setProcessingMessageId(moveMessage.getId());
-                        server.writeMessage(moveMessage.generateXml());
-                    } catch (Exception e) {
+                            messagePool.add(moveMessage);
+                            //getClass().setProcessingMessageId(moveMessage.getId());
+                            server.writeMessage(moveMessage.generateXml());
+                            break;
+                        } catch (Exception e) {
+                        }
+                        break;
                     }
+                    break;
                 }
+                break;
             }
-
-
-
         }
+    }
+
+    private String determineDijkstra(Agv agv, Crane crane) {
+
+        return null;
     }
 
     /**
