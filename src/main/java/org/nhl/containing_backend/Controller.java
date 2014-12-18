@@ -369,7 +369,7 @@ public class Controller implements Runnable {
      * @param message
      */
     private void moveCranes(Message message) {
-        if (message.getMessageType() == message.ARRIVE) {
+        if (message.getMessageType() == message.MOVE) {
             ArriveMessage arrivedMessage = (ArriveMessage) message;
             if (arrivedMessage.getTransporter().getType().equals("vrachtauto")) {
 
@@ -479,15 +479,14 @@ public class Controller implements Runnable {
         }
         return null;
     }
-    
-    private Container findContainerByNumber(List<Container> containers, int containerNumber)
-    {
-        for(Container con : containers)
-        {
-            if(con.getNumber() == containerNumber)
+
+    private Container findContainerByNumber(List<Container> containers, int containerNumber) {
+        for (Container con : containers) {
+            if (con.getNumber() == containerNumber) {
                 return con;
+            }
         }
-        
+
         return null;
     }
 
@@ -505,17 +504,51 @@ public class Controller implements Runnable {
      * @param message
      */
     private void departTransporter(Message message) {
-            CraneMessage craneMessage = (CraneMessage) message;
-            if (craneMessage.getTransporter().getContainers().isEmpty()) {
-                DepartMessage departMessage = new DepartMessage(craneMessage.getTransporter());
-                messagePool.add(departMessage);
-                craneMessage.getTransporter().setProcessingMessageId(departMessage.getId());
-                server.writeMessage(departMessage.generateXml());
-            }
-        
+        CraneMessage craneMessage = (CraneMessage) message;
+        if (craneMessage.getTransporter().getContainers().isEmpty()) {
+            DepartMessage departMessage = new DepartMessage(craneMessage.getTransporter());
+            messagePool.add(departMessage);
+            craneMessage.getTransporter().setProcessingMessageId(departMessage.getId());
+            server.writeMessage(departMessage.generateXml());
+        }
+
     }
 
     private void moveAgv(Message message) {
+        if (message.getMessageType() == message.ARRIVE) {
+            ArriveMessage arrivedMessage = (ArriveMessage) message;
+            Dijkstra dijkstra = new Dijkstra();
+            String beginPoint = "A";
+            String endPoint = "J";
+            String dijkie = dijkstra.shortestPath(beginPoint, endPoint);
+            dijkie = dijkie.replace("[[", "");
+            dijkie = dijkie.replace("]]", "");
+            int agvId;
+            float agvX;
+            float agvY;
+            Crane crane;
+
+            for (Agv agv : model.getAgvs()) {
+                if (!agv.isOccupied()) {
+                    agvId = agv.getId();
+                    agvX = agv.getX();
+                    agvY = agv.getY();
+                    crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
+
+                    try {
+                        MoveMessage moveMessage = new MoveMessage(agv, dijkie, crane);
+
+                        messagePool.add(moveMessage);
+                        //getClass().setProcessingMessageId(moveMessage.getId());
+                        server.writeMessage(moveMessage.generateXml());
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+
+
+        }
     }
 
     /**
@@ -567,7 +600,7 @@ public class Controller implements Runnable {
             }
         }
         moveCranes(message);
-        
+        moveAgv(message);
         if (nobreak) {
             throw new Exception(id + " doesn't exist");
         }
@@ -593,6 +626,8 @@ public class Controller implements Runnable {
                 break;
         }
         messagePool.remove(message);
+
+
     }
 
     private void handleOkCreateMessage(CreateMessage message) {
@@ -609,10 +644,10 @@ public class Controller implements Runnable {
 
     private void handleOkCraneMessage(CraneMessage message) {
         message.getCrane().setProcessingMessageId(-1);
-        
-        Container con = findContainerByNumber(message.getTransporter().getContainers(),message.getContainer().getNumber());
+
+        Container con = findContainerByNumber(message.getTransporter().getContainers(), message.getContainer().getNumber());
         Container junk = message.getTransporter().popContainerFromDeque(con);
-        
+
         departTransporter(message);
     }
 

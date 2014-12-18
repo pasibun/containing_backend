@@ -23,7 +23,7 @@ public class Dijkstra {
      * @param endPoint the destination of the waypoint
      * @return list with the shortest path
      */
-    public List shortestPath(char beginPoint, char endPoint) {
+    public String shortestPath(String beginPoint, String endPoint) {
     //Create a simple weighted directed graph with Hipster where
     // vertices are Strings and edge values are just doubles
         
@@ -46,19 +46,19 @@ public class Dijkstra {
                 .connect("G").to("H").withEdge(275d)
                 .connect("G").to("J").withEdge(50d)
                 .connect("H").to("K").withEdge(50d)
-                .connect("E").to("I").withEdge(275d)
+                .connect("E").to("I").withEdge(50d)
                 .buildDirectedGraph();
         
         // Create the search problem. For graph problems, just use
         // the GraphSearchProblem util class to generate the problem with ease.
         SearchProblem p = GraphSearchProblem
-                .startingFrom(Character.toString(beginPoint))
+                .startingFrom((beginPoint))
                 .in(graph)
                 .takeCostsFromEdges()
                 .build();
 
         // Search the shortest path from "A" to "F"
         //System.out.println(Hipster.createDijkstra(p).search("E").getOptimalPaths());
-        return Hipster.createDijkstra(p).search(endPoint).getOptimalPaths();
+        return Hipster.createDijkstra(p).search(endPoint).getOptimalPaths().toString();
     }
 }

@@ -12,13 +12,13 @@ import org.nhl.containing_backend.vehicles.Transporter;
 public class MoveMessage extends Message {
 
     private Agv agv;
-    private HipsterDirectedGraph<String, Double> graph;
+    private String dijkstra;
     private Crane crane;
 
-    public MoveMessage(Agv agv, HipsterDirectedGraph<String, Double> graph, Crane crane) {
+    public MoveMessage(Agv agv, String dijkstra, Crane crane) {
         super(Message.MOVE);
         this.agv = agv;
-        this.graph = graph;
+        this.dijkstra = dijkstra;
         this.crane = crane;
     }
 
@@ -26,21 +26,15 @@ public class MoveMessage extends Message {
         String message = "";
         message += "<id>" + getId() + "</id>";
         message += "<Move>";
+        message += "<AgvId>" + agv.getId() + "</AgvId>";
         message += "<CurrentX>" + agv.getX() + "</CurrentX>";
         message += "<CurrentY>" + agv.getY() + "</CurrentY>";
-        message += "<Dijkstra>";
-
-        message += "</Dijkstra>";
+        message += "<Dijkstra>" + dijkstra + "</Dijkstra>";
         message += "<EndLocationType>" + crane.getType() + "</EndLocationType>";
         message += "<EndLocationId>" + crane.getId() + "</EndLocationId>";
         message += "</Move>";
 
         return message;
-    }
-
-    private String toXml(HipsterDirectedGraph<String, Double> graph) {
-
-        return null;
     }
 
     public Agv getAgv() {
