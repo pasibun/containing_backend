@@ -292,7 +292,7 @@ public class Database {
 
     private void initDockingCraneInland() {
         try {
-            for (DockingCraneInlandShip dockingCraneInland : model.getDockingCraneInland()) {
+            for (DockingCraneInlandShip dockingCraneInland : model.getDockingCranesInland()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
@@ -310,7 +310,7 @@ public class Database {
     
     private void initDockingCraneSea() {
         try {
-            for (DockingCraneSeaShip dockingCraneSea : model.getDockingCraneSea()) {
+            for (DockingCraneSeaShip dockingCraneSea : model.getDockingCranesSea()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
