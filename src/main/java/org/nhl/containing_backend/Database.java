@@ -42,7 +42,7 @@ public class Database {
             }
             conn = DriverManager.getConnection(url + dbName, userName, password);
             statement = conn.createStatement();
-            
+
             String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storeagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
@@ -146,11 +146,34 @@ public class Database {
     }
 
     /**
+     * Update Database for docking crane Inland
+     *
+     * @param dockingCrane
+     */
+    public void updateDockingCraneInland(DockingCraneInlandShip dockingCrane) {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                    + " VALUES('" + dockingCrane.getContainers().size() + "')";
+
+            st.executeUpdate(sqlupdate);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Update Database for docking crane
      *
      * @param dockingCrane
      */
-    public void updateDockingCrane(DockingCrane dockingCrane) {
+    public void updateDockingCraneSea(DockingCraneSeaShip dockingCrane) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
@@ -242,7 +265,8 @@ public class Database {
      */
     private void initValues() {
         initAgv();
-        initDockingCrane();
+        initDockingCraneInland();
+        initDockingCraneSea();
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
@@ -266,9 +290,27 @@ public class Database {
         }
     }
 
-    private void initDockingCrane() {
+    private void initDockingCraneInland() {
         try {
-            for (DockingCrane dockingCrane : model.getDockingCrane()) {
+            for (DockingCraneInlandShip dockingCraneInland : model.getDockingCraneInland()) {
+                Class.forName(driver).newInstance();
+                Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+                Statement st = conn.createStatement();
+
+                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                        + " VALUES('0')";
+                st.executeUpdate(sqlupdate);
+
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void initDockingCraneSea() {
+        try {
+            for (DockingCraneSeaShip dockingCraneSea : model.getDockingCraneSea()) {
                 Class.forName(driver).newInstance();
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();

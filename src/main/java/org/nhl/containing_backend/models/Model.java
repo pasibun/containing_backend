@@ -1,13 +1,14 @@
 package org.nhl.containing_backend.models;
 
 import java.util.ArrayList;
-import org.nhl.containing_backend.cranes.DockingCrane;
+import org.nhl.containing_backend.cranes.DockingCraneInlandShip;
 import org.nhl.containing_backend.cranes.StorageCrane;
 import org.nhl.containing_backend.vehicles.Agv;
 import org.nhl.containing_backend.vehicles.Transporter;
 
 import java.util.HashMap;
 import java.util.List;
+import org.nhl.containing_backend.cranes.DockingCraneSeaShip;
 import org.nhl.containing_backend.cranes.TrainCrane;
 import org.nhl.containing_backend.cranes.TruckCrane;
 
@@ -22,7 +23,8 @@ public class Model {
     private HashMap<String, Transporter[]> depots;
     private Storage storage;
     private List<StorageCrane> storageCranes;
-    private List<DockingCrane> dockingCranes;
+    private List<DockingCraneInlandShip> dockingCranesInland;
+    private List<DockingCraneSeaShip> dockingCranesSea;
     private List<TrainCrane> trainCranes;
     private List<TruckCrane> truckCranes;
     private final int MAXAGV = 144;
@@ -39,7 +41,8 @@ public class Model {
         depots.put("binnenschip", new Transporter[2]);
         depots.put("zeeschip", new Transporter[1]);
         storageCranes = new ArrayList<StorageCrane>();
-        dockingCranes = new ArrayList<DockingCrane>();
+        dockingCranesInland = new ArrayList<DockingCraneInlandShip>();
+        dockingCranesSea = new ArrayList<DockingCraneSeaShip>();
         trainCranes = new ArrayList<TrainCrane>();
         truckCranes = new ArrayList<TruckCrane>();
         agvParkingX = new ArrayList<>();
@@ -76,7 +79,8 @@ public class Model {
      * Create starting model
      */
     private void initStartModel() {
-        initDockingCrane();
+        initDockingCraneInland();
+        initDockingCraneSea();
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
@@ -100,12 +104,19 @@ public class Model {
         }
     }
 
-    private void initDockingCrane() {
+    private void initDockingCraneInland() {
         for (int i = 0; i < 18; i++) {
-            DockingCrane dockingCrane = new DockingCrane("DockingCrane");
-            dockingCrane.setId(i);
-            dockingCranes.add(dockingCrane);
+            DockingCraneInlandShip dockingCraneInland = new DockingCraneInlandShip("DockingCraneInlandShip");
+            dockingCraneInland.setId(i);
+            dockingCranesInland.add(dockingCraneInland);
+        }
+    }
 
+    private void initDockingCraneSea() {
+        for (int i = 0; i < 18; i++) {
+            DockingCraneSeaShip dockingCraneSea = new DockingCraneSeaShip("DockingCraneSeaShip");
+            dockingCraneSea.setId(i);
+            dockingCranesSea.add(dockingCraneSea);
         }
     }
 
@@ -141,8 +152,12 @@ public class Model {
         return agvs;
     }
 
-    public List<DockingCrane> getDockingCrane() {
-        return dockingCranes;
+    public List<DockingCraneInlandShip> getDockingCranesInland() {
+        return dockingCranesInland;
+    }
+
+    public List<DockingCraneSeaShip> getDockingCranesSea() {
+        return dockingCranesSea;
     }
 
     public List<StorageCrane> getStorageCrane() {
