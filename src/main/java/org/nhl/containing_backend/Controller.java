@@ -541,13 +541,13 @@ public class Controller implements Runnable {
                         messagePool.add(moveMessage);
                         //getClass().setProcessingMessageId(moveMessage.getId());
                         server.writeMessage(moveMessage.generateXml());
+                        break;
                     } catch (Exception e) {
                     }
+                    break;
                 }
+                break;
             }
-
-
-
         }
     }
 
