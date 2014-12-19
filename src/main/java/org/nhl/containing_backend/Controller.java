@@ -194,7 +194,7 @@ public class Controller implements Runnable {
         while (i.hasNext()) {
             Container container = i.next();
             Date arrivalDate = container.getArrivalDate();
-            if (arrivalDate.before(currentDate)) {
+            if (arrivalDate.equals(currentDate)) {
                 result.add(container);
                 i.remove();
             }
@@ -379,62 +379,78 @@ public class Controller implements Runnable {
      * @param message
      */
     private void moveCranes(Message message) {
+
         if (message.getMessageType() == message.MOVE) {
-            ArriveMessage arrivedMessage = (ArriveMessage) message;
-            if (arrivedMessage.getTransporter().getType().equals("vrachtauto")) {
+            for (Message getMessage : arriveMessagesList) {
+                ArriveMessage arrivedMessage = (ArriveMessage) getMessage;
+                if (arrivedMessage.getTransporter().getType().equals("vrachtauto")) {
 
-                int craneID = arrivedMessage.getDepotIndex();
-                Crane getCrane = findCrane("vrachtauto", craneID);
-                Container container = findContainer(arrivedMessage.getTransporter().getContainers());
+                    int craneID = arrivedMessage.getDepotIndex();
+                    Crane getCrane = findCrane("vrachtauto", craneID);
+                    Container container = findContainer(arrivedMessage.getTransporter().getContainers());
 
-                CraneMessage cranemessage = new CraneMessage(getCrane,
-                        arrivedMessage.getTransporter(), findAgv(), container, null);
+                    CraneMessage cranemessage = new CraneMessage(getCrane,
+                            arrivedMessage.getTransporter(), findAgv(message), container, null);
 
-                messagePool.add(cranemessage);
-                getCrane.setProcessingMessageId(cranemessage.getId());
-                server.writeMessage(cranemessage.generateXml());
-            }
-            if (arrivedMessage.getTransporter().getType().equals("trein")) {
+                    messagePool.add(cranemessage);
+                    getCrane.setProcessingMessageId(cranemessage.getId());
+                    server.writeMessage(cranemessage.generateXml());
+                }
+                if (arrivedMessage.getTransporter().getType().equals("trein")) {
 
-                int craneID = arrivedMessage.getDepotIndex();
-                Crane getCrane = findCrane("trein", craneID);
-                Container container = findContainer(arrivedMessage.getTransporter().getContainers());
+                    int craneID = arrivedMessage.getDepotIndex();
+                    Crane getCrane = findCrane("trein", craneID);
+                    Container container = findContainer(arrivedMessage.getTransporter().getContainers());
 
-                CraneMessage cranemessage = new CraneMessage(getCrane,
-                        arrivedMessage.getTransporter(), findAgv(), container, null);
+                    CraneMessage cranemessage = new CraneMessage(getCrane,
+                            arrivedMessage.getTransporter(), findAgv(message), container, null);
 
-                messagePool.add(cranemessage);
-                getCrane.setProcessingMessageId(cranemessage.getId());
-                server.writeMessage(cranemessage.generateXml());
-            }
-            if (arrivedMessage.getTransporter().getType().equals("binnenschip")) {
+                    messagePool.add(cranemessage);
+                    getCrane.setProcessingMessageId(cranemessage.getId());
+                    server.writeMessage(cranemessage.generateXml());
+                }
+                if (arrivedMessage.getTransporter().getType().equals("binnenschip")) {
 
-                int craneID = arrivedMessage.getDepotIndex();
-                Crane getCrane = findCrane("binnenschip", craneID);
-                Container container = findContainer(arrivedMessage.getTransporter().getContainers());
+                    int craneID = arrivedMessage.getDepotIndex();
+                    Crane getCrane = findCrane("binnenschip", craneID);
+                    Container container = findContainer(arrivedMessage.getTransporter().getContainers());
 
-                CraneMessage cranemessage = new CraneMessage(getCrane,
-                        arrivedMessage.getTransporter(), findAgv(), container, null);
+                    CraneMessage cranemessage = new CraneMessage(getCrane,
+                            arrivedMessage.getTransporter(), findAgv(message), container, null);
 
-                messagePool.add(cranemessage);
-                getCrane.setProcessingMessageId(cranemessage.getId());
-                server.writeMessage(cranemessage.generateXml());
-            }
-            if (arrivedMessage.getTransporter().getType().equals("zeeschip")) {
+                    messagePool.add(cranemessage);
+                    getCrane.setProcessingMessageId(cranemessage.getId());
+                    server.writeMessage(cranemessage.generateXml());
+                }
+                if (arrivedMessage.getTransporter().getType().equals("zeeschip")) {
 
-                int craneID = arrivedMessage.getDepotIndex();
-                Crane getCrane = findCrane("zeeschip", craneID);
-                Container container = findContainer(arrivedMessage.getTransporter().getContainers());
+                    int craneID = arrivedMessage.getDepotIndex();
+                    Crane getCrane = findCrane("zeeschip", craneID);
+                    Container container = findContainer(arrivedMessage.getTransporter().getContainers());
 
-                CraneMessage cranemessage = new CraneMessage(getCrane,
-                        arrivedMessage.getTransporter(), findAgv(), container, null);
+                    CraneMessage cranemessage = new CraneMessage(getCrane,
+                            arrivedMessage.getTransporter(), findAgv(message), container, null);
 
-                messagePool.add(cranemessage);
-                getCrane.setProcessingMessageId(cranemessage.getId());
-                server.writeMessage(cranemessage.generateXml());
+                    messagePool.add(cranemessage);
+                    getCrane.setProcessingMessageId(cranemessage.getId());
+                    server.writeMessage(cranemessage.generateXml());
+                }
             }
         }
     }
+/**
+    private void moveCraneStorage(Message message) {
+        if (message.getMessageType() == message.MOVE) {
+            for (Message getMessage : moveMessagesList) {
+                MoveMessage moveMessage = (MoveMessage) getMessage;
+                int craneID = moveMessage.getAgv().getContainer().
+                Crane getCrane = findCrane("Storage", craneID);
+                Container container = findContainer(moveMessage.getAgv().getContainers());
+                CraneMessage cranemessage = new CraneMessage(getCrane,
+                        arrivedMessage.getTransporter(), findAgv(message), container, null);
+            }
+        }
+    }*/
 
     private Crane findCrane(String transporttype, int craneId) {
         if (transporttype.equals("vrachtauto")) {
@@ -468,9 +484,10 @@ public class Controller implements Runnable {
         return null;
     }
 
-    private Agv findAgv() {
+    private Agv findAgv(Message message) {
+        MoveMessage moveMessage = (MoveMessage) message;
 
-        return null;
+        return moveMessage.getAgv();
     }
 
     private Container findContainer(List<Container> containers) {
@@ -500,13 +517,12 @@ public class Controller implements Runnable {
         return null;
     }
 
-    private Storage findStorage(Transporter transporter) {
-        if (transporter == null) {
-            return null;
-        } else {
-            return null;
+    /**private Storage findStorage(Message message) {
+        MoveMessage moveMessage = (MoveMessage) message;
+        String transportType = moveMessage.getAgv().getContainer().getDepartureTransportType();
+        if (transportType.equals("trein")) {
         }
-    }
+    }*/
 
     /**
      * Departs the transporter when the transporter is empty
@@ -762,7 +778,17 @@ public class Controller implements Runnable {
                 break;
             case Message.MOVE:
                 moveMessagesList.add(message);
-                moveCranes(message);
+                for (Message storageMessage : moveMessagesList) {
+                    MoveMessage storageCrane = (MoveMessage) storageMessage;
+                    if (storageCrane.getAgv().getContainer().isOnStorage() == true) {
+                       // moveCraneStorage(message);
+                        break;
+                    } else {
+                        moveCranes(message);
+                        break;
+                    }
+                }
+
                 for (Message removeMove : moveMessagesList) {
                     MoveMessage moveMessage = (MoveMessage) removeMove;
                     if (moveMessage.getAgv().getProcessingMessageId() == 1
