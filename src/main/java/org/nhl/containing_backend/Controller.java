@@ -531,7 +531,7 @@ public class Controller implements Runnable {
                     agvY = agv.getY();
                     crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
 
-                    dijkstra = getDijkstraPatg(agv, crane);
+                    dijkstra = getDijkstraPath(agv, crane);
                     agv.setOccupied(true);
 
                     try {
@@ -548,7 +548,7 @@ public class Controller implements Runnable {
         }
     }
 
-    public String getDijkstraPatg(Agv agv, Crane crane) {
+    public String getDijkstraPath(Agv agv, Crane crane) {
         Dijkstra dijkstra = new Dijkstra();
         String beginPoint = "";
         String endPoint = "";
@@ -592,10 +592,32 @@ public class Controller implements Runnable {
         } else if (crane.getType().equals("TruckCrane")) {
             endPoint = "D";
         } else if (crane.getType().equals("StorageCrane")) {
-            endPoint = "P";
-            // nog wat leuks voor bedenken
+            if (agv.getContainer().getDepartureTransportType().equals("vrachtauto")) {
+                if (beginPoint.equals("G")) {
+                    endPoint = "L";
+                } else {
+                    endPoint = "M";
+                }
+            } else if (agv.getContainer().getDepartureTransportType().equals("trein")) {
+                if (beginPoint.equals("G")) {
+                    endPoint = "O";
+                } else {
+                    endPoint = "N";
+                }
+            } else if (agv.getContainer().getDepartureTransportType().equals("binnenschip")) {
+                if (beginPoint.equals("G")) {
+                    endPoint = "'P";
+                } else {
+                    endPoint = "Q";
+                }
+            } else if (agv.getContainer().getDepartureTransportType().equals("zeeschip")) {
+                if (beginPoint.equals("G")) {
+                    endPoint = "'P";
+                } else {
+                    endPoint = "Q";
+                }
+            }
         }
-
         dijkie = dijkstra.shortestPath(beginPoint, endPoint);
         dijkie = dijkie.replace("[[", "");
         dijkie = dijkie.replace("]]", "");
