@@ -37,6 +37,7 @@ public class Controller implements Runnable {
     private Date currentDate;
     private long lastTime;
     private long sumTime = Integer.MAX_VALUE;
+    private long updateSpeedTime = Integer.MAX_VALUE;
     private Calendar cal;
     private Database database;
     private Model model;
@@ -62,8 +63,8 @@ public class Controller implements Runnable {
         model.getContainerPool().addAll(createContainersFromXmlResource());
         startServer();
         waitForServerConnection();
-        updateSpeed(speed);
         initDate(); // Keep this as CLOSE to `while (running)` as possible.
+        updateSpeed(speed);
         running = true;
         while (running) {
             if (!server.isRunning()) {
@@ -74,6 +75,10 @@ public class Controller implements Runnable {
             if (sumTime > 1000) {
                 spawnTransporters();
                 sumTime = 0;
+            }
+            if (updateSpeedTime > 10000) {
+                updateSpeed(speed);
+                updateSpeedTime = 0;
             }
             assignTransportersToDepots();
 
@@ -96,7 +101,7 @@ public class Controller implements Runnable {
     }
 
     public void updateSpeed(float speed) {
-        SpeedMessage message = new SpeedMessage(speed);
+        SpeedMessage message = new SpeedMessage(speed, currentDate.toString());
         messagePool.add(message);
         server.writeMessage(message.generateXml());
     }
@@ -108,7 +113,7 @@ public class Controller implements Runnable {
         cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 11);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 12);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
@@ -128,6 +133,7 @@ public class Controller implements Runnable {
         long curTime = System.currentTimeMillis();
         int deltaTime = (int) (curTime - lastTime);
         sumTime += deltaTime;
+        updateSpeedTime += deltaTime;
         cal.add(Calendar.MILLISECOND, (int) (deltaTime * speed));
         currentDate = cal.getTime();
         lastTime = curTime;
@@ -163,14 +169,14 @@ public class Controller implements Runnable {
     private List<Container> createContainersFromXmlResource() {
         List<Container> containers = new ArrayList<Container>();
         try {
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml2.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml3.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml4.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml5.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml6.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml7.xml")));
-            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml8.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml2.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml3.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml4.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml5.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml6.xml")));
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml7.xml")));
+            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml8.xml")));
         } catch (Exception e) {
             e.printStackTrace();
         }
