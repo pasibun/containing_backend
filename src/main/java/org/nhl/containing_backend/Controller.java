@@ -41,12 +41,16 @@ public class Controller implements Runnable {
     private Database database;
     private Model model;
     private List<Message> messagePool;
+    private List<Message> arriveMessagesList;
+    private List<Message> moveMessagesList;
 
     public Controller() {
         speed = 1;
         server = new Server();
         model = new Model();
         messagePool = new ArrayList<Message>();
+        arriveMessagesList = new ArrayList<Message>();
+        moveMessagesList = new ArrayList<Message>();
         database = new Database(model);
         running = false;
     }
@@ -514,7 +518,7 @@ public class Controller implements Runnable {
 
     }
 
-    private void moveAgv(Message message) {
+    private void moveAgvArrive(Message message) {
         if (message.getMessageType() == message.ARRIVE) {
             ArriveMessage arrivedMessage = (ArriveMessage) message;
             String dijkstra;
@@ -538,8 +542,60 @@ public class Controller implements Runnable {
                         MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
 
                         messagePool.add(moveMessage);
-                        //getClass().setProcessingMessageId(moveMessage.getId());
+                        agv.setProcessingMessageId(moveMessage.getId());
                         server.writeMessage(moveMessage.generateXml());
+                        break;
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }
+    }
+
+    private void moveAgvCrane(Message message) {
+        if (message.getMessageType() == message.MOVE) {
+            MoveMessage moveMessage = (MoveMessage) message;
+
+            String dijkstra;
+            int agvId;
+            float agvX;
+            float agvY;
+            Crane crane;
+
+            for (Message getMessage : moveMessagesList) {
+                MoveMessage moveToStorage = (MoveMessage) getMessage;
+
+                if (!moveToStorage.getAgv().isOccupied()) {
+
+                    agvId = moveToStorage.getAgv().getId();
+                    agvX = moveToStorage.getAgv().getX();
+                    agvY = moveToStorage.getAgv().getY();
+
+                    int craneLocation = 0;
+                    Calendar cal = GregorianCalendar.getInstance();
+                    cal.setTime(moveMessage.getAgv().getContainer().getDepartureDate());
+
+                    if (cal.get(Calendar.HOUR_OF_DAY) <= 6 && cal.get(Calendar.HOUR_OF_DAY) >= 0) {
+                        craneLocation = 0;
+                    } else if (cal.get(Calendar.HOUR_OF_DAY) <= 12 && cal.get(Calendar.HOUR_OF_DAY) >= 7) {
+                        craneLocation = 1;
+                    } else if (cal.get(Calendar.HOUR_OF_DAY) <= 18 && cal.get(Calendar.HOUR_OF_DAY) >= 13) {
+                        craneLocation = 2;
+                    } else if (cal.get(Calendar.HOUR_OF_DAY) <= 24 && cal.get(Calendar.HOUR_OF_DAY) >= 19) {
+                        craneLocation = 3;
+                    }
+
+                    crane = findCrane(moveMessage.getAgv().getContainer().getDepartureTransportType(), craneLocation);
+
+                    dijkstra = getDijkstraPath(moveToStorage.getAgv(), crane);
+                    moveToStorage.getAgv().setOccupied(true);
+
+                    try {
+                        MoveMessage moveCreateMessage = new MoveMessage(moveMessage.getAgv(), dijkstra, crane);
+
+                        messagePool.add(moveCreateMessage);
+                        moveToStorage.getAgv().setProcessingMessageId(moveCreateMessage.getId());
+                        server.writeMessage(moveCreateMessage.generateXml());
                         break;
                     } catch (Exception e) {
                     }
@@ -553,8 +609,8 @@ public class Controller implements Runnable {
         String beginPoint = "";
         String endPoint = "";
         String dijkie = "";
-        float west = -122f;
-        float east = 113f;
+        float east = -122f;
+        float west = 113f;
         //western ship platform -> goto waypoint P
         if (agv.getX() < 12 && agv.getY() == west) {
             beginPoint = "P";
@@ -673,8 +729,6 @@ public class Controller implements Runnable {
                 break;
             }
         }
-        moveCranes(message);
-        moveAgv(message);
         if (nobreak) {
             throw new Exception(id + " doesn't exist");
         }
@@ -684,16 +738,32 @@ public class Controller implements Runnable {
                 handleOkCreateMessage((CreateMessage) message);
                 break;
             case Message.ARRIVE:
-                handleOkArriveMessage((ArriveMessage) message);
+                arriveMessagesList.add(message);
+                moveAgvArrive(message);
                 break;
             case Message.SPEED:
                 handleOkSpeedMessage((SpeedMessage) message);
                 break;
             case Message.CRANE:
                 handleOkCraneMessage((CraneMessage) message);
+                moveAgvCrane(message);
+                for (Message removeArrive : arriveMessagesList) {
+                    ArriveMessage arrivedMessage = (ArriveMessage) removeArrive;
+                    if (arrivedMessage.getTransporter().getProcessingMessageId() == 1) {
+                        handleOkArriveMessage(arrivedMessage);
+                    }
+                }
                 break;
             case Message.MOVE:
-                handleOkMoveMessage((MoveMessage) message);
+                moveMessagesList.add(message);
+                moveCranes(message);
+                for (Message removeMove : moveMessagesList) {
+                    MoveMessage moveMessage = (MoveMessage) removeMove;
+                    if (moveMessage.getAgv().getProcessingMessageId() == 1
+                            && !moveMessage.getAgv().getContainer().equals(null)) {
+                        handleOkMoveMessage(moveMessage);
+                    }
+                }
                 break;
             case Message.DEPART:
                 handleOkDepartMessage((DepartMessage) message);
