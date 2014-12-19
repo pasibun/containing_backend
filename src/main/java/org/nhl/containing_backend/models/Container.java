@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class Container {
 
+    private boolean onStorage;
     private int number;
     private int arrivalDay;
     private int arrivalMonth;
@@ -43,7 +44,7 @@ public class Container {
             int departureDay, int departureMonth, int departureYear, String departureSpanStart,
             String departureSpanEnd, String departureTransportType, String departureCompany, String contentsName,
             String contentsType, String contentsDanger, String iso, float emptyWeight, float contentsWeight,
-            float length, float width, float height) {
+            float length, float width, float height, boolean onStorage) {
         this.number = number;
         this.arrivalDay = arrivalDay;
         this.arrivalMonth = arrivalMonth;
@@ -69,6 +70,7 @@ public class Container {
         this.length = length;
         this.width = width;
         this.height = height;
+        this.onStorage = onStorage;
     }
 
     /**
@@ -375,5 +377,13 @@ public class Container {
 
     public void setHeight(float height) {
         this.height = height;
+    }
+
+    public boolean isOnStorage() {
+        return onStorage;
+    }
+
+    public void setOnStorage(boolean onStorage) {
+        this.onStorage = onStorage;
     }
 }
