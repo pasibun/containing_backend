@@ -531,7 +531,7 @@ public class Controller implements Runnable {
                     agvY = agv.getY();
                     crane = findCrane(arrivedMessage.getTransporter().getType(), arrivedMessage.getDepotIndex());
 
-                    dijkstra = getDijkstraPatg(agv, crane);
+                    dijkstra = getDijkstraPath(agv, crane);
                     agv.setOccupied(true);
 
                     try {
@@ -548,7 +548,7 @@ public class Controller implements Runnable {
         }
     }
 
-    public String getDijkstraPatg(Agv agv, Crane crane) {
+    public String getDijkstraPath(Agv agv, Crane crane) {
         Dijkstra dijkstra = new Dijkstra();
         String beginPoint = "";
         String endPoint = "";
