@@ -39,11 +39,11 @@ public class Container {
     }
 
     public Container(int number, int arrivalDay, int arrivalMonth, int arrivalYear, String arrivalSpanStart,
-                     String arrivalSpanEnd, String arrivalTransportType, String arrivalCompany, String owner,
-                     int departureDay, int departureMonth, int departureYear, String departureSpanStart,
-                     String departureSpanEnd, String departureTransportType, String departureCompany, String contentsName,
-                     String contentsType, String contentsDanger, String iso, float emptyWeight, float contentsWeight,
-                     float length, float width, float height) {
+            String arrivalSpanEnd, String arrivalTransportType, String arrivalCompany, String owner,
+            int departureDay, int departureMonth, int departureYear, String departureSpanStart,
+            String departureSpanEnd, String departureTransportType, String departureCompany, String contentsName,
+            String contentsType, String contentsDanger, String iso, float emptyWeight, float contentsWeight,
+            float length, float width, float height) {
         this.number = number;
         this.arrivalDay = arrivalDay;
         this.arrivalMonth = arrivalMonth;
@@ -122,6 +122,7 @@ public class Container {
         message += "<xLoc>" + getSpawnX() + "</xLoc>";
         message += "<yLoc>" + getSpawnY() + "</yLoc>";
         message += "<zLoc>" + getSpawnZ() + "</zLoc>";
+        message += "<date>" + getDepartureDate() + "</date>";
 
         message += "</Container>";
 
