@@ -192,6 +192,7 @@ public class Model {
             float agvY = agvParkingY.get(id);
             agv.setX(agvX);
             agv.setY(agvY);
+            agv.setId(id);
 
             agvs.add(agv);
         } catch (IndexOutOfBoundsException e) {
