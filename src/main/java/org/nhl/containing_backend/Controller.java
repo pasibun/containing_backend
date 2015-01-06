@@ -681,7 +681,7 @@ public class Controller implements Runnable {
 
     private boolean checkforContainer(Message message) {
         MoveMessage moveMessage = (MoveMessage) message;
-        if (moveMessage.getAgv().getContainer().equals(null)) {
+        if (moveMessage.getAgv().getContainer() == null) {
             return false;
         } else {
             return true;
@@ -860,16 +860,16 @@ public class Controller implements Runnable {
         float east = -122f;
         float west = 113f;
         //western ship platform -> goto waypoint P
-        if (agv.getX() < 12 && agv.getY() == west) {
+        if (agv.getX() < 12 && agv.getY() == east) {
             beginPoint = "P";
         } //eastern ship platform -> goto waypoint Q
-        else if (agv.getX() < 12 && agv.getY() == east) {
+        else if (agv.getX() < 12 && agv.getY() == west) {
             beginPoint = "Q";
-        } //western train platform -> goto waypoint O
+        }//western train platform -> goto waypoint O
         else if (agv.getX() > 110f && agv.getX() < 300 && agv.getY() == west) {
             beginPoint = "O";
         } //eastern train platform -> goto waypoint N
-        else if (agv.getX() > 110f && agv.getX() < 300 && agv.getY() == east) {
+        else if (agv.getX() < 110f && agv.getX() < 300 && agv.getY() == east) {
             beginPoint = "N";
         } //western lorry platform -> goto waypoint L
         else if (agv.getX() > 365f && agv.getX() < 550 && agv.getY() == west) {
