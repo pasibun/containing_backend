@@ -987,7 +987,16 @@ public class Controller implements Runnable {
                 break;
             case Message.ARRIVE:
                 arriveMessagesList.add(message);
-                moveAgvArrive(message);
+                ArriveMessage arriveMessage = (ArriveMessage) message;
+                if (!arriveMessage.getTransporter().getType().equals("vrachtauto")) {
+                    for (int i = 0; i < arriveMessage.getTransporter().getContainers().size(); i++) {
+                        Thread.sleep(500);
+                        moveAgvArrive(message);
+                    }
+                } else {
+                    moveAgvArrive(message);
+                }
+
 
                 for (Message removeMove : moveMessagesList) {
                     MoveMessage moveMessage = (MoveMessage) removeMove;
