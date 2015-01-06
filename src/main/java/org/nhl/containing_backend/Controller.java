@@ -26,6 +26,7 @@ import org.nhl.containing_backend.communication.messages.MoveMessage;
 import org.nhl.containing_backend.cranes.Crane;
 import org.nhl.containing_backend.models.Storage;
 import org.nhl.containing_backend.vehicles.Agv;
+import sun.misc.GC;
 
 /**
  * Main controller class.
@@ -51,10 +52,10 @@ public class Controller implements Runnable {
         speed = 1;
         server = new Server();
         model = new Model();
-        messagePool = new ArrayList<Message>();
-        arriveMessagesList = new ArrayList<Message>();
-        moveMessagesList = new ArrayList<Message>();
-        containerListStorage = new ArrayList<Container>();
+        messagePool = new ArrayList<>();
+        arriveMessagesList = new ArrayList<>();
+        moveMessagesList = new ArrayList<>();
+        containerListStorage = new ArrayList<>();
         database = new Database(model);
         running = false;
     }
@@ -116,7 +117,7 @@ public class Controller implements Runnable {
         cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2004);
         cal.set(Calendar.MONTH, 11);
-        cal.set(Calendar.DAY_OF_MONTH, 14);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.SECOND, 0);
@@ -172,14 +173,15 @@ public class Controller implements Runnable {
     private List<Container> createContainersFromXmlResource() {
         List<Container> containers = new ArrayList<Container>();
         try {
-            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml2.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml3.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml4.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml5.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml6.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml7.xml")));
-            //containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml8.xml")));
+            /*containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml1.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml2.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml3.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml4.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml5.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml6.xml")));
+             containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml7.xml")));*/
+            containers.addAll(Xml.parseContainerXml(Controller.class.getResourceAsStream("/xml8.xml")));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -197,7 +199,7 @@ public class Controller implements Runnable {
         while (i.hasNext()) {
             Container container = i.next();
             Date arrivalDate = container.getArrivalDate();
-            if (arrivalDate.equals(currentDate)) {
+            if (arrivalDate.before(currentDate)) {
                 result.add(container);
                 i.remove();
             }
@@ -390,7 +392,10 @@ public class Controller implements Runnable {
      */
     private void moveContainerToAgv(Message message) {
         MoveMessage moveMessage = (MoveMessage) message;
-        ArriveMessage arriveMessage = (ArriveMessage) message;
+        ArriveMessage arriveMessage = null;
+        for (Message arriveMsg : arriveMessagesList) {
+            arriveMessage = (ArriveMessage) arriveMsg;
+        }
         String dijkie;
         Crane crane;
         crane = findCrane("Vrachtauto", 1);
@@ -413,6 +418,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("Q")) {
             //SchepenOpslag vrachtauto kant
@@ -424,6 +430,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("O")) {
             //TreinOpslag Trein kant
@@ -435,6 +442,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("N")) {
             //TreinOpslag vrachtauto kant
@@ -446,6 +454,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("L")) {
             //VrachtautoOpslag Trein kant
@@ -457,6 +466,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("M")) {
             //VrachtautoOpslag vrachtauto kant
@@ -468,21 +478,24 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else {
             int count;
             craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
             transporter = arriveMessage.getTransporter();
             agv = findAgv(message);
-            count = arriveMessage.getTransporter().getContainers().size();
+            count = arriveMessage.getTransporter().getContainers().size() - 1;
             container = arriveMessage.getTransporter().getContainers().get(count);
             storage = null;
 
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         }
+        arriveMessagesList.remove(arriveMessage);
     }
 
     /**
@@ -515,6 +528,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("Q")) {
             //SchepenOpslag vrachtauto kant
@@ -526,6 +540,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("O")) {
             //TreinOpslag Trein kant
@@ -537,6 +552,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("N")) {
             //TreinOpslag vrachtauto kant
@@ -548,6 +564,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("L")) {
             //VrachtautoOpslag Trein kant
@@ -559,6 +576,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else if (firstChar.equals("M")) {
             //VrachtautoOpslag vrachtauto kant
@@ -570,6 +588,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else {
             craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
@@ -581,6 +600,7 @@ public class Controller implements Runnable {
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
+            agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         }
     }
@@ -675,9 +695,20 @@ public class Controller implements Runnable {
      * @return
      */
     private Agv findAgv(Message message) {
-        MoveMessage moveMessage = (MoveMessage) message;
+        if (message.getMessageType() == Message.MOVE) {
+            MoveMessage moveMessage = (MoveMessage) message;
+            return moveMessage.getAgv();
+        } else if (message.getMessageType() == Message.ARRIVE) {
+            ArriveMessage arriveMessage = (ArriveMessage) message;
+            for (Agv agv : model.getAgvs()) {
+                if (!agv.isOccupied()) {
+                    agv.setOccupied(true);
+                    return agv;
+                }
+            }
 
-        return moveMessage.getAgv();
+        }
+        return null;
     }
 
     private Container findContainer(List<Container> containers) {
@@ -729,7 +760,7 @@ public class Controller implements Runnable {
      * @param message
      */
     private void moveAgvArrive(Message message) {
-        if (message.getMessageType() == message.ARRIVE) {
+        if (message.getMessageType() == Message.ARRIVE) {
             ArriveMessage arrivedMessage = (ArriveMessage) message;
             String dijkstra;
             int agvId;
@@ -855,46 +886,46 @@ public class Controller implements Runnable {
             beginPoint = "K";
         }
         //only call move method when there's a valid waypoint in the char[] to avoid exception
-
-        if (crane.getType().equals("DockingCraneInlandShip")) {
-            endPoint = "K";
-        } else if (crane.getType().equals("DockingCraneSeaShip")) {
-            endPoint = "J";
-        } else if (crane.getType().equals("TrainCrane")) {
-            endPoint = "I";
-        } else if (crane.getType().equals("TruckCrane")) {
-            endPoint = "D";
-        } else if (crane.getType().equals("StorageCrane")) {
-            if (agv.getContainer().getDepartureTransportType().equals("vrachtauto")) {
-                if (beginPoint.equals("G")) {
-                    endPoint = "L";
-                } else {
-                    endPoint = "M";
-                }
-            } else if (agv.getContainer().getDepartureTransportType().equals("trein")) {
-                if (beginPoint.equals("G")) {
-                    endPoint = "O";
-                } else {
-                    endPoint = "N";
-                }
-            } else if (agv.getContainer().getDepartureTransportType().equals("binnenschip")) {
-                if (beginPoint.equals("G")) {
-                    endPoint = "'P";
-                } else {
-                    endPoint = "Q";
-                }
-            } else if (agv.getContainer().getDepartureTransportType().equals("zeeschip")) {
-                if (beginPoint.equals("G")) {
-                    endPoint = "'P";
-                } else {
-                    endPoint = "Q";
+        if (crane != null) {
+            if (crane.getType().equals("DockingCraneInlandShip")) {
+                endPoint = "K";
+            } else if (crane.getType().equals("DockingCraneSeaShip")) {
+                endPoint = "J";
+            } else if (crane.getType().equals("TrainCrane")) {
+                endPoint = "I";
+            } else if (crane.getType().equals("TruckCrane")) {
+                endPoint = "D";
+            } else if (crane.getType().equals("StorageCrane")) {
+                if (agv.getContainer().getDepartureTransportType().equals("vrachtauto")) {
+                    if (beginPoint.equals("G")) {
+                        endPoint = "L";
+                    } else {
+                        endPoint = "M";
+                    }
+                } else if (agv.getContainer().getDepartureTransportType().equals("trein")) {
+                    if (beginPoint.equals("G")) {
+                        endPoint = "O";
+                    } else {
+                        endPoint = "N";
+                    }
+                } else if (agv.getContainer().getDepartureTransportType().equals("binnenschip")) {
+                    if (beginPoint.equals("G")) {
+                        endPoint = "'P";
+                    } else {
+                        endPoint = "Q";
+                    }
+                } else if (agv.getContainer().getDepartureTransportType().equals("zeeschip")) {
+                    if (beginPoint.equals("G")) {
+                        endPoint = "'P";
+                    } else {
+                        endPoint = "Q";
+                    }
                 }
             }
+            dijkie = dijkstra.shortestPath(beginPoint, endPoint);
+            dijkie = dijkie.replace("[[", "");
+            dijkie = dijkie.replace("]]", "");
         }
-        dijkie = dijkstra.shortestPath(beginPoint, endPoint);
-        dijkie = dijkie.replace("[[", "");
-        dijkie = dijkie.replace("]]", "");
-
         return dijkie;
     }
 
@@ -980,9 +1011,12 @@ public class Controller implements Runnable {
                 }
                 break;
             case Message.MOVE:
+                MoveMessage moveMsg = (MoveMessage) message;
+                moveMsg.getAgv().setOccupied(false);
                 moveMessagesList.add(message);
-                moveCranes(message);
+                moveCranes(moveMsg);
                 break;
+
             case Message.DEPART:
                 handleOkDepartMessage((DepartMessage) message);
                 break;
@@ -996,8 +1030,11 @@ public class Controller implements Runnable {
         message.getTransporter().setProcessingMessageId(-1);
     }
 
-    private void handleOkArriveMessage(ArriveMessage message) {
-        message.getTransporter().setProcessingMessageId(-1);
+    private void handleOkArriveMessage(Message message) {
+        ArriveMessage currentMsg = (ArriveMessage) message;
+        Agv agv = findAgv(message);
+        agv.setOccupied(false);
+        arriveMessagesList.add(message);
     }
 
     private void handleOkSpeedMessage(SpeedMessage message) {
