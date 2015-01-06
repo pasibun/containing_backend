@@ -39,7 +39,7 @@ public class CraneMessage extends Message {
         message += "<TransporterId>"+ transporter.getId() + "</TransporterId>";
         
         message += "<Storage>" + 1 + "</Storage>";
-        message += "<AgvId>" + 1 + "</AgvId>";
+        message += "<AgvId>" + agv.getId() + "</AgvId>";
         
         message += "<Container>" + container.getNumber() + "</Container>";
         message += "</Crane>";
