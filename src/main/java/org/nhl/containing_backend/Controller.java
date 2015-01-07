@@ -369,6 +369,8 @@ public class Controller implements Runnable {
                 transporter.setOccupied(true);
 
                 ArriveMessage message = new ArriveMessage(transporter, spot);
+                //Database update
+                database.updateDatabaseTransporters(transporter);
                 messagePool.add(message);
                 transporter.setProcessingMessageId(message.getId());
                 server.writeMessage(message.generateXml());
@@ -416,6 +418,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -428,6 +431,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -440,6 +444,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -452,6 +457,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -464,6 +470,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -476,6 +483,7 @@ public class Controller implements Runnable {
             container = findContainer(containerListStorage);
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -490,6 +498,7 @@ public class Controller implements Runnable {
             storage = null;
 
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            updateDatabase(craneTransporter);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -526,6 +535,7 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -538,6 +548,7 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -550,6 +561,7 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -562,6 +574,7 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -574,6 +587,7 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -586,18 +600,21 @@ public class Controller implements Runnable {
             container = moveMessage.getAgv().getContainer();
             storage = model.getStorage();
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            database.updateDatabaseStorage(storage);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
             server.writeMessage(craneMSG.generateXml());
         } else {
             craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
+            
             transporter = arriveMessage.getTransporter();
             agv = findAgv(message);
             container = moveMessage.getAgv().getContainer();
             storage = null;
 
             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+            updateDatabase(craneTransporter);
             messagePool.add(craneMSG);
             agv.setProcessingMessageId(craneMSG.getId());
             agv.setOccupied(true);
@@ -781,7 +798,6 @@ public class Controller implements Runnable {
 
                     try {
                         MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
-
                         messagePool.add(moveMessage);
                         agv.setProcessingMessageId(moveMessage.getId());
                         server.writeMessage(moveMessage.generateXml());
@@ -1064,6 +1080,19 @@ public class Controller implements Runnable {
 
     private void handleOkDepartMessage(DepartMessage message) {
         message.getTransporter().setProcessingMessageId(-1);
+    }
+
+    private void updateDatabase(Crane crane) {
+        if (crane.getType().equals("TrainCrane")) {
+           database.updateTrainCrane(crane);
+        } else if (crane.getType().equals("TruckCrane")) {
+            database.updateTruckCrane(crane);
+        }else if (crane.getType().equals("DockingCraneInlandShip")) {
+            database.updateDockingCraneInland(crane);
+        }else if (crane.getType().equals("DockingCraneSeaShip")) {
+            database.updateDockingCraneSea(crane);
+        }
+    
     }
 
     @Override
