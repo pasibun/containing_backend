@@ -9,7 +9,6 @@ import es.usc.citius.hipster.model.problem.SearchProblem;
 import es.usc.citius.hipster.util.graph.GraphBuilder;
 import es.usc.citius.hipster.util.graph.GraphSearchProblem;
 import es.usc.citius.hipster.util.graph.HipsterDirectedGraph;
-import java.util.List;
 
 /**
  *
