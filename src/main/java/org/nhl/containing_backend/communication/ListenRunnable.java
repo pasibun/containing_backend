@@ -15,7 +15,7 @@ class ListenRunnable implements Runnable {
 
     public ListenRunnable(BufferedReader in) {
         this.in = in;
-        this.queue = new ConcurrentLinkedQueue<String>();
+        this.queue = new ConcurrentLinkedQueue<>();
     }
 
     @Override

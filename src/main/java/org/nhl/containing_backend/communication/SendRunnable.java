@@ -14,7 +14,7 @@ class SendRunnable implements Runnable {
 
     public SendRunnable(PrintWriter out) {
         this.out = out;
-        this.queue = new ConcurrentLinkedQueue<String>();
+        this.queue = new ConcurrentLinkedQueue<>();
     }
 
     @Override

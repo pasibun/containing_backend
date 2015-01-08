@@ -14,7 +14,7 @@ public class Storage extends ContainerHolder {
         // Instantiate all stacks in the 2D array.
         for (int row = 0; row < rowsCount; row++) {
             for (int column = 0; column < columnsCount; column++) {
-                containers[row][column] = new ArrayDeque<Container>();
+                containers[row][column] = new ArrayDeque<>();
             }
         }
     }

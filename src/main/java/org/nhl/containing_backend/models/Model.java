@@ -32,19 +32,19 @@ public class Model {
     private List<Float> agvParkingY;
 
     public Model() {
-        containerPool = new ArrayList<Container>();
-        agvs = new ArrayList<Agv>();
-        transporters = new ArrayList<Transporter>();
-        depots = new HashMap<String, Transporter[]>();
+        containerPool = new ArrayList<>();
+        agvs = new ArrayList<>();
+        transporters = new ArrayList<>();
+        depots = new HashMap<>();
         depots.put("vrachtauto", new Transporter[20]);
         depots.put("trein", new Transporter[1]);
         depots.put("binnenschip", new Transporter[2]);
         depots.put("zeeschip", new Transporter[1]);
-        storageCranes = new ArrayList<StorageCrane>();
-        dockingCranesInland = new ArrayList<DockingCraneInlandShip>();
-        dockingCranesSea = new ArrayList<DockingCraneSeaShip>();
-        trainCranes = new ArrayList<TrainCrane>();
-        truckCranes = new ArrayList<TruckCrane>();
+        storageCranes = new ArrayList<>();
+        dockingCranesInland = new ArrayList<>();
+        dockingCranesSea = new ArrayList<>();
+        trainCranes = new ArrayList<>();
+        truckCranes = new ArrayList<>();
         agvParkingX = new ArrayList<>();
         agvParkingY = new ArrayList<>();
         initStartModel();
@@ -58,7 +58,7 @@ public class Model {
      * (indices) for that type as value.
      */
     public HashMap<String, List<Integer>> availableDepots() {
-        HashMap<String, List<Integer>> result = new HashMap<String, List<Integer>>();
+        HashMap<String, List<Integer>> result = new HashMap<>();
         for (String key : depots.keySet()) {
             result.put(key, availableDepotsForType(key));
         }
@@ -66,7 +66,7 @@ public class Model {
     }
 
     private List<Integer> availableDepotsForType(String type) {
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
         for (int i = 0; i < depots.get(type).length; i++) {
             if (depots.get(type)[i] == null) {
                 result.add(i);
@@ -207,7 +207,7 @@ public class Model {
     }
 
     private void initDockingCraneInland() {
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 8; i++) {
             DockingCraneInlandShip dockingCraneInland = new DockingCraneInlandShip("DockingCraneInlandShip");
             dockingCraneInland.setId(i);
             dockingCranesInland.add(dockingCraneInland);
@@ -215,7 +215,7 @@ public class Model {
     }
 
     private void initDockingCraneSea() {
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 10; i++) {
             DockingCraneSeaShip dockingCraneSea = new DockingCraneSeaShip("DockingCraneSeaShip");
             dockingCraneSea.setId(i);
             dockingCranesSea.add(dockingCraneSea);

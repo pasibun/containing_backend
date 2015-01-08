@@ -4,7 +4,6 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.nhl.containing_backend.models.Container;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
