@@ -15,10 +15,10 @@ import java.util.Stack;
  * Handler class for use in Xml.
  */
 class XmlFileHandler extends DefaultHandler {
-    public List<Container> containers = new ArrayList<Container>();
 
-    private Stack<String> elementStack = new Stack<String>();
-    private Stack<Container> containerStack = new Stack<Container>();
+    public List<Container> containers = new ArrayList<>();
+    private Stack<String> elementStack = new Stack<>();
+    private Stack<Container> containerStack = new Stack<>();
 
     @Override
     public void startDocument() throws SAXException {
@@ -30,7 +30,7 @@ class XmlFileHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName,
-                             String qName, Attributes attributes)
+            String qName, Attributes attributes)
             throws SAXException {
         elementStack.push(qName);
 

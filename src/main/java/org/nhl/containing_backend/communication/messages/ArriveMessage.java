@@ -16,6 +16,7 @@ public class ArriveMessage extends Message {
         this.depotIndex = depotIndex;
     }
 
+    @Override
     public String generateXml() {
         String message = "";
         message += "<id>" + getId() + "</id>";

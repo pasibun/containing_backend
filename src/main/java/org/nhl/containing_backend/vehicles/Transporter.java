@@ -21,7 +21,7 @@ public class Transporter extends Vehicle {
         // Instantiate all stacks in the 2D array.
         for (int row = 0; row < rowsCount; row++) {
             for (int column = 0; column < columnsCount; column++) {
-                this.containers[row][column] = new ArrayDeque<Container>();
+                this.containers[row][column] = new ArrayDeque<>();
             }
         }
 

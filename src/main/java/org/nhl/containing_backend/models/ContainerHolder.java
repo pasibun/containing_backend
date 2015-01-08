@@ -92,7 +92,7 @@ public abstract class ContainerHolder implements ProcessesMessage {
      * @return List of all containers.
      */
     public List<Container> getContainers() {
-        List<Container> result = new ArrayList<Container>();
+        List<Container> result = new ArrayList<>();
         for (int i = 0; i < containers.length; i++) {
             for (int j = 0; j < containers[i].length; j++) {
                 for (Container container : containers[i][j]) {

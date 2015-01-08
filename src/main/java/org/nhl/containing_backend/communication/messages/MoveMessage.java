@@ -1,10 +1,7 @@
 package org.nhl.containing_backend.communication.messages;
 
-import es.usc.citius.hipster.util.graph.HipsterDirectedGraph;
-import org.nhl.containing_backend.Dijkstra;
 import org.nhl.containing_backend.cranes.Crane;
 import org.nhl.containing_backend.vehicles.Agv;
-import org.nhl.containing_backend.vehicles.Transporter;
 
 /**
  *
@@ -22,6 +19,7 @@ public class MoveMessage extends Message {
         this.crane = crane;
     }
 
+    @Override
     public String generateXml() {
         String message = "";
         message += "<id>" + getId() + "</id>";

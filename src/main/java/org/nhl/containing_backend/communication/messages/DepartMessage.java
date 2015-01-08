@@ -14,6 +14,7 @@ public class DepartMessage extends Message {
         this.transporter = transporter;
     }
 
+    @Override
     public String generateXml() {
         String message = "";
         message += "<id>" + getId() + "</id>";
