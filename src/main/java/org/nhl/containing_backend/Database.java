@@ -43,7 +43,7 @@ public class Database {
             conn = DriverManager.getConnection(url + dbName, userName, password);
             statement = conn.createStatement();
 
-            String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storagecrane, traincrane, truckcrane, transporter, storage";
+            String delete = "DROP TABLE IF EXISTS agv, seacrane, inlandcrane, storagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
 
@@ -52,7 +52,12 @@ public class Database {
                     + " agv_counter int, "
                     + " PRIMARY KEY ( id ))";
 
-            String sqlDockingCrane = "CREATE TABLE dockingcrane "
+            String sqlSeaCrane = "CREATE TABLE seacrane "
+                    + "(id INTEGER NULL AUTO_INCREMENT, "
+                    + " crane_container_processed int, "
+                    + " PRIMARY KEY ( id ))";
+            
+            String sqlInlandCrane = "CREATE TABLE inlandcrane "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " crane_container_processed int, "
                     + " PRIMARY KEY ( id ))";
@@ -86,7 +91,8 @@ public class Database {
             statement.executeUpdate(sqlAGV);
             statement.executeUpdate(sqlTransporter);
             statement.executeUpdate(sqlStorage);
-            statement.executeUpdate(sqlDockingCrane);
+            statement.executeUpdate(sqlSeaCrane);
+            statement.executeUpdate(sqlInlandCrane);
             statement.executeUpdate(sqlStorageCrane);
             statement.executeUpdate(sqlTrainCrane);
             statement.executeUpdate(sqlTruckCrane);
@@ -155,7 +161,7 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "UPDATE dockingcrane "
+            String sqlupdate = "UPDATE inlandcrane "
                     + "SET crane_container_processed = (crane_container_processed + 1)"
                     + "WHERE id='" + dockingCrane.getId() + "'";
 
@@ -179,7 +185,7 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "UPDATE dockingcrane "
+            String sqlupdate = "UPDATE seacrane "
                     + "SET crane_container_processed = (crane_container_processed + 1)"
                     + "WHERE id='" + dockingCrane.getId() + "'";
 
@@ -311,7 +317,7 @@ public class Database {
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                String sqlupdate = "INSERT INTO inlandcrane(crane_container_processed) "
                         + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
@@ -329,7 +335,7 @@ public class Database {
                 Connection conn = DriverManager.getConnection(url + dbName, userName, password);
                 Statement st = conn.createStatement();
 
-                String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
+                String sqlupdate = "INSERT INTO seacrane(crane_container_processed) "
                         + " VALUES('0')";
                 st.executeUpdate(sqlupdate);
 
