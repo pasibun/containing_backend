@@ -9,12 +9,24 @@ import java.util.ArrayDeque;
  * Little robot vehicle.
  */
 public class Agv extends Vehicle {
+
     private Point point = new Point(0, 0);
+
+    public enum locationTypeEnum {
+
+        INLANDSHIP("binnenschip"), SEASHIP("zeeschip"), TRAIN("trein"), TRUCK("vrachtauto"), NONE("");
+        public String value;
+
+        private locationTypeEnum(String value) {
+            this.value = value;
+        }
+    };
+    private locationTypeEnum locationType = locationTypeEnum.NONE;
 
     public Agv() {
         super();
         containers = new ArrayDeque[1][1];
-        containers[0][0] = new ArrayDeque<Container>();
+        containers[0][0] = new ArrayDeque<>();
     }
 
     /**
@@ -42,5 +54,44 @@ public class Agv extends Vehicle {
      */
     public Container getContainer() {
         return containers[0][0].peek();
+    }
+
+    public String getLocationType() {
+        String returnValue;
+        switch (locationType) {
+            case INLANDSHIP:
+                returnValue = "binnenschip";
+                break;
+            case SEASHIP:
+                returnValue = "zeeschip";
+                break;
+            case TRAIN:
+                returnValue = "trein";
+                break;
+            case TRUCK:
+                returnValue = "vrachtauto";
+                break;
+            default:
+                returnValue = "";
+                break;
+        }
+        return returnValue;
+    }
+
+    public void setLocationType(String locationType) {
+        switch (locationType) {
+            case "binnenschip":
+                this.locationType = locationTypeEnum.INLANDSHIP;
+                break;
+            case "zeeschip":
+                this.locationType = locationTypeEnum.SEASHIP;
+                break;
+            case "trein":
+                this.locationType = locationTypeEnum.TRAIN;
+                break;
+            case "vrachtauto":
+                this.locationType = locationTypeEnum.TRUCK;
+                break;
+        }
     }
 }

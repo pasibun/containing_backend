@@ -420,7 +420,7 @@ public class Controller implements Runnable {
                             //SchepenOpslag Trein kant
                             craneTransporter = findCrane("StorageSchipNorth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -436,7 +436,7 @@ public class Controller implements Runnable {
                             //SchepenOpslag vrachtauto kant
                             craneTransporter = findCrane("StorageSchipSouth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -452,7 +452,7 @@ public class Controller implements Runnable {
                             //TreinOpslag Trein kant
                             craneTransporter = findCrane("StorageTreinpNorth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -468,7 +468,7 @@ public class Controller implements Runnable {
                             //TreinOpslag vrachtauto kant
                             craneTransporter = findCrane("StorageTrainSouth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -484,7 +484,7 @@ public class Controller implements Runnable {
                             //VrachtautoOpslag Trein kant
                             craneTransporter = findCrane("StorageVrachtautoNorth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -500,7 +500,7 @@ public class Controller implements Runnable {
                             //VrachtautoOpslag vrachtauto kant
                             craneTransporter = findCrane("StorageVrachtautoSouth", arriveMessage.getDepotIndex());
                             transporter = null;
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             container = findContainer(containerListStorage);
                             storage = model.getStorage();
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
@@ -516,7 +516,7 @@ public class Controller implements Runnable {
                             int count;
                             craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
                             transporter = arriveMessage.getTransporter();
-                            agv = findAgv(message);
+                            agv = findAgv(arriveMessage);
                             count = arriveMessage.getTransporter().getContainers().size() - 1;
                             container = arriveMessage.getTransporter().getContainers().get(count);
                             storage = null;
@@ -748,7 +748,7 @@ public class Controller implements Runnable {
         } else if (message.getMessageType() == Message.ARRIVE) {
             ArriveMessage arriveMessage = (ArriveMessage) message;
             for (Agv agv : model.getAgvs()) {
-                if (!agv.isOccupied()) {
+                if (!agv.isOccupied() && arriveMessage.getTransporter().getType().equals(agv.getLocationType())) {
                     agv.setOccupied(true);
                     return agv;
                 }
@@ -830,6 +830,7 @@ public class Controller implements Runnable {
                         MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
                         messagePool.add(moveMessage);
                         agv.setProcessingMessageId(moveMessage.getId());
+                        agv.setLocationType(arrivedMessage.getTransporter().getType());
                         server.writeMessage(moveMessage.generateXml());
                         
                         
