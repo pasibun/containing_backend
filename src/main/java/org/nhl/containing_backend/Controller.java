@@ -857,7 +857,7 @@ public class Controller implements Runnable {
             for (Message getMessage : moveMessagesList) {
                 MoveMessage moveToStorage = (MoveMessage) getMessage;
 
-                if (!moveToStorage.getAgv().isOccupied()) {
+                if (!moveToStorage.getAgv().isOccupied() && moveToStorage.getAgv().getContainer() != null) {
                     
                     agvId = moveToStorage.getAgv().getId();
                     agvX = moveToStorage.getAgv().getX();
