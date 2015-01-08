@@ -43,7 +43,7 @@ public class Database {
             conn = DriverManager.getConnection(url + dbName, userName, password);
             statement = conn.createStatement();
 
-            String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storeagecrane, traincrane, truckcrane, transporter, storage";
+            String delete = "DROP TABLE IF EXISTS agv, dockingcrane, storagecrane, traincrane, truckcrane, transporter, storage";
 
             statement.executeUpdate(delete);
 
@@ -75,7 +75,7 @@ public class Database {
             String sqlTransporter = "CREATE TABLE transporter "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " transporter_name VARCHAR(255), "
-                    + " container_counter int, "
+                    + " container_counter int DEFAULT 0, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlStorage = "CREATE TABLE storage "
@@ -109,10 +109,9 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO transporter(id, transporter_name, container_counter) "
-                    + " VALUES('" + transport.getId() + "')"
-                    + " VALUES('" + transport.getType() + "')"
-                    + " VALUES('" + transport.getContainers().size() + "')";
+            String sqlupdate = "UPDATE transporter "
+                    + "SET container_counter = (container_counter + " + transport.getContainers().size() + ") "
+                    + "WHERE transporter_name = '" + transport.getType() + "'";
             st.executeUpdate(sqlupdate);
 
             conn.close();
@@ -133,8 +132,8 @@ public class Database {
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO transporter(container_total) "
-                    + " VALUES('" + storage.getContainers().size() + "')";
+            String sqlupdate = "UPDATE transporter "
+                    + "SET container_total = " + storage.getContainers().size() + "";
 
             st.executeUpdate(sqlupdate);
 
@@ -150,14 +149,15 @@ public class Database {
      *
      * @param dockingCrane
      */
-    public void updateDockingCraneInland(DockingCraneInlandShip dockingCrane) {
+    public void updateDockingCraneInland(Crane dockingCrane) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
-                    + " VALUES('" + dockingCrane.getContainers().size() + "')";
+            String sqlupdate = "UPDATE dockingcrane "
+                    + "SET crane_container_processed = (crane_container_processed + 1)"
+                    + "WHERE id='" + dockingCrane.getId() + "'";
 
             st.executeUpdate(sqlupdate);
 
@@ -173,37 +173,15 @@ public class Database {
      *
      * @param dockingCrane
      */
-    public void updateDockingCraneSea(DockingCraneSeaShip dockingCrane) {
+    public void updateDockingCraneSea(Crane dockingCrane) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO dockingcrane(crane_container_processed) "
-                    + " VALUES('" + dockingCrane.getContainers().size() + "')";
-
-            st.executeUpdate(sqlupdate);
-
-            conn.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Update Database for storage crane
-     *
-     * @param storageCrane
-     */
-    public void updateStorageCrane(StorageCrane storageCrane) {
-        try {
-            Class.forName(driver).newInstance();
-            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
-            Statement st = conn.createStatement();
-
-            String sqlupdate = "INSERT INTO storagecrane(crane_container_processed) "
-                    + " VALUES('" + storageCrane.getContainers().size() + "')";
+            String sqlupdate = "UPDATE dockingcrane "
+                    + "SET crane_container_processed = (crane_container_processed + 1)"
+                    + "WHERE id='" + dockingCrane.getId() + "'";
 
             st.executeUpdate(sqlupdate);
 
@@ -219,14 +197,15 @@ public class Database {
      *
      * @param trainCrane
      */
-    public void updateTrainCrane(TrainCrane trainCrane) {
+    public void updateTrainCrane(Crane trainCrane) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO traincrane(crane_container_processed) "
-                    + " VALUES('" + trainCrane.getContainers().size() + "')";
+            String sqlupdate = "UPDATE traincrane "
+                    + "SET crane_container_processed = (crane_container_processed + 1)"
+                    + "WHERE id='" + trainCrane.getId() + "'";
 
             st.executeUpdate(sqlupdate);
 
@@ -242,14 +221,15 @@ public class Database {
      *
      * @param truckCrane
      */
-    public void updateTruckCrane(TruckCrane truckCrane) {
+    public void updateTruckCrane(Crane truckCrane) {
         try {
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(url + dbName, userName, password);
             Statement st = conn.createStatement();
 
-            String sqlupdate = "INSERT INTO truckcrane(crane_container_processed) "
-                    + " VALUES('" + truckCrane.getContainers().size() + "')";
+            String sqlupdate = "UPDATE truckcrane "
+                    + "SET crane_container_processed = (crane_container_processed + 1)"
+                    + "WHERE id='" + truckCrane.getId() + "'";
 
             st.executeUpdate(sqlupdate);
 
@@ -270,6 +250,40 @@ public class Database {
         initStorageCrane();
         initTrainCrane();
         initTruckCrane();
+        initTransporter();
+    }
+
+    private void initTransporter() {
+        try {
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(url + dbName, userName, password);
+            Statement st = conn.createStatement();
+
+            String sqlupdate1 = "INSERT INTO transporter(transporter_name) "
+                    + "VALUES ('trein') ";
+
+            String sqlupdate2 = "INSERT INTO transporter(transporter_name) "
+                    + "VALUES ('vrachtauto')";
+
+            String sqlupdate3 = "INSERT INTO transporter(transporter_name) "
+                    + "VALUES ('zeeschip')";
+
+            String sqlupdate4 = "INSERT INTO transporter(transporter_name) "
+                    + "VALUES ('binnenschip')";
+
+
+
+            st.executeUpdate(sqlupdate1);
+            st.executeUpdate(sqlupdate2);
+            st.executeUpdate(sqlupdate3);
+            st.executeUpdate(sqlupdate4);
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initAgv() {
@@ -307,7 +321,7 @@ public class Database {
             e.printStackTrace();
         }
     }
-    
+
     private void initDockingCraneSea() {
         try {
             for (DockingCraneSeaShip dockingCraneSea : model.getDockingCranesSea()) {
