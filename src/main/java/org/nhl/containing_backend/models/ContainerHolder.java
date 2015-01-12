@@ -102,14 +102,20 @@ public abstract class ContainerHolder implements ProcessesMessage {
         }
         return result;
     }
-    
-    public Container popContainerFromDeque(Container con)
-    {
+/*
+    public void setContainers(ArrayDeque<Container>[][] containers) {
+        List<Container> result = new ArrayList<>();
+       int containerLength = containers.length;
+       int containerLength2 = containers[containerLength].length;
+       containers[containerLength][containerLength2].add(this.containers);
+
+    }
+*/
+    public Container popContainerFromDeque(Container con) {
         for (int i = 0; i < containers.length; i++) {
             for (int j = 0; j < containers[i].length; j++) {
                 for (Container container : containers[i][j]) {
-                    if(con == container)
-                    {
+                    if (con == container) {
                         containers[i][j].remove(con);
                         return container;
                     }
@@ -118,6 +124,7 @@ public abstract class ContainerHolder implements ProcessesMessage {
         }
         return null;
     }
+
     public boolean isOccupied() {
         return occupied;
     }
@@ -161,5 +168,4 @@ public abstract class ContainerHolder implements ProcessesMessage {
     public void setY(float y) {
         this.y = y;
     }
-    
 }

@@ -80,7 +80,7 @@ public class Database {
             String sqlTransporter = "CREATE TABLE transporter "
                     + "(id INTEGER NULL AUTO_INCREMENT, "
                     + " transporter_name VARCHAR(255), "
-                    + " container_counter int DEFAULT 0, "
+                    + " container_counter int DEFAULT 1, "
                     + " PRIMARY KEY ( id ))";
 
             String sqlStorage = "CREATE TABLE storage "

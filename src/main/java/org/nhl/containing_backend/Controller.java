@@ -394,7 +394,6 @@ public class Controller implements Runnable {
         Iterator<Message> i = arriveMessagesList.iterator();
         while (i.hasNext()) {
             arriveMessage = (ArriveMessage) i.next();
-
             String dijkie;
             Crane crane;
             crane = findCrane("Vrachtauto", 1);
@@ -420,6 +419,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -436,6 +436,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -452,6 +453,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -468,6 +470,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -484,6 +487,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -500,12 +504,14 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         database.updateDatabaseStorage(storage);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
                         break;
                     }
                     default: {
+
                         int count;
                         count = arriveMessage.getTransporter().getContainers().size() - 1;
                         container = arriveMessage.getTransporter().getContainers().get(count);
@@ -517,6 +523,7 @@ public class Controller implements Runnable {
                         craneTransporter.setOccupied(true);
                         updateDatabase(craneTransporter);
                         messagePool.add(craneMSG);
+                        //agv.setContainers(container);                                
                         agv.setProcessingMessageId(craneMSG.getId());
                         agv.setOccupied(true);
                         server.writeMessage(craneMSG.generateXml());
@@ -687,48 +694,6 @@ public class Controller implements Runnable {
                 }
             }
         }
-        if (transporttype.equals("StorageTreinNorth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageTreinSouth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageSchipNorth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageSchipSouth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageVrachtautoNorth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageVrachtautoSouth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (crane.getId() == craneId) {
-                    return crane;
-                }
-            }
-        }
         return null;
     }
 
@@ -761,44 +726,34 @@ public class Controller implements Runnable {
                 }
             }
         }
-        if (transporttype.equals("StorageTreinNorth")) {
+        return null;
+    }
+
+    private Crane findstoragecrane(String transporttype) {
+        if (transporttype.equals("vrachtauto") || transporttype.equals("TruckCrane")) {
             for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
+                if (!crane.isOccupied() && crane.getType().equals("vrachtauto")) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("StorageTreinSouth")) {
+        if (transporttype.equals("trein") || transporttype.equals("TrainCrane")) {
             for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
+                if (!crane.isOccupied() && crane.getType().equals("trein")) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("StorageSchipNorth")) {
+        if (transporttype.equals("binnenschip") || transporttype.equals("DockingCraneInlandShip")) {
             for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
+                if (!crane.isOccupied() && crane.getType().equals("binnenschip")) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("StorageSchipSouth")) {
+        if (transporttype.equals("zeeschip") || transporttype.equals("DockingCraneSeaShip")) {
             for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageVrachtautoNorth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
-                    return crane;
-                }
-            }
-        }
-        if (transporttype.equals("StorageVrachtautoSouth")) {
-            for (Crane crane : model.getStorageCrane()) {
-                if (!crane.isOccupied()) {
+                if (!crane.isOccupied() && crane.getType().equals("zeeschip")) {
                     return crane;
                 }
             }
@@ -877,6 +832,8 @@ public class Controller implements Runnable {
             messagePool.add(departMessage);
             craneMessage.getTransporter().setProcessingMessageId(departMessage.getId());
             server.writeMessage(departMessage.generateXml());
+            craneMessage.getAgv().setOccupied(false);
+            moveAgvCrane(message);
         }
 
     }
@@ -930,23 +887,23 @@ public class Controller implements Runnable {
             for (Message getMessage : moveMessagesList) {
                 MoveMessage moveToStorage = (MoveMessage) getMessage;
 
-                if (moveToStorage.getAgv().isOccupied() && moveToStorage.getAgv().getContainer() != null) {
+                if (!moveToStorage.getAgv().isOccupied()) {
 
                     int craneLocation = 0;
-                    Calendar localCal = GregorianCalendar.getInstance();
-                    localCal.setTime(moveToStorage.getAgv().getContainer().getDepartureDate());
+                    /*Calendar localCal = GregorianCalendar.getInstance();
+                     localCal.setTime(moveToStorage.getAgv().getContainer().getDepartureDate());
 
-                    if (localCal.get(Calendar.HOUR_OF_DAY) <= 6 && localCal.get(Calendar.HOUR_OF_DAY) >= 0) {
-                        craneLocation = 0;
-                    } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 12 && localCal.get(Calendar.HOUR_OF_DAY) >= 7) {
-                        craneLocation = 1;
-                    } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 18 && localCal.get(Calendar.HOUR_OF_DAY) >= 13) {
-                        craneLocation = 2;
-                    } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 24 && localCal.get(Calendar.HOUR_OF_DAY) >= 19) {
-                        craneLocation = 3;
-                    }
+                     if (localCal.get(Calendar.HOUR_OF_DAY) <= 6 && localCal.get(Calendar.HOUR_OF_DAY) >= 0) {
+                     craneLocation = 0;
+                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 12 && localCal.get(Calendar.HOUR_OF_DAY) >= 7) {
+                     craneLocation = 1;
+                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 18 && localCal.get(Calendar.HOUR_OF_DAY) >= 13) {
+                     craneLocation = 2;
+                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 24 && localCal.get(Calendar.HOUR_OF_DAY) >= 19) {
+                     craneLocation = 3;
+                     */
 
-                    crane = findCrane(moveToStorage.getAgv().getContainer().getDepartureTransportType(), craneLocation);
+                    crane = findstoragecrane(moveToStorage.getAgv().getContainer().getDepartureTransportType());
 
                     dijkstra = getDijkstraPath(moveToStorage.getAgv(), crane);
                     moveToStorage.getAgv().setOccupied(true);
@@ -1130,7 +1087,7 @@ public class Controller implements Runnable {
                 break;
             case Message.CRANE:
                 handleOkCraneMessage((CraneMessage) message);
-                moveAgvCrane(message);
+                //moveAgvCrane(message);
                 for (Message removeArrive : arriveMessagesList) {
                     ArriveMessage arrivedMessage = (ArriveMessage) removeArrive;
                     if (arrivedMessage.getTransporter().getProcessingMessageId() == 1) {

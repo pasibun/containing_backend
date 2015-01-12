@@ -12,6 +12,7 @@ public class Agv extends Vehicle {
 
     private Point point = new Point(0, 0);
 
+
     public enum locationTypeEnum {
 
         INLANDSHIP("binnenschip"), SEASHIP("zeeschip"), TRAIN("trein"), TRUCK("vrachtauto"), NONE("");
@@ -55,6 +56,7 @@ public class Agv extends Vehicle {
     public Container getContainer() {
         return containers[0][0].peek();
     }
+   
 
     public String getLocationType() {
         String returnValue;
