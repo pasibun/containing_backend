@@ -30,6 +30,8 @@ import org.nhl.containing_backend.vehicles.Agv;
  */
 public class Controller implements Runnable {
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
     private float speed;
     private boolean running;
     private Server server;
@@ -547,12 +549,14 @@ public class Controller implements Runnable {
                             agv.setOccupied(true);
                             server.writeMessage(craneMSG.generateXml());
                             arriveMessage.getTransporter().getContainers().remove(numberOfContainers);
+
+                            if (numberOfContainers <= 0) {
+                                i.remove();
+                            }
+
                             break;
                         }
                     }
-                }
-                if (numberOfContainers == 0) {
-                    i.remove();
                 }
                 break;
             } catch (InterruptedException ex) {
@@ -689,67 +693,95 @@ public class Controller implements Runnable {
     }
 
     private Crane findCrane(String transporttype, int craneId) {
-        if (transporttype.equals("vrachtauto") || transporttype.equals("TruckCrane")) {
-            for (Crane crane : model.getTruckCranes()) {
-                if (crane.getId() == craneId) {
-                    return crane;
+        Crane ret = null;
+        switch (transporttype) {
+            case "vrachtauto":
+            case "TruckCrane":
+                for (Crane crane : model.getTruckCranes()) {
+                    if (crane.getId() == craneId) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("trein") || transporttype.equals("TrainCrane")) {
-            for (Crane crane : model.getTrainCranes()) {
-                if (crane.getId() == craneId) {
-                    return crane;
+                break;
+            case "trein":
+            case "TrainCrane":
+                for (Crane crane : model.getTrainCranes()) {
+                    if (crane.getId() == craneId) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("binnenschip") || transporttype.equals("DockingCraneInlandShip")) {
-            for (Crane crane : model.getDockingCranesInland()) {
-                if (crane.getId() == craneId) {
-                    return crane;
+                break;
+            case "binnenschip":
+            case "DockingCraneInlandShip":
+                for (Crane crane : model.getDockingCranesInland()) {
+                    if (crane.getId() == craneId) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("zeeschip") || transporttype.equals("DockingCraneSeaShip")) {
-            for (Crane crane : model.getDockingCranesSea()) {
-                if (crane.getId() == craneId) {
-                    return crane;
+                break;
+            case "zeeschip":
+            case "DockingCraneSeaShip":
+                for (Crane crane : model.getDockingCranesSea()) {
+                    if (crane.getId() == craneId) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
+                break;
         }
-        return null;
+        if (ret == null) {
+            System.out.println(ANSI_RED + "Unable to find crane " + transporttype + " with ID " + craneId + ANSI_RESET);
+        }
+        return ret;
     }
 
     private Crane findAvailableCrane(String transporttype) {
-        if (transporttype.equals("vrachtauto") || transporttype.equals("TruckCrane")) {
-            for (Crane crane : model.getTruckCranes()) {
-                if (!crane.isOccupied()) {
-                    return crane;
+        Crane ret = null;
+        switch (transporttype) {
+            case "vrachtauto":
+            case "TruckCrane":
+                for (Crane crane : model.getTruckCranes()) {
+                    if (!crane.isOccupied()) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("trein") || transporttype.equals("TrainCrane")) {
-            for (Crane crane : model.getTrainCranes()) {
-                if (!crane.isOccupied()) {
-                    return crane;
+                break;
+            case "trein":
+            case "TrainCrane":
+                for (Crane crane : model.getTrainCranes()) {
+                    if (!crane.isOccupied()) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("binnenschip") || transporttype.equals("DockingCraneInlandShip")) {
-            for (Crane crane : model.getDockingCranesInland()) {
-                if (!crane.isOccupied()) {
-                    return crane;
+                break;
+            case "binnenschip":
+            case "DockingCraneInlandShip":
+                for (Crane crane : model.getDockingCranesInland()) {
+                    if (!crane.isOccupied()) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
-        }
-        if (transporttype.equals("zeeschip") || transporttype.equals("DockingCraneSeaShip")) {
-            for (Crane crane : model.getDockingCranesSea()) {
-                if (!crane.isOccupied()) {
-                    return crane;
+                break;
+            case "zeeschip":
+            case "DockingCraneSeaShip":
+                for (Crane crane : model.getDockingCranesSea()) {
+                    if (!crane.isOccupied()) {
+                        ret = crane;
+                        break;
+                    }
                 }
-            }
+                break;
         }
-        return null;
+        if (ret == null) {
+            System.out.println(ANSI_RED + "Unable to find available crane " + transporttype + ANSI_RESET);
+        }
+        return ret;
     }
 
     private Crane findstoragecrane(String transporttype) {
@@ -781,6 +813,7 @@ public class Controller implements Runnable {
                 }
             }
         }
+        System.out.println(ANSI_RED + "Unable to find available storagecrane " + transporttype + ANSI_RESET);
         return null;
     }
 
@@ -800,24 +833,31 @@ public class Controller implements Runnable {
      * @return
      */
     private Agv findAgv(Message message) {
+        Agv ret = null;
+        String transporter = "";
         if (message.getMessageType() == Message.MOVE) {
             MoveMessage moveMessage = (MoveMessage) message;
-            return moveMessage.getAgv();
+            ret = moveMessage.getAgv();
         } else if (message.getMessageType() == Message.ARRIVE) {
             ArriveMessage arriveMessage = (ArriveMessage) message;
+            transporter = arriveMessage.getTransporter().getType();
             for (Agv agv : model.getAgvs()) {
-                if (!agv.isOccupied() && arriveMessage.getTransporter().getType().equals(agv.getLocationType())) {
+                if (!agv.isOccupied() && transporter.equals(agv.getLocationType())) {
                     agv.setOccupied(true);
-                    return agv;
+                    ret = agv;
+                    break;
                 }
             }
-
         }
-        return null;
+        if (ret == null) {
+            System.out.println(ANSI_RED + "Unable to find available agv for transporter " + transporter + ANSI_RESET);
+        }
+        return ret;
     }
 
     private Container findContainer(List<Container> containers) {
         Date firstDate = null;
+        Container ret = null;
         for (Container container : containers) {
             if (firstDate == null) {
                 firstDate = container.getDepartureDate();
@@ -827,20 +867,28 @@ public class Controller implements Runnable {
         }
         for (Container container : containers) {
             if (container.getDepartureDate().equals(firstDate)) {
-                return container;
+                ret = container;
+                break;
             }
         }
-        return null;
+        if (ret == null) {
+            System.out.println(ANSI_RED + "Unable to find available container with date " + firstDate + ANSI_RESET);
+        }
+        return ret;
     }
 
     private Container findContainerByNumber(List<Container> containers, int containerNumber) {
+        Container ret = null;
         for (Container con : containers) {
             if (con.getNumber() == containerNumber) {
-                return con;
+                ret = con;
+                break;
             }
         }
-
-        return null;
+        if (ret == null) {
+            System.out.println(ANSI_RED + "Unable to find available container with number " + containerNumber + ANSI_RESET);
+        }
+        return ret;
     }
 
     /**
