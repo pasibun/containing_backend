@@ -421,7 +421,7 @@ public class Controller implements Runnable {
 
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(250);
                 int numberOfContainers;
                 switch (firstChar) {
                     case "P": {
@@ -539,22 +539,22 @@ public class Controller implements Runnable {
                         transporter = arriveMessage.getTransporter();
                         agv = findAgv(arriveMessage);
                         storage = null;
-                            CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
-                            craneTransporter.setOccupied(true);
-                            updateDatabase(craneTransporter);
-                            messagePool.add(craneMSG);
-                            //agv.setContainers(container);                                
-                            agv.setProcessingMessageId(craneMSG.getId());
-                            agv.setOccupied(true);
-                            server.writeMessage(craneMSG.generateXml());
-                            arriveMessage.getTransporter().getContainers().remove(numberOfContainers);
+                        CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+                        craneTransporter.setOccupied(true);
+                        updateDatabase(craneTransporter);
+                        messagePool.add(craneMSG);
+                        //agv.setContainers(container);                                
+                        agv.setProcessingMessageId(craneMSG.getId());
+                        agv.setOccupied(true);
+                        server.writeMessage(craneMSG.generateXml());
+                        arriveMessage.getTransporter().getContainers().remove(numberOfContainers);
 
-                            if (numberOfContainers <= 0) {
-                                i.remove();
-                            }
-
-                            break;
+                        if (numberOfContainers <= 0) {
+                            i.remove();
                         }
+
+                        break;
+                    }
                 }
                 break;
             } catch (InterruptedException ex) {
