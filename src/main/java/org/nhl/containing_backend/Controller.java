@@ -400,7 +400,7 @@ public class Controller implements Runnable {
             arriveMessage = (ArriveMessage) i.next();
             String dijkie;
             Crane crane;
-            crane = findCrane("Vrachtauto", 1);
+            crane = findCrane("vrachtauto", 1);
             dijkie = getDijkstraPath(moveMessage.getAgv(), crane);
             String firstChar = dijkie.substring(0);
 
@@ -539,7 +539,6 @@ public class Controller implements Runnable {
                         transporter = arriveMessage.getTransporter();
                         agv = findAgv(arriveMessage);
                         storage = null;
-                        if (agv != null) {
                             CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
                             craneTransporter.setOccupied(true);
                             updateDatabase(craneTransporter);
@@ -556,7 +555,6 @@ public class Controller implements Runnable {
 
                             break;
                         }
-                    }
                 }
                 break;
             } catch (InterruptedException ex) {
@@ -575,7 +573,7 @@ public class Controller implements Runnable {
         ArriveMessage arriveMessage = (ArriveMessage) message;
         String dijkie;
         Crane crane;
-        crane = findCrane("Vrachtauto", 1);
+        crane = findCrane("vrachtauto", 1);
         dijkie = getDijkstraPath(moveMessage.getAgv(), crane);
         String firstChar = dijkie.substring(0);
 
