@@ -11,12 +11,14 @@ public class MoveMessage extends Message {
     private Agv agv;
     private String dijkstra;
     private Crane crane;
+    private int endLocationId;
 
     public MoveMessage(Agv agv, String dijkstra, Crane crane) {
         super(Message.MOVE);
         this.agv = agv;
         this.dijkstra = dijkstra;
         this.crane = crane;
+        this.endLocationId = crane.getId();
     }
 
     @Override
@@ -31,11 +33,15 @@ public class MoveMessage extends Message {
         message += "<EndLocationType>" + crane.getType() + "</EndLocationType>";
         message += "<EndLocationId>" + crane.getId() + "</EndLocationId>";
         message += "</Move>";
-
+        this.endLocationId = crane.getId();
         return message;
     }
 
     public Agv getAgv() {
         return agv;
+    }
+
+    public int getEndLocationId() {
+        return endLocationId;
     }
 }

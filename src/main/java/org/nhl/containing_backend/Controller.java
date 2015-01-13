@@ -44,6 +44,7 @@ public class Controller implements Runnable {
     private List<Message> arriveMessagesList;
     private List<Message> moveMessagesList;
     private List<Container> containerListStorage;
+    private List<Integer> tempCraneIDS;
 
     public Controller() {
         speed = 1;
@@ -53,6 +54,7 @@ public class Controller implements Runnable {
         arriveMessagesList = new ArrayList<>();
         moveMessagesList = new ArrayList<>();
         containerListStorage = new ArrayList<>();
+        tempCraneIDS = new ArrayList<>();
         database = new Database(model);
         running = false;
     }
@@ -405,11 +407,24 @@ public class Controller implements Runnable {
             Agv agv;
             Container container;
             Storage storage;
+
+            for (int p = 0; p < tempCraneIDS.size(); p++) {
+                Crane tempCrane = findCrane(arriveMessage.getTransporter().getType(), tempCraneIDS.get(p));
+                if (tempCrane != null) {
+                    tempCrane.setOccupied(false);
+                    tempCraneIDS.remove(p);
+                    break;
+                }
+            }
+
+
             try {
                 Thread.sleep(500);
+                int numberOfContainers;
                 switch (firstChar) {
                     case "P": {
                         //SchepenOpslag Trein kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageSchipNorth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -427,6 +442,7 @@ public class Controller implements Runnable {
                     }
                     case "Q": {
                         //SchepenOpslag vrachtauto kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageSchipSouth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -444,6 +460,7 @@ public class Controller implements Runnable {
                     }
                     case "O": {
                         //TreinOpslag Trein kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageTreinpNorth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -461,6 +478,7 @@ public class Controller implements Runnable {
                     }
                     case "N": {
                         //TreinOpslag vrachtauto kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageTrainSouth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -478,6 +496,7 @@ public class Controller implements Runnable {
                     }
                     case "L": {
                         //VrachtautoOpslag Trein kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageVrachtautoNorth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -495,6 +514,7 @@ public class Controller implements Runnable {
                     }
                     case "M": {
                         //VrachtautoOpslag vrachtauto kant
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         craneTransporter = findAvailableCrane("StorageVrachtautoSouth");
                         transporter = null;
                         agv = findAgv(arriveMessage);
@@ -511,26 +531,29 @@ public class Controller implements Runnable {
                         break;
                     }
                     default: {
-
-                        int count;
-                        count = arriveMessage.getTransporter().getContainers().size() - 1;
-                        container = arriveMessage.getTransporter().getContainers().get(count);
-                        craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
+                        numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
+                        container = arriveMessage.getTransporter().getContainers().get(numberOfContainers);
+                        craneTransporter = findCrane(arriveMessage.getTransporter().getType(), moveMessage.getEndLocationId());
                         transporter = arriveMessage.getTransporter();
                         agv = findAgv(arriveMessage);
                         storage = null;
-                        CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
-                        craneTransporter.setOccupied(true);
-                        updateDatabase(craneTransporter);
-                        messagePool.add(craneMSG);
-                        //agv.setContainers(container);                                
-                        agv.setProcessingMessageId(craneMSG.getId());
-                        agv.setOccupied(true);
-                        server.writeMessage(craneMSG.generateXml());
-                        break;
+                        if (agv != null) {
+                            CraneMessage craneMSG = new CraneMessage(craneTransporter, transporter, agv, container, storage);
+                            craneTransporter.setOccupied(true);
+                            updateDatabase(craneTransporter);
+                            messagePool.add(craneMSG);
+                            //agv.setContainers(container);                                
+                            agv.setProcessingMessageId(craneMSG.getId());
+                            agv.setOccupied(true);
+                            server.writeMessage(craneMSG.generateXml());
+                            arriveMessage.getTransporter().getContainers().remove(numberOfContainers);
+                            break;
+                        }
                     }
                 }
-                i.remove();
+                if (numberOfContainers == 0) {
+                    i.remove();
+                }
                 break;
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
@@ -698,28 +721,28 @@ public class Controller implements Runnable {
     }
 
     private Crane findAvailableCrane(String transporttype) {
-        if (transporttype.equals("vrachtauto")) {
+        if (transporttype.equals("vrachtauto") || transporttype.equals("TruckCrane")) {
             for (Crane crane : model.getTruckCranes()) {
                 if (!crane.isOccupied()) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("trein")) {
+        if (transporttype.equals("trein") || transporttype.equals("TrainCrane")) {
             for (Crane crane : model.getTrainCranes()) {
                 if (!crane.isOccupied()) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("binnenschip")) {
+        if (transporttype.equals("binnenschip") || transporttype.equals("DockingCraneInlandShip")) {
             for (Crane crane : model.getDockingCranesInland()) {
                 if (!crane.isOccupied()) {
                     return crane;
                 }
             }
         }
-        if (transporttype.equals("zeeschip")) {
+        if (transporttype.equals("zeeschip") || transporttype.equals("DockingCraneSeaShip")) {
             for (Crane crane : model.getDockingCranesSea()) {
                 if (!crane.isOccupied()) {
                     return crane;
@@ -857,13 +880,13 @@ public class Controller implements Runnable {
                     dijkstra = getDijkstraPath(agv, crane);
                     agv.setOccupied(true);
                     crane.setOccupied(true);
+                    tempCraneIDS.add(crane.getId());
                     try {
                         MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
                         messagePool.add(moveMessage);
                         agv.setProcessingMessageId(moveMessage.getId());
                         agv.setLocationType(arrivedMessage.getTransporter().getType());
                         server.writeMessage(moveMessage.generateXml());
-
 
                         break;
                     } catch (Exception e) {
