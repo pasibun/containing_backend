@@ -544,11 +544,7 @@ public class Controller implements Runnable {
                         numberOfContainers = arriveMessage.getTransporter().getContainers().size() - 1;
                         container = arriveMessage.getTransporter().getContainers().get(numberOfContainers);
                         craneTransporter = findCrane(arriveMessage.getTransporter().getType(), moveMessage.getEndLocationId());
-                        Thread.sleep(3000);
-                        int count;
-                        count = arriveMessage.getTransporter().getContainers().size() - 1;
-                        container = arriveMessage.getTransporter().getContainers().get(count);
-                        craneTransporter = findCrane(arriveMessage.getTransporter().getType(), arriveMessage.getDepotIndex());
+                        Thread.sleep(1000);
                         transporter = arriveMessage.getTransporter();
                         agv = findAgv(arriveMessage);
                         storage = null;
@@ -940,7 +936,7 @@ public class Controller implements Runnable {
                     crane.setOccupied(true);
                     tempCraneIDS.add(crane.getId());
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                         MoveMessage moveMessage = new MoveMessage(agv, dijkstra, crane);
                         messagePool.add(moveMessage);
                         agv.setProcessingMessageId(moveMessage.getId());
@@ -1210,7 +1206,7 @@ public class Controller implements Runnable {
 
     private void handleOkCraneMessage(CraneMessage message) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(1000);
             message.getCrane().setProcessingMessageId(-1);
             message.getCrane().setOccupied(false);
 
