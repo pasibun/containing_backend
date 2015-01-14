@@ -18,6 +18,8 @@ import java.awt.*;
 import java.io.StringReader;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.nhl.containing_backend.communication.messages.CraneMessage;
 import org.nhl.containing_backend.communication.messages.DepartMessage;
 import org.nhl.containing_backend.communication.messages.MoveMessage;
@@ -892,37 +894,42 @@ public class Controller implements Runnable {
 
             for (Message getMessage : moveMessagesList) {
                 MoveMessage moveToStorage = (MoveMessage) getMessage;
+                try {
+                    Thread.sleep(1000);
 
-                if (!moveToStorage.getAgv().isOccupied()) {
+                    if (!moveToStorage.getAgv().isOccupied()) {
 
-                    int craneLocation = 0;
-                    /*Calendar localCal = GregorianCalendar.getInstance();
-                     localCal.setTime(moveToStorage.getAgv().getContainer().getDepartureDate());
+                        int craneLocation = 0;
+                        /*Calendar localCal = GregorianCalendar.getInstance();
+                         localCal.setTime(moveToStorage.getAgv().getContainer().getDepartureDate());
 
-                     if (localCal.get(Calendar.HOUR_OF_DAY) <= 6 && localCal.get(Calendar.HOUR_OF_DAY) >= 0) {
-                     craneLocation = 0;
-                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 12 && localCal.get(Calendar.HOUR_OF_DAY) >= 7) {
-                     craneLocation = 1;
-                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 18 && localCal.get(Calendar.HOUR_OF_DAY) >= 13) {
-                     craneLocation = 2;
-                     } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 24 && localCal.get(Calendar.HOUR_OF_DAY) >= 19) {
-                     craneLocation = 3;
-                     */
+                         if (localCal.get(Calendar.HOUR_OF_DAY) <= 6 && localCal.get(Calendar.HOUR_OF_DAY) >= 0) {
+                         craneLocation = 0;
+                         } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 12 && localCal.get(Calendar.HOUR_OF_DAY) >= 7) {
+                         craneLocation = 1;
+                         } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 18 && localCal.get(Calendar.HOUR_OF_DAY) >= 13) {
+                         craneLocation = 2;
+                         } else if (localCal.get(Calendar.HOUR_OF_DAY) <= 24 && localCal.get(Calendar.HOUR_OF_DAY) >= 19) {
+                         craneLocation = 3;
+                         */
 
-                    crane = findstoragecrane(moveToStorage.getAgv().getContainer().getDepartureTransportType());
+                        crane = findstoragecrane(moveToStorage.getAgv().getContainer().getDepartureTransportType());
 
-                    dijkstra = getDijkstraPath(moveToStorage.getAgv(), crane);
-                    moveToStorage.getAgv().setOccupied(true);
+                        dijkstra = getDijkstraPath(moveToStorage.getAgv(), crane);
+                        moveToStorage.getAgv().setOccupied(true);
 
-                    try {
-                        MoveMessage moveCreateMessage = new MoveMessage(moveToStorage.getAgv(), dijkstra, crane);
+                        try {
+                            MoveMessage moveCreateMessage = new MoveMessage(moveToStorage.getAgv(), dijkstra, crane);
 
-                        messagePool.add(moveCreateMessage);
-                        moveToStorage.getAgv().setProcessingMessageId(moveCreateMessage.getId());
-                        server.writeMessage(moveCreateMessage.generateXml());
-                        break;
-                    } catch (Exception e) {
+                            messagePool.add(moveCreateMessage);
+                            moveToStorage.getAgv().setProcessingMessageId(moveCreateMessage.getId());
+                            server.writeMessage(moveCreateMessage.generateXml());
+                            break;
+                        } catch (Exception e) {
+                        }
                     }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -957,7 +964,7 @@ public class Controller implements Runnable {
         } else if (agv.getContainer().getArrivalTransportType().equals("trein")) {
             beginPoint = "G";
         } else if (agv.getContainer().getArrivalTransportType().equals("vrachtauto")) {
-            beginPoint = "B";
+            beginPoint = "D";
         } else if (agv.getContainer().getArrivalTransportType().equals("binnenschip")) {
             beginPoint = "N";
         } else if (agv.getContainer().getArrivalTransportType().equals("zeeschip")) {
@@ -1135,7 +1142,7 @@ public class Controller implements Runnable {
 
     private void handleOkCraneMessage(CraneMessage message) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(3000);
             message.getCrane().setProcessingMessageId(-1);
             message.getCrane().setOccupied(false);
 
